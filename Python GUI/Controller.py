@@ -13,6 +13,15 @@ SLEEP_MODES = 0
 def controller_init(string):
     print(string)
     # Grab Data from Pin Config File
+    f = open("subject.config", "r")
+    lines = f.readlines()
+    globals()['GPIO_PINS'] = lines[1]
+    print(GPIO_PINS)
+    globals()['ADC_PINS'] = lines[3]
+    print(ADC_PINS)
+    globals()['SLEEP_MODES'] = lines[4]
+    print(SLEEP_MODES)
+
     # Update global variables with this data
     # GPIO Pin Amount
     # Analog Pin Amount
@@ -59,3 +68,6 @@ def subject_flash():
 def subject_init(string):
     print(string)
     return "Something"
+
+
+controller_init("Hello")
