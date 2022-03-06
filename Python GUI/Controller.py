@@ -3,6 +3,12 @@
 #
 
 #
+def controller_init(string):
+    print(string)
+    return "Something"
+
+
+#
 def start_read():
     print("Something")
 
