@@ -14,12 +14,19 @@ def controller_init(string):
     print(string)
     # Grab Data from Pin Config File
     f = open("subject.config", "r")
+
     lines = f.readlines()
-    globals()['GPIO_PINS'] = lines[1]
+
+    num = lines[1].split("\n")
+    globals()['GPIO_PINS'] = num[0]
     print(GPIO_PINS)
-    globals()['ADC_PINS'] = lines[3]
+
+    num = lines[3].split("\n")
+    globals()['ADC_PINS'] = num[0]
     print(ADC_PINS)
-    globals()['SLEEP_MODES'] = lines[4]
+
+    num = lines[5].split("\n")
+    globals()['SLEEP_MODES'] = num[0]
     print(SLEEP_MODES)
 
     # Update global variables with this data
@@ -69,5 +76,5 @@ def subject_init(string):
     print(string)
     return "Something"
 
-
-controller_init("Hello")
+#Test Code
+controller_init("Test: ")
