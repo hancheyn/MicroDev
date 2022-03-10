@@ -2,19 +2,32 @@
 #
 #
 
-#
-def init_model(view, driver):
-    print("model")
 
+class Model:
 
-#
-def wait_model():
-    print("wait")
+    view = None
+    driver = None
 
+    def __init__(self):
+        print("init")
+        return self
 
-#
-def display_model():
-    print("display")
+    #
+    def init_model(self, view, driver):
+        print("model")
+        self.view = view
+        self.driver = driver
+        return None
+
+    #
+    def wait_model(self):
+        print("wait")
+        return None
+
+    #
+    def display_model(self):
+        print("display")
+        return None
 
 
 

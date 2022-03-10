@@ -1,23 +1,32 @@
 #
 #
 #
+class View:
+    #
+    def __init__(self):
+        print("view")
+        return self
 
-#
-def init_view():
-    print("view")
+    #
+    @staticmethod
+    def update_view_debug(String):
+        print("update")
+
+        return None
+
+    #
+    @staticmethod
+    def clear_view(self):
+        print("clear")
+
+        return None
+
+    #
+    @staticmethod
+    def update_view_begin(self):
+        print("begin")
+        return None
 
 
-#
-def update_view_debug(String):
-    print("update")
-
-
-#
-def  clear_view():
-    print("clear")
-
-
-#
-def update_view_begin():
-    print("begin")
-
+view = View
+view.clear_view(view)
