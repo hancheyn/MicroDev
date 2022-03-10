@@ -95,6 +95,8 @@ def subject_read():
         ser_ = serial.Serial('/dev/ttyACM0', globals()['BAUD_RATE'])
         print(ser_.portstr)  # check which port was really used
         print(ser_.read(100))  # write a string
+        # parse info for correct start and stop characters then send Acknowledge
+        # write
         ser_.close()
     except serial.SerialException as e:
         if e.errno == 13:
@@ -104,8 +106,6 @@ def subject_read():
         pass
     finally:
         print("read")
-    # parse info for correct start and stop characters then send Acknowledge
-    # write
 
 
 #
@@ -129,6 +129,7 @@ def subject_write(str_write):
 
 #
 def subject_flash():
+
     print("flash")
 
 
