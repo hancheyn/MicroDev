@@ -1,11 +1,13 @@
 #
 #
 #
+
+
 class View:
     #
     def __init__(self):
         print("view")
-        return self
+        #self.view = view
 
     #
     @staticmethod

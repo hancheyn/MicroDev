@@ -8,22 +8,25 @@
 # https://controllerstech.com/low-power-modes-in-stm32/
 # GPIO Interrupts
 # https://medium.com/@rxseger/interrupt-driven-i-o-on-raspberry-pi-3-with-leds-and-pushbuttons-rising-falling-edge-detection-36c14e640fef#:~:text=Sounds%20complicated%2C%20fortunately%20the%20RPi.GPIO%20Python%20module%20included,%28%29%2C%20add%20a%20callback%20function%20using%20GPIO.add_event_detect%20%28%29.
+
+
 import serial
 
-# serial example
-try:
-    ser = serial.Serial('/dev/ttyACM0', 115200)
-    print(ser.portstr)     # check which port was really used
-    print(ser.read(100))   # write a string
-    ser.close()
-except serial.SerialException as e:
-    if e.errno == 13:
-        raise e
-    pass
-except OSError:
-    pass
-finally:
-    print("finally")
+
+## serial example
+# try:
+#     ser = serial.Serial('/dev/ttyACM0', 115200)
+#     print(ser.portstr)     # check which port was really used
+#     print(ser.read(100))   # write a string
+#     ser.close()
+# except serial.SerialException as e:
+#     if e.errno == 13:
+#         raise e
+#     pass
+# except OSError:
+#     pass
+# finally:
+#     print("finally")
 
 # STM32 ADC = 16 | GPIO = 5 ports * 16 pins | Sleep Modes = 3
 ADC_PINS = 0
@@ -40,12 +43,11 @@ class Controller:
 
     def __init__(self):
         print("view")
-        return self
 
     #
-    def controller_init(self, model, view, driver):
+    def controller_init(self, model, view1, driver):
         # print(string)
-        self.view = view
+        self.view = view1
         self.model = model
         self.driver = driver
 
@@ -153,6 +155,6 @@ class Controller:
 
 
 # Test Code
-controller = Controller
+#controller = Controller
 
 
