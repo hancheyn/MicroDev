@@ -7,7 +7,7 @@ def viewTest(view, detailed_array, pass_array):
 	view.setStandbyScreen()
 	time.sleep(5)
 
-	view.setStartScreen()
+	view.setStartScreen("Arduino Uno Detected")
 	time.sleep(5)
 
 	view.setFlashScreen()
@@ -18,13 +18,15 @@ def viewTest(view, detailed_array, pass_array):
 	
 	for i in range(0, 101):
 		view.setRunningScreen(int(i))
+		time.sleep(0.1)
 		
 	for i in range(10, 81):
 		view.setRunningScreen(int(i))
 
 	view.setDetailTestScreen(detailed_array)
+	time.sleep(5)
 
-	view.setSaveScreen()
+	view.setSaveScreen("Success")
 	time.sleep(5)
 
 	view.setShutdownScreen()
