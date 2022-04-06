@@ -8,7 +8,7 @@
 # https://controllerstech.com/low-power-modes-in-stm32/
 # GPIO Interrupts
 # https://medium.com/@rxseger/interrupt-driven-i-o-on-raspberry-pi-3-with-leds-and-pushbuttons-rising-falling-edge-detection-36c14e640fef#:~:text=Sounds%20complicated%2C%20fortunately%20the%20RPi.GPIO%20Python%20module%20included,%28%29%2C%20add%20a%20callback%20function%20using%20GPIO.add_event_detect%20%28%29.
-
+import time
 
 import serial
 
@@ -29,6 +29,8 @@ import serial
 #     print("finally")
 
 # STM32 ADC = 16 | GPIO = 5 ports * 16 pins | Sleep Modes = 3
+from serial import to_bytes
+
 ADC_PINS = 0
 GPIO_PINS = 0
 SLEEP_MODES = 0
@@ -104,7 +106,7 @@ class Controller:
     @staticmethod
     def subject_read():
         try:
-            ser_ = serial.Serial('/dev/ttyACM0', globals()['BAUD_RATE'])
+            ser_ = serial.Serial('/dev/ttyACM0', 115200)
             print(ser_.portstr)  # check which port was really used
             print(ser_.read(100))  # write a string
             # parse info for correct start and stop characters then send Acknowledge
@@ -124,12 +126,16 @@ class Controller:
     @staticmethod
     def subject_write(str_write):
         try:
-            ser = serial.Serial('/dev/ttyACM0', globals()['BAUD_RATE'])
-            print(ser.portstr)  # check which port was really used
-            ser.write(str_write)  # write a string
+            ser2 = serial.Serial('/dev/ttyACM0', 115200)
+            print(ser2.portstr)  # check which port was really used
 
+            #!!Writes byte by byte
+            ser2.write(bytes(b"e"))  # write a string
+            ser2.write(bytes(b"l"))  # write a string
+            ser2.write(bytes(b"l"))  # write a string
+            #ser.write(b'e')
             # read acknowledge byte to continue
-            ser.close()
+            ser2.close()
         except serial.SerialException as e:
             if e.errno == 13:
                 raise e
@@ -155,6 +161,11 @@ class Controller:
 
 
 # Test Code
-#controller = Controller
-
+controller = Controller
+while True:
+    s = 0b01110011
+    controller.subject_write(s)
+    controller.subject_read()
+    controller.subject_read()
+    time.sleep(2)
 
