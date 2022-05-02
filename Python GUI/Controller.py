@@ -104,11 +104,28 @@ class Controller:
     # ******************************** Subject Board I/O ************************************
     #
     @staticmethod
-    def subject_read():
+    def subject_read():  #FIX TEST OUT BINARY ARRAY FROM STM
         try:
             ser_ = serial.Serial('/dev/ttyACM0', 115200)
             print(ser_.portstr)  # check which port was really used
-            print(ser_.read(100))  # write a string
+
+            #str1 = ""
+            data = bytearray(3)
+            #read_loop = True
+
+            #while read_loop:
+            data = ser_.read(3)
+                #print(data)
+                #if chars1 == b"#":
+                #    read_loop = False
+                #else:
+
+                    #str1 += str(chars1.decode('ascii'))
+                    # .decode('ascii')
+
+            # str1 = str(chars1)
+            print(data)
+
             # parse info for correct start and stop characters then send Acknowledge
             # write
             ser_.close()
@@ -121,21 +138,23 @@ class Controller:
         finally:
             print("read")
 
+        return data
+
 
     #
     @staticmethod
-    def subject_write(str_write):
+    def subject_write(str_write): #FIX: USE BINARY ARRAY FOR SERIAL COM
         try:
-            ser2 = serial.Serial('/dev/ttyACM0', 115200)
-            print(ser2.portstr)  # check which port was really used
+            ser = serial.Serial('/dev/ttyACM0', 115200)
 
-            #!!Writes byte by byte
-            ser2.write(bytes(b"e"))  # write a string
-            ser2.write(bytes(b"l"))  # write a string
-            ser2.write(bytes(b"l"))  # write a string
-            #ser.write(b'e')
+            # !!Writes byte by byte
+            # to make ascii .encode('ascii')
+            send_packet = str_write.encode('ascii')
+            print(send_packet)
+            ser.write(send_packet)  # write a string
+
             # read acknowledge byte to continue
-            ser2.close()
+            ser.close()
         except serial.SerialException as e:
             if e.errno == 13:
                 raise e
