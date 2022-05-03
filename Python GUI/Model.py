@@ -8,14 +8,17 @@
 #
 # #################################################
 from time import sleep
+import Controller
+import View
 
 
 class Model:
-    view = None
     driver = None
+    view = None
 
     def __init__(self):
         print("init")
+
 
     #
     def init_model(self, view, driver):
@@ -24,11 +27,12 @@ class Model:
         self.driver = driver
         return None
 
+
     #
     def wait_model(self):
         print("wait")
-        self
         return None
+
 
     #
     def display_model(self):
@@ -37,9 +41,8 @@ class Model:
         return None
 
 
+# ###############################################################################
 # MAIN LOOP
-from Controller import *
-from View import *
 
 controller = Controller
 view = View

@@ -26,6 +26,45 @@ GPIO_PINS = 0
 SLEEP_MODES = 0
 BAUD_RATE = 0
 
+view = None
+model = None
+driver = None
+
+def __init__(self):
+    print("controller")
+
+#
+def controller_init(self, model, view1, driver):
+    # print(string)
+    self.view = view1
+    self.model = model
+    self.driver = driver
+
+    # Grab Data from Pin Config Files
+    f = open("subject.config", "r")
+    lines = f.readlines()
+
+    num = lines[1].split("\n")
+    globals()['GPIO_PINS'] = num[0]
+    print(GPIO_PINS)
+
+    num = lines[3].split("\n")
+    globals()['ADC_PINS'] = num[0]
+    print(ADC_PINS)
+
+    num = lines[5].split("\n")
+    globals()['SLEEP_MODES'] = num[0]
+    print(SLEEP_MODES)
+
+    num = lines[7].split("\n")
+    globals()['BAUD_RATE'] = num[0]
+    print(BAUD_RATE)
+
+    # Update global variables with this data
+    # GPIO Pin Amount
+    # Analog Pin Amount
+    # Sleep Modes Amount
+    return "Something"
 
 # ******************************** Subject Board I/O ************************************
 #
@@ -62,7 +101,6 @@ def subject_read():  #FIX TEST OUT BINARY ARRAY FROM STM
         print(data)
 
         # parse info for correct start and stop characters then send Acknowledge
-        # write
         ser_.close()
     except serial.SerialException as e:
         if e.errno == 13:
@@ -76,81 +114,32 @@ def subject_read():  #FIX TEST OUT BINARY ARRAY FROM STM
     return data
 
 
+# ******************************** Subject Tests ************************************
+def run_gpio_output_loading_test():
+    print("test")
 
-class Controller:
+# ******************************** User Input Reads ************************************
+def start_read():
 
-    view = None
-    model = None
-    driver = None
+    print("Something")
+    return None
 
-    def __init__(self):
-        print("view")
+#
+def arrow_up_read():
+    print("Up")
 
-    #
-    def controller_init(self, model, view1, driver):
-        # print(string)
-        self.view = view1
-        self.model = model
-        self.driver = driver
+#
+def arrow_down_read():
+    print("clear")
 
-        # Grab Data from Pin Config Files
-        f = open("subject.config", "r")
-        lines = f.readlines()
+#
+def subject_flash():
 
-        num = lines[1].split("\n")
-        globals()['GPIO_PINS'] = num[0]
-        print(GPIO_PINS)
+    print("flash")
 
-        num = lines[3].split("\n")
-        globals()['ADC_PINS'] = num[0]
-        print(ADC_PINS)
-
-        num = lines[5].split("\n")
-        globals()['SLEEP_MODES'] = num[0]
-        print(SLEEP_MODES)
-
-        num = lines[7].split("\n")
-        globals()['BAUD_RATE'] = num[0]
-        print(BAUD_RATE)
-
-        # Update global variables with this data
-        # GPIO Pin Amount
-        # Analog Pin Amount
-        # Sleep Modes Amount
-        return "Something"
-
-    # ******************************** Subject Tests ************************************
-    @staticmethod
-    def run_gpio_output_loading_test():
-        print("test")
-
-    # ******************************** User Input Reads ************************************
-    @staticmethod
-    def start_read():
-
-        print("Something")
-        return None
-
-    #
-    @staticmethod
-    def arrow_up_read():
-        print("Up")
-
-    #
-    @staticmethod
-    def arrow_down_read():
-        print("clear")
-
-    #
-    @staticmethod
-    def subject_flash():
-
-        print("flash")
-
-    #
-    @staticmethod
-    def subject_init(string):
-        print(string)
-        return "Something"
+#
+def subject_init(string):
+    print(string)
+    return "Something"
 
 
