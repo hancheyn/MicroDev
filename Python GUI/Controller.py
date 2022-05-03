@@ -1,6 +1,12 @@
+# #################################################
 # MicroDev Project: Controller
-# Date:
+# Date: May 2, 2022
 # Description: Controller Class
+# Authors:
+# Nathan Hanchey
+#
+#
+# #################################################
 
 # Adjusting Globals:
 # https://www.geeksforgeeks.org/python-globals-function/#:~:text=Syntax%3A%20globals%20%28%29%20Parameters%3A%20No%20parameters%20required.%20Code,%3D%20c%20%2B%20a%20globals%28%29%20%5B%27a%27%5D%20%3D%20d

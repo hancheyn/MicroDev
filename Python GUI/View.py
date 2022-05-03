@@ -1,6 +1,12 @@
+# #################################################
+# MicroDev Project: View
+# Date: May 2, 2022
+# Description: View Class
+# Authors:
+# Nathan Hanchey
 #
 #
-#
+# #################################################
 
 
 class View:

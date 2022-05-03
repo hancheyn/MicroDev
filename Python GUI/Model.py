@@ -1,6 +1,12 @@
+# #################################################
+# MicroDev Project: Model
+# Date: May 2, 2022
+# Description: Model Class
+# Authors:
+# Nathan Hanchey
 #
 #
-#
+# #################################################
 from time import sleep
 
 
