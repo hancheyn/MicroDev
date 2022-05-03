@@ -66,6 +66,7 @@ def controller_init(self, model, view1, driver):
     # Sleep Modes Amount
     return "Something"
 
+
 # ******************************** Subject Board I/O ************************************
 #
 def subject_write(str_write): #FIX: USE BINARY ARRAY FOR SERIAL COM
@@ -112,6 +113,54 @@ def subject_read():  #FIX TEST OUT BINARY ARRAY FROM STM
         print("read")
 
     return data
+
+
+# CRC Decoding
+def crc_decode(value, out_type):
+
+    out = 0
+
+    # Check CRC is correct first
+    int_val = int.from_bytes(value, "big")
+    if (int_val % 5) == 0:
+        print("CRC Pass")
+    else:
+        print("CRC Fail")
+
+    # Conditional on which data point to decode
+    # E.G. 1 = pin, 2 = test, 3 = results
+    if out_type == 1:
+        out = int.from_bytes(value[0], "big")
+        print("pin")
+    elif out_type == 2:
+        out = int.from_bytes(value[2], "big")
+        out = out & 0xF0
+        out = out >> 4
+        print("test")
+    elif out_type == 3:
+        out = int.from_bytes(value[1], "big")
+        print("results")
+
+    # return type value
+    return out
+
+
+# CRC Encoding
+def crc_encode(test, pin, instruction):
+
+    # CRC KEY => 0101 = 5
+    # 1) Find Remainder
+    # byte array to int
+
+    # 2) Subtract Key - Remainder
+
+    # 3) Add value to data
+
+    # 4) int converts to Byte array
+
+    # return byte array
+
+    print("encode")
 
 
 # ******************************** Subject Tests ************************************
