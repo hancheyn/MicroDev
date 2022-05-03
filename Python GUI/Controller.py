@@ -9,24 +9,8 @@
 # GPIO Interrupts
 # https://medium.com/@rxseger/interrupt-driven-i-o-on-raspberry-pi-3-with-leds-and-pushbuttons-rising-falling-edge-detection-36c14e640fef#:~:text=Sounds%20complicated%2C%20fortunately%20the%20RPi.GPIO%20Python%20module%20included,%28%29%2C%20add%20a%20callback%20function%20using%20GPIO.add_event_detect%20%28%29.
 import time
-
 import serial
 
-
-## serial example
-# try:
-#     ser = serial.Serial('/dev/ttyACM0', 115200)
-#     print(ser.portstr)     # check which port was really used
-#     print(ser.read(100))   # write a string
-#     ser.close()
-# except serial.SerialException as e:
-#     if e.errno == 13:
-#         raise e
-#     pass
-# except OSError:
-#     pass
-# finally:
-#     print("finally")
 
 # STM32 ADC = 16 | GPIO = 5 ports * 16 pins | Sleep Modes = 3
 from serial import to_bytes
@@ -35,6 +19,56 @@ ADC_PINS = 0
 GPIO_PINS = 0
 SLEEP_MODES = 0
 BAUD_RATE = 0
+
+
+# ******************************** Subject Board I/O ************************************
+#
+def subject_write(str_write): #FIX: USE BINARY ARRAY FOR SERIAL COM
+    try:
+        ser = serial.Serial('/dev/ttyACM0', 115200)
+
+        # Writes byte array
+        print(str_write)
+        ser.write(str_write)  # write a string
+
+        # read acknowledge byte to continue
+        ser.close()
+    except serial.SerialException as e:
+        if e.errno == 13:
+            raise e
+        pass
+    except OSError:
+        pass
+    finally:
+        print("write")
+
+
+def subject_read():  #FIX TEST OUT BINARY ARRAY FROM STM
+    try:
+        ser_ = serial.Serial('/dev/ttyACM0', 115200)
+        print(ser_.portstr)  # check which port was really used
+
+        # Read Byte array
+        data = bytearray(3)
+        data = ser_.read(3)
+
+        # Debugging
+        print(data)
+
+        # parse info for correct start and stop characters then send Acknowledge
+        # write
+        ser_.close()
+    except serial.SerialException as e:
+        if e.errno == 13:
+            raise e
+        pass
+    except OSError:
+        pass
+    finally:
+        print("read")
+
+    return data
+
 
 
 class Controller:
@@ -53,7 +87,7 @@ class Controller:
         self.model = model
         self.driver = driver
 
-        # Grab Data from Pin Config File
+        # Grab Data from Pin Config Files
         f = open("subject.config", "r")
         lines = f.readlines()
 
@@ -101,76 +135,11 @@ class Controller:
     def arrow_down_read():
         print("clear")
 
-    # ******************************** Subject Board I/O ************************************
-    #
-    @staticmethod
-    def subject_read():  #FIX TEST OUT BINARY ARRAY FROM STM
-        try:
-            ser_ = serial.Serial('/dev/ttyACM0', 115200)
-            print(ser_.portstr)  # check which port was really used
-
-            #str1 = ""
-            data = bytearray(3)
-            #read_loop = True
-
-            #while read_loop:
-            data = ser_.read(3)
-                #print(data)
-                #if chars1 == b"#":
-                #    read_loop = False
-                #else:
-
-                    #str1 += str(chars1.decode('ascii'))
-                    # .decode('ascii')
-
-            # str1 = str(chars1)
-            print(data)
-
-            # parse info for correct start and stop characters then send Acknowledge
-            # write
-            ser_.close()
-        except serial.SerialException as e:
-            if e.errno == 13:
-                raise e
-            pass
-        except OSError:
-            pass
-        finally:
-            print("read")
-
-        return data
-
-
-    #
-    @staticmethod
-    def subject_write(str_write): #FIX: USE BINARY ARRAY FOR SERIAL COM
-        try:
-            ser = serial.Serial('/dev/ttyACM0', 115200)
-
-            # !!Writes byte by byte
-            # to make ascii .encode('ascii')
-            send_packet = str_write.encode('ascii')
-            print(send_packet)
-            ser.write(send_packet)  # write a string
-
-            # read acknowledge byte to continue
-            ser.close()
-        except serial.SerialException as e:
-            if e.errno == 13:
-                raise e
-            pass
-        except OSError:
-            pass
-        finally:
-            print("write")
-
-
     #
     @staticmethod
     def subject_flash():
 
         print("flash")
-
 
     #
     @staticmethod
@@ -178,13 +147,4 @@ class Controller:
         print(string)
         return "Something"
 
-
-# Test Code
-controller = Controller
-while True:
-    s = 0b01110011
-    controller.subject_write(s)
-    controller.subject_read()
-    controller.subject_read()
-    time.sleep(2)
 
