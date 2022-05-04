@@ -124,7 +124,7 @@ def subject_read():  #FIX TEST OUT BINARY ARRAY FROM STM
 # CRC Decoding
 def crc_decode(value, out_type):
 
-    out = -1
+    out = 0
     # Check CRC is correct first
     int_val = int.from_bytes(value, "big")
     if (int_val % 5) == 0:
@@ -132,15 +132,15 @@ def crc_decode(value, out_type):
         # Conditional on which data point to decode
         # E.G. 1 = pin, 2 = test, 3 = results
         if out_type == 1:
-            out = int.from_bytes(value[0], "big")
+            out = int(value[0])
             print("pin")
         elif out_type == 2:
-            out = int.from_bytes(value[2], "big")
+            out = int(value[2])
             out = out & 0xF0
             out = out >> 4
             print("test")
         elif out_type == 3:
-            out = int.from_bytes(value[1], "big")
+            out = int(value[1])
             print("results")
 
     else:
@@ -219,6 +219,7 @@ def board_list():
     print(res_stm)
 
     # Conditional on STM | Arduino Uno | or Neither for return
+
 
     # Use class globals for board file path and id info
 
