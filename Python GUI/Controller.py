@@ -16,11 +16,10 @@
 # https://medium.com/@rxseger/interrupt-driven-i-o-on-raspberry-pi-3-with-leds-and-pushbuttons-rising-falling-edge-detection-36c14e640fef#:~:text=Sounds%20complicated%2C%20fortunately%20the%20RPi.GPIO%20Python%20module%20included,%28%29%2C%20add%20a%20callback%20function%20using%20GPIO.add_event_detect%20%28%29.
 import time
 import serial
-
+import subprocess
 
 # STM32 ADC = 16 | GPIO = 5 ports * 16 pins | Sleep Modes = 3
 from serial import to_bytes
-
 ADC_PINS = 0
 GPIO_PINS = 0
 SLEEP_MODES = 0
@@ -96,6 +95,10 @@ def subject_read():  #FIX TEST OUT BINARY ARRAY FROM STM
 
         # Read Byte array
         data = bytearray(3)
+        # Set Timeout
+        ser_.timeout = 2
+
+        # READ SERIAL
         data = ser_.read(3)
 
         # Debugging
@@ -118,28 +121,27 @@ def subject_read():  #FIX TEST OUT BINARY ARRAY FROM STM
 # CRC Decoding
 def crc_decode(value, out_type):
 
-    out = 0
-
+    out = -1
     # Check CRC is correct first
     int_val = int.from_bytes(value, "big")
     if (int_val % 5) == 0:
         print("CRC Pass")
+        # Conditional on which data point to decode
+        # E.G. 1 = pin, 2 = test, 3 = results
+        if out_type == 1:
+            out = int.from_bytes(value[0], "big")
+            print("pin")
+        elif out_type == 2:
+            out = int.from_bytes(value[2], "big")
+            out = out & 0xF0
+            out = out >> 4
+            print("test")
+        elif out_type == 3:
+            out = int.from_bytes(value[1], "big")
+            print("results")
+
     else:
         print("CRC Fail")
-
-    # Conditional on which data point to decode
-    # E.G. 1 = pin, 2 = test, 3 = results
-    if out_type == 1:
-        out = int.from_bytes(value[0], "big")
-        print("pin")
-    elif out_type == 2:
-        out = int.from_bytes(value[2], "big")
-        out = out & 0xF0
-        out = out >> 4
-        print("test")
-    elif out_type == 3:
-        out = int.from_bytes(value[1], "big")
-        print("results")
 
     # return type value
     return out
@@ -151,44 +153,76 @@ def crc_encode(test, pin, instruction):
     # CRC KEY => 0101 = 5
     # 1) Find Remainder
     # byte array to int
+    packet = bytearray(3)
+    crc_byte = test << 4
+
+    packet[0] = pin.to_bytes(1, 'big')
+    packet[1] = instruction.to_bytes(1, 'big')
+    packet[2] = crc_byte.to_bytes(1, 'big')
+
+    crc_data = int.from_bytes(packet, 'big')
+    remainder = crc_data % 5
 
     # 2) Subtract Key - Remainder
+    crc = 5 - remainder
 
     # 3) Add value to data
+    crc_byte = crc_byte + crc
 
     # 4) int converts to Byte array
+    packet[2] = crc_byte.to_bytes(1, 'big')
 
     # return byte array
-
     print("encode")
+    return packet
 
 
 # ******************************** Subject Tests ************************************
 def run_gpio_output_loading_test():
     print("test")
 
+
 # ******************************** User Input Reads ************************************
 def start_read():
-
     print("Something")
     return None
+
 
 #
 def arrow_up_read():
     print("Up")
 
+
 #
 def arrow_down_read():
     print("clear")
 
+
 #
 def subject_flash():
 
+
+
+    #res = subprocess.getstatusoutput(f'arduino-cli board list')
+    #print(res)
     print("flash")
+
+
+def board_list():
+    res_ardiuno = subprocess.getstatusoutput(f'arduino-cli board list')
+    res_stm = subprocess.getstatusoutput(f'st-info --probe')
+
+    print(res_ardiuno)
+    print(res_stm)
+
+    # Conditional on STM | Arduino Uno | or Neither for return
+
+    # Use class globals for board file path and id info
+
+    return res_ardiuno
+
 
 #
 def subject_init(string):
     print(string)
     return "Something"
-
-
