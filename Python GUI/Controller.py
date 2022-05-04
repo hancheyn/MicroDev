@@ -29,20 +29,23 @@ view = None
 model = None
 driver = None
 
+
 def __init__(self):
     print("controller")
 
+
 #
-def controller_init(self, model, view1, driver):
+def controller_init(self, model1, view1, driver1):
     # print(string)
     self.view = view1
-    self.model = model
-    self.driver = driver
+    self.model = model1
+    self.driver = driver1
 
     # Grab Data from Pin Config Files
     f = open("subject.config", "r")
     lines = f.readlines()
 
+    # FIX CONFIGURATIONS
     num = lines[1].split("\n")
     globals()['GPIO_PINS'] = num[0]
     print(GPIO_PINS)
