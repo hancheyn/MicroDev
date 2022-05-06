@@ -85,13 +85,11 @@ def close_serial(ser):
 def subject_write(str_write, ser):
     try:
         # ser = serial.Serial('/dev/ttyACM0', 115200)
-
         # Writes byte array
         print(str_write)
         ser.write(str_write)  # write a string
-
         # read acknowledge byte to continue
-       # ser.close()
+        # ser.close()
     except serial.SerialException as e:
         if e.errno == 13:
             raise e
@@ -118,7 +116,7 @@ def subject_read(ser_):
         # Debugging
         print(data)
 
-        # parse info for correct start and stop characters then send Acknowledge
+       # parse info for correct start and stop characters then send Acknowledge
        # ser_.close()
     except serial.SerialException as e:
         if e.errno == 13:
