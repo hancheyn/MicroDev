@@ -4,8 +4,9 @@
 # Description: Model Class
 # Authors:
 # Nathan Hanchey
-#
-#
+# Dylan
+# Connor
+# Corey
 # #################################################
 from time import sleep
 import Controller

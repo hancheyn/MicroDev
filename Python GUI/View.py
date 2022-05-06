@@ -4,8 +4,9 @@
 # Description: View Class
 # Authors:
 # Nathan Hanchey
-#
-#
+# Dylan
+# Connor
+# Corey
 # #################################################
 
 

@@ -4,8 +4,9 @@
 # Description: Controller Class
 # Authors:
 # Nathan Hanchey
-#
-#
+# Dylan
+# Connor
+# Corey
 # #################################################
 
 # Adjusting Globals:
@@ -71,16 +72,26 @@ def controller_init(self, model1, view1, driver1):
 
 # ******************************** Subject Board I/O ************************************
 #
-def subject_write(str_write): #FIX: USE BINARY ARRAY FOR SERIAL COM
+def open_serial():
+    ser = serial.Serial('/dev/ttyACM0', 115200)
+
+    return ser
+
+
+def close_serial(ser):
+    ser.close()
+
+
+def subject_write(str_write, ser):
     try:
-        ser = serial.Serial('/dev/ttyACM0', 115200)
+        # ser = serial.Serial('/dev/ttyACM0', 115200)
 
         # Writes byte array
         print(str_write)
         ser.write(str_write)  # write a string
 
         # read acknowledge byte to continue
-        ser.close()
+       # ser.close()
     except serial.SerialException as e:
         if e.errno == 13:
             raise e
@@ -91,9 +102,9 @@ def subject_write(str_write): #FIX: USE BINARY ARRAY FOR SERIAL COM
         print("write")
 
 
-def subject_read():  #FIX TEST OUT BINARY ARRAY FROM STM
+def subject_read(ser_):
     try:
-        ser_ = serial.Serial('/dev/ttyACM0', 115200)
+        # ser_ = serial.Serial('/dev/ttyACM0', 115200)
         print(ser_.portstr)  # check which port was really used
 
         # Read Byte array
@@ -108,7 +119,7 @@ def subject_read():  #FIX TEST OUT BINARY ARRAY FROM STM
         print(data)
 
         # parse info for correct start and stop characters then send Acknowledge
-        ser_.close()
+       # ser_.close()
     except serial.SerialException as e:
         if e.errno == 13:
             raise e
