@@ -22,9 +22,9 @@ class SerialTests(unittest.TestCase):
         # s[3] = 0x0a
         # s[4] = 0x0D
         ser = controller.open_serial()
-        #time.sleep(1)
+        time.sleep(2)
         controller.subject_write(str_write=s, ser=ser)
-        #         # time.sleep(2)
+        time.sleep(2)
         test_bytes = controller.subject_read(ser_=ser)
         controller.close_serial(ser)
 
