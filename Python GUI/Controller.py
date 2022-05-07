@@ -74,7 +74,6 @@ def controller_init(self, model1, view1, driver1):
 #
 def open_serial():
     ser = serial.Serial('/dev/ttyACM0', 115200)
-
     return ser
 
 
@@ -210,32 +209,84 @@ def arrow_down_read():
     print("clear")
 
 
+# ******************************** Command Line Interface ************************************
 #
-def subject_flash():
+def subject_flash(board):
 
+    # ARDUINO UNO FLASH
+    if board == "Arduino Uno Detected":
+        res = subprocess.getstatusoutput(
+            f'arduino-cli upload -b arduino:avr:uno -p /dev/ttyACM0 -i Flash/serial_com.ino.with_bootloader.bin')
 
+    # STM32F401 FLASH
+    elif board == "STM32F401 Detected":
+        res = subprocess.getstatusoutput(
+            f'st-flash write Flash/stmf401.bin 0x8000000')
 
-    #res = subprocess.getstatusoutput(f'arduino-cli board list')
-    #print(res)
-    print("flash")
+    print(res)
 
 
 def board_list():
+
+    # 1) ARDUINO DETECTION
     res_ardiuno = subprocess.getstatusoutput(f'arduino-cli board list')
+
+    # PARSE DATA FOR ARDUINO
+    # print(res_ardiuno[1])
+    ARD = res_ardiuno[1].split("\n")
+    boards = len(ARD)
+
+    # No Board Detection
+    if boards == 1:
+        return "No Boards Detected"
+
+    # Arduino Uno Detection
+    elif boards == 3:
+        board_type = ARD[1].split(" ")
+        # print(board_type[4])
+        if board_type[4] == "Serial":
+            # print(board_type[8])
+            if board_type[8] == "Uno":
+                return "Arduino Uno Detected"
+
+        elif board_type[4] == "Unknown":
+            print(board_type)
+
+    else:
+        return "Overflow"
+
+    # 2) STM DETECTION
     res_stm = subprocess.getstatusoutput(f'st-info --probe')
+    # PARSE DATA FOR STM'S
+    # print(res_stm[1])
 
-    print(res_ardiuno)
-    print(res_stm)
+    STM = res_stm[1].split("\n")
+    boards1 = len(STM)
 
-    # Conditional on STM | Arduino Uno | or Neither for return
+    # STM UNIQUE IDs
+    # 0x0433: STM32F401xD/E
+    # 0x0431: STM32F411xC/E
+    if boards1 > 6:
+        # print(STM[5])
+        # print(STM[6])
+        Chip_ID = STM[5].split(" ")
+        Family = STM[6].split(" ")
 
+        # print(Chip_ID[2])
+        # print(Family[3])
+        if Family[3] == "F4" and Chip_ID[2] == "0x0431":
+            return "STM32F411 Detected"
+
+        elif Family[3] == "F4" and Chip_ID[2] == "0x0433":
+            return "STM32F401 Detected"
 
     # Use class globals for board file path and id info
-
-    return res_ardiuno
+    return "No Boards Detected"
 
 
 #
 def subject_init(string):
     print(string)
     return "Something"
+
+

@@ -33,7 +33,7 @@ class SerialTests(unittest.TestCase):
         print(int_val)
         time.sleep(2)
         # Pin ID Echos Back
-        self.assertEqual(test_bytes[0], s[0])
+        self.assertEqual(test_bytes[0], s[0], "Basic Communication to Subject Board Failed.")
 
     # Tests Encoding CRC for data packet
     def test_crc_encode(self):
@@ -47,39 +47,77 @@ class SerialTests(unittest.TestCase):
         s[0] = 0x01
         s[1] = 0x10
         s[2] = 0x03
+
+        # controller.crc_decode([byte array], [value to return])
+        # Returns pin value [Byte s[0]]
         output = controller.crc_decode(s, 1)
-        print(output)
+        self.assertEqual(output, 0x01, "Failed to Decode CRC")
+
+        # Returns result value [Byte s[1]]
+        output = controller.crc_decode(s, 3)
+        self.assertEqual(output, 0x10, "Failed to Decode CRC")
+
+        # Returns test value [Byte s[2]]
+        output = controller.crc_decode(s, 2)
+        self.assertEqual(output, 0x00, "Failed to Decode CRC")
 
 
 # ###### Debugging Test Code for CLI ########## #
 # CLI Functionality Tests
 class CLITests(unittest.TestCase):
-    # Test that Uno ID Info is Obtained
-    def test_board_list_Uno(self):
-        controller = Controller
-        board_out = controller.board_list()
-        print(board_out)
-        # Test of Output (? Output 2 for Uno)
-        self.assertEqual(board_out, board_out)
-
-    # Test that STM ID Info is Obtained
-    def test_board_list_STM(self):
-        controller = Controller
-        board_out = controller.board_list()
-        print(board_out)
-        # Test of Output (? Output 1 for STM)
-        self.assertEqual(board_out, board_out)
 
     # Test that No Board Info is Obtained
     def test_board_list_None(self):
         controller = Controller
         board_out = controller.board_list()
         print(board_out)
-        # Test of Output (? Output 0 for no board)
-        self.assertEqual(board_out, board_out)
+        # Test of Output (? Output "No Boards Detected" for no useful board)
+        self.assertEqual(board_out, "No Boards Detected", "No board identification failed.")
+
+    # Test that Uno ID Info is Obtained
+    def test_board_list_Uno(self):
+        controller = Controller
+        board_out = controller.board_list()
+        print(board_out)
+        # Test of Output (? Output "Arduino Uno Detected" for Arduino Uno)
+        self.assertEqual(board_out, "Arduino Uno Detected", "Arduino Uno Failed to be Detected.")
+
+    # Test that STM ID Info is Obtained
+    def test_board_list_STM32F411(self):
+        controller = Controller
+        board_out = controller.board_list()
+        print(board_out)
+        # Test of Output (? Output "STM32F411 Detected" for STM32F411)
+        self.assertEqual(board_out, "STM32F411 Detected", "STM32F411 Failed to be Detected.")
+
+    # ###################################################################
+    # Additional Board Models can be added like below (?? Procedure in Document)
+    # 1) Add Board List ID Process
+    # 2) Add Flash .bin file of board to subject_flash process
+    # ###################################################################
+
+    # STM Board Addition Example
+    def test_board_list_STM32F401(self):
+        controller = Controller
+        board_out = controller.board_list()
+        print(board_out)
+        # Test of Output (? Output "STM32F401 Detected" for STM32F401)
+        self.assertEqual(board_out, "STM32F401 Detected", "STM32F401 Failed to be Detected.")
+
+    # Test that Two or More boards Info is Obtained
+    def test_board_list_Overflow(self):
+        controller = Controller
+        board_out = controller.board_list()
+        print(board_out)
+        # Test of Output (? Output "Overflow" for two+ board)
+        self.assertEqual(board_out, "Overflow", "Two+ Boards Detected")
+
 
     # Flash Subject Board Test
-
+    def test_board_flash(self):
+        controller = Controller
+        board_out = controller.board_list()
+        controller.subject_flash(board_out)
 
 
 if __name__ == '__main__':
