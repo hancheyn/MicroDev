@@ -24,20 +24,27 @@ class SerialTests(unittest.TestCase):
         ser = controller.open_serial()
         time.sleep(2)
         controller.subject_write(str_write=s, ser=ser)
-        time.sleep(2)
+        #time.sleep(2)
         test_bytes = controller.subject_read(ser_=ser)
         controller.close_serial(ser)
 
         print(test_bytes)
         int_val = int.from_bytes(test_bytes, "big")
         print(int_val)
-        time.sleep(2)
+        #time.sleep(2)
         # Pin ID Echos Back
         self.assertEqual(test_bytes[0], s[0], "Basic Communication to Subject Board Failed.")
 
     # Tests Encoding CRC for data packet
     def test_crc_encode(self):
         controller = Controller
+        s = bytearray(3)
+        # .encode([test], [pin], [instruction])
+        s = controller.crc_encode(0x00, 0x01, 0x10)
+
+        self.assertEqual(s[0], 0x01, "Failed to Encode CRC")
+        self.assertEqual(s[1], 0x10, "Failed to Encode CRC")
+        self.assertEqual(s[2], 0x03, "Failed to Encode CRC")
 
     # Tests decoding CRC data packet to pin, result, and test id
     # E.G. 1 = pin, 2 = test, 3 = results
@@ -111,7 +118,6 @@ class CLITests(unittest.TestCase):
         print(board_out)
         # Test of Output (? Output "Overflow" for two+ board)
         self.assertEqual(board_out, "Overflow", "Two+ Boards Detected")
-
 
     # Flash Subject Board Test
     def test_board_flash(self):

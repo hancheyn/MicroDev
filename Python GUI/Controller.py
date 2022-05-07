@@ -74,6 +74,8 @@ def controller_init(self, model1, view1, driver1):
 #
 def open_serial():
     ser = serial.Serial('/dev/ttyACM0', 115200)
+    ser.flushInput()
+    ser.flushOutput()
     return ser
 
 
@@ -167,9 +169,9 @@ def crc_encode(test, pin, instruction):
     packet = bytearray(3)
     crc_byte = test << 4
 
-    packet[0] = pin.to_bytes(1, 'big')
-    packet[1] = instruction.to_bytes(1, 'big')
-    packet[2] = crc_byte.to_bytes(1, 'big')
+    packet[0] = pin
+    packet[1] = instruction
+    packet[2] = crc_byte
 
     crc_data = int.from_bytes(packet, 'big')
     remainder = crc_data % 5
@@ -181,7 +183,7 @@ def crc_encode(test, pin, instruction):
     crc_byte = crc_byte + crc
 
     # 4) int converts to Byte array
-    packet[2] = crc_byte.to_bytes(1, 'big')
+    packet[2] = crc_byte
 
     # return byte array
     print("encode")
@@ -217,6 +219,8 @@ def subject_flash(board):
     if board == "Arduino Uno Detected":
         res = subprocess.getstatusoutput(
             f'arduino-cli upload -b arduino:avr:uno -p /dev/ttyACM0 -i Flash/serial_com.ino.with_bootloader.hex')
+        # Confirm Success with CLI output
+
 
     # STM32F411 FLASH
 
@@ -269,8 +273,7 @@ def board_list():
     # 0x0433: STM32F401xD/E
     # 0x0431: STM32F411xC/E
     if boards1 > 6:
-        # print(STM[5])
-        # print(STM[6])
+
         Chip_ID = STM[5].split(" ")
         Family = STM[6].split(" ")
 
