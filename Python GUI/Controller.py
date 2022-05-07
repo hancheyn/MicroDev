@@ -218,6 +218,8 @@ def subject_flash(board):
         res = subprocess.getstatusoutput(
             f'arduino-cli upload -b arduino:avr:uno -p /dev/ttyACM0 -i Flash/serial_com.ino.with_bootloader.hex')
 
+    # STM32F411 FLASH
+
     # STM32F401 FLASH
     elif board == "STM32F401 Detected":
         res = subprocess.getstatusoutput(
