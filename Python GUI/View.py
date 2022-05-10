@@ -36,4 +36,18 @@ def update_view_begin(self):
     return None
 
 
+# ******************************** User Input Reads ************************************
+def start_read():
+    print("Something")
+    return None
+
+
+# !NEEDS FIX
+def arrow_up_read():
+    print("Up")
+
+
+# !NEEDS FIX
+def arrow_down_read():
+    print("clear")
 

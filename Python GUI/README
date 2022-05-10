@@ -13,5 +13,7 @@ Test ID 9 => Power Mode Wakeup
 
 
 PIN CONFIGURATION
+Pin ID 1 => D1 (Arduino) / PA2 (STM)
+Pin ID 2 => D2 (Arduino) / PA10 (STM)
 
 
