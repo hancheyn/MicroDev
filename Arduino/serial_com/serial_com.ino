@@ -3,8 +3,7 @@
  * Description: Serial Communication to Raspi Test
  * Author:  Nathan Hanchey
             Dylan Vetter
-            test
- * Date: May 5th 2022
+ * Date: May 13th 2022
  ************************************************************/
 
 // Function Prototypes
