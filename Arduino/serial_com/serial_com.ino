@@ -1,7 +1,8 @@
 
 /************************************************************
  * Description: Serial Communication to Raspi Test
- * Author: Nathan Hanchey
+ * Author:  Nathan Hanchey
+            Dylan Vetter
  * Date: May 5th 2022
  ************************************************************/
 
