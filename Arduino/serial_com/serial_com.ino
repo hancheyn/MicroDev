@@ -1,8 +1,9 @@
-
 /************************************************************
  * Description: Serial Communication to Raspi Test
  * Author:  Nathan Hanchey
             Dylan Vetter
+            Corey Moura
+            Connor Inglat
  * Date: May 13th 2022
  ************************************************************/
 
