@@ -10,44 +10,15 @@
 # #################################################
 
 
-#
-def __init__(self):
-    print("view")
-    #self.view = view
+from tkinter import *
 
+class View:
+    def __init__(self):
+        self.root = Tk()
+        self.root.wm_title("MicroDev Tester")
+        self.root.mainloop()
 
-#
-def update_view_debug(String):
-    print("update")
-
-    return None
-
-
-#
-def clear_view(self):
-    print("clear")
-
-    return None
-
-
-#
-def update_view_begin(self):
-    print("begin")
-    return None
-
-
-# ******************************** User Input Reads ************************************
-def start_read():
-    print("Something")
-    return None
-
-
-# !NEEDS FIX
-def arrow_up_read():
-    print("Up")
-
-
-# !NEEDS FIX
-def arrow_down_read():
-    print("clear")
+# Used to run the View module independently for testing purposes
+if __name__ == '__main__':
+    view = View()
 
