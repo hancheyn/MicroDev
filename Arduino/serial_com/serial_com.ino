@@ -7,17 +7,21 @@
  * Date: May 17th 2022
  ************************************************************/
 
-// Function Prototypes
-// Read and Write I/O
+/* Libraries */
+#include <avr/sleep.h> //Contains the methods used to control the sleep modes
+
+/* Function Prototypes */
 int command_read(unsigned char data[]);
 int command_write(unsigned int pin, unsigned int result, unsigned int test);
 int crc_encode(unsigned char data[], unsigned int pin, unsigned int result, unsigned int test);
 int crc_decode(unsigned char data[]);
-int configure_output(unsigned int pin);
+void configure_output(unsigned int pin);
 int configure_input(unsigned int pin);
-int configure_input_pullup(unsigned int pin);
+void configure_input_pullup(unsigned int pin);
 int configure_analog_input(unsigned int pin);
-int configure_sleep_mode(unsigned int sleepmode);
+void configure_sleep_mode(unsigned int sleepmode);
+void wakeUp();
+
 
 void setup() {
   
@@ -25,8 +29,7 @@ void setup() {
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
-  pinMode(2, INPUT);   // digital sensor is on digital pin 2 
- 
+  pinMode(2, INPUT);   // digital sensor is on digital pin 2
 }
 
 unsigned char RMSG[3];
@@ -119,43 +122,104 @@ int crc_decode(unsigned char data[]) {
 }
 
 /*
-Configures GPIO pin as OUTPUT and turns the output to HIGH
-*/
-int configure_output(unsigned int pin) {
+ * Description: Configures GPIO pin as OUTPUT and turns the output to HIGH. Used for testing GPIO output voltage under load sourcing.
+ * Accepts: unsigned int pin - the pin number to configure as OUTPUT
+ * Returns: void
+ */
+void configure_output(unsigned int pin) {
     pinMode(pin, OUTPUT);
     digitalWrite(pin, HIGH);
-
-    return 0;
+    return;
 }
 
+
+
+
+
+
 /*
-Configures GPIO pin as an INPUT
-Returns HIGH or LOW depending on input voltage
-*/
+ * Description: Configures GPIO pin as an INPUT. Used for testing input logic levels. The input pin cannot be a pullup,
+ * as that would allow the pin to act as a current source and could damage the testing device's DAC.
+ * Accepts: unsigned int pin - the pin number to configure as INPUT
+ * Returns: int - 0 or 1 depending on input voltage of the pin (LOGIC LOW OR HIGH)
+ */
 int configure_input(unsigned int pin) {
     pinMode(pin, INPUT);
-    delay(50);
     return digitalRead(pin);
 }
 
 /*
-Configures GPIO pin as INPUT_PULLUP
-*/
-int configure_input_pullup(unsigned int pin) {
+ * Description: Configures GPIO pin as INPUT_PULLUP. Used for testing the pin's unloaded pullup voltage and internal
+ * resistance value.
+ * Accepts: unsigned int pin - the pin number to configure as INPUT_PULLUP
+ * Returns: void
+ */
+void configure_input_pullup(unsigned int pin) {
     pinMode(pin,INPUT_PULLUP);
-
-    return 0;
+    return;
 }
 
 
 /*
-Returns the analog reading on the pin
-*/
+ * ADC TEST
+ * Description: Returns the analog reading of the selected analog pin (A0, A1, ..., A5). Used for testing the Arduino's
+ * ADC.
+ * Accepts: unsigned int analogPin - the analog pin number to read
+ * Returns: int - 0 to 1023, depending on the voltage reading of the ADC. (0 = GND, 1023 = 5V)
+ */
 int configure_analog_input(unsigned int analogPin) {
-   return analogRead(analogPin);
+   return analogRead(analogPin); //returns a value 0-1023 (0=GND, 1023 = 5V)
 }
 
-int configure_sleep_mode(unsigned int sleepmode) {
+/*
+ * Description: Configures the Arduino Uno for one of 6 sleep modes. The board is woken with interrupt pin 2 or 3. Used
+ * for testing current draw during sleep modes and interrupt pin capability.
+ * Accepts: unsigned int sleepmode - the sleep mode for the Arduino to enter (see switch-case)
+ *          unsigned int interruptPin - the pin # to configure as an interrupt (Digital 2 or 3 for Arduino)
+ * Returns: void
+ */
+void configure_sleep_mode(unsigned int sleepmode, unsigned int interruptPin) {
+    sleep_enable(); //Enables sleep mode
+    pinMode(interruptPin, INPUT_PULLUP); //Assign pin 2 or 3 as input pullup
+    attachInterrupt(digitalPinToInterrupt(interruptPin), wakeUp, LOW); //set pin 2 or 3 as an interrupt that jumps to wakeUp() when triggered LOW
+    switch (sleepmode) { //selects which sleep mode to enter
+        case 1:
+            set_sleep_mode(SLEEP_MODE_IDLE);
+            break;
+        case 2:
+            set_sleep_mode(SLEEP_MODE_ADC);
+            break;
+        case 3:
+            set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+            break;
+        case 4:
+            set_sleep_mode(SLEEP_MODE_PWR_SAVE);
+            break;
+        case 5:
+            set_sleep_mode(SLEEP_MODE_STANDBY);
+            break;
+        case 6:
+            set_sleep_mode(SLEEP_MODE_EXT_STANDBY);
+            break;
+        default:
+            set_sleep_mode(SLEEP_MODE_IDLE);
+            break;
+    }
+    bitClear(TIMSK0, 0);  //stops the millis() timer so that sleep modes aren't waken by it (SLEEP_MODE_IDLE is woken by the millis() timer)
+    sleep_cpu(); //activates the set sleep mode
+    //Serial.println("Just woke up!");
+    bitSet(TIMSK0, 0); //starts the millis() timer back up
+    return;
+}
 
-    return 0;
+/*
+ * Description: ISR used to disable sleep mode and detach the interrupt pin
+ * Accepts: void
+ * Returns: void
+ */
+void wakeUp(){
+    sleep_disable(); //Disable sleep mode
+    detachInterrupt(digitalPinToInterrupt(2)); //remove pin as interrupt
+    detachInterrupt(digitalPinToInterrupt(3)); //remove pin as interrupt
+    return;
 }
