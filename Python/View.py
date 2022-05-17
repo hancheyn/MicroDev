@@ -22,15 +22,12 @@ class View:
         self.frame = Frame(self.root)
         self.frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
 
-    def viewThreadMain(self):
-        # Runs GUI's button listeners in seperate thread
-        self.root.mainloop()
-
     def setStandbyScreen(self):
         # Clears main window's subframe
         for widget in self.frame.winfo_children():
             if widget.winfo_exists():
                 widget.destroy()
+        self.frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
 
         # Initializes labels to display info to user
         self.standbyMsg = Label(self.frame, text="Place dev board onto header interface and connect cable", font=("Helvetica", 14))
@@ -44,11 +41,15 @@ class View:
         self.middleButton.place(relx=0.4, rely=0.7, relheight=0.2, relwidth=0.2)
         self.rightButton.place(relx=0.7, rely=0.7, relheight=0.2, relwidth=0.2)
 
+        # Updates main window
+        view.root.update()
+
     def setStartScreen(self):
         # Clears main window's subframe
         for widget in self.frame.winfo_children():
             if widget.winfo_exists():
                 widget.destroy()
+        self.frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
 
         # Initializes labels to display info to user
         self.standbyMsg = Label(self.frame, text="Your dev board has been detected", font=("Helvetica", 14))
@@ -62,6 +63,9 @@ class View:
         self.middleButton.place(relx=0.4, rely=0.7, relheight=0.2, relwidth=0.2)
         self.rightButton.place(relx=0.7, rely=0.7, relheight=0.2, relwidth=0.2)
 
+        # Updates main window
+        view.root.update()
+
     # def setRunningScreen(self):
     #
     # def setShutdownScreen(self):
@@ -71,5 +75,8 @@ class View:
 if __name__ == '__main__':
     view = View()
     view.setStandbyScreen()
-    view.root.mainloop()
+    time.sleep(5)
+    view.setStartScreen()
+    while 1:
+        continue
 
