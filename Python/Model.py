@@ -19,6 +19,7 @@
 import time
 import serial
 import subprocess
+import string
 
 # STM32 ADC = 16 | GPIO = 5 ports * 16 pins | Sleep Modes = 3
 from serial import to_bytes
@@ -228,7 +229,7 @@ def subject_flash(board):
     # STM32F401 FLASH
     elif board == "STM32F401 Detected":
         res = subprocess.getstatusoutput(
-            f'st-flash write Flash/stmf401.bin 0x8000000')
+            f'st-flash write Flash/stmf401.bin 0x08000000')
 
     print(res)
 
@@ -244,18 +245,17 @@ def board_list():
     boards = len(ARD)
 
     # No Board Detection
-    if boards == 1:
+    if boards <= 2:
         return "No Boards Detected"
 
     # Arduino Uno Detection
-    elif boards == 3:
+    elif boards == 3 or boards == 4:
         board_type = ARD[1].split(" ")
         # print(board_type[4])
         if board_type[4] == "Serial":
             # print(board_type[8])
             if board_type[8] == "Uno":
                 return "Arduino Uno Detected"
-
         elif board_type[4] == "Unknown":
             print(board_type)
 
@@ -276,14 +276,18 @@ def board_list():
     if boards1 > 6:
 
         Chip_ID = STM[5].split(" ")
-        Family = STM[6].split(" ")
+        Chip_ID = list(filter(None, Chip_ID))
 
-        # print(Chip_ID[2])
-        # print(Family[3])
-        if Family[3] == "F4" and Chip_ID[2] == "0x0431":
+        Family = STM[6].split(" ")
+        Family = list(filter(None, Family))
+        str(Family).replace("x", "")
+
+        print(Chip_ID)
+        print(Family)
+        if Family[1] == "F4" and Chip_ID[1] == "0x0431":
             return "STM32F411 Detected"
 
-        elif Family[3] == "F4" and Chip_ID[2] == "0x0433":
+        elif Family[1] == "F4" and Chip_ID[1] == "0x0433":
             return "STM32F401 Detected"
 
     # Use class globals for board file path and id info
