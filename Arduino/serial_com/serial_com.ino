@@ -11,9 +11,9 @@
 #include <avr/sleep.h> //Contains the methods used to control the sleep modes
 
 /* Function Prototypes */
-int command_read(unsigned char data[]);
-int command_write(unsigned int pin, unsigned int result, unsigned int test);
-int crc_encode(unsigned char data[], unsigned int pin, unsigned int result, unsigned int test);
+void command_read(unsigned char data[]);
+void command_write(unsigned int pin, unsigned int result, unsigned int test);
+void crc_encode(unsigned char data[], unsigned int pin, unsigned int result, unsigned int test);
 int crc_decode(unsigned char data[]);
 void configure_output(unsigned int pin);
 int configure_input(unsigned int pin);
@@ -24,7 +24,6 @@ void wakeUp();
 
 
 /* Facade and Actual Function Pointer Prototypes */
-//FACADE&ACTUAL FUNCTION POINTERS
 void (*test) (uint8_t, uint8_t);
 void (*p_pinMode) (uint8_t, uint8_t);
 void (*p_digitalWrite) (uint8_t, uint8_t);
@@ -33,36 +32,34 @@ int (*p_digitalRead) (unsigned char);
 int (*p_analogRead) (unsigned char);
 //sleep modes pointers?
 
-
 /* Global Variables */
 unsigned char RMSG[3];
 
-//SETUP
+/*Runs once upon startup of the program*/
 void setup() {
 
-  Serial.begin(115200); //sets the baud rate
-  while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
-  }
-  pinMode(2, INPUT);   // digital sensor is on digital pin 2
+    Serial.begin(115200); //sets the baud rate
+    while (!Serial) {
+        ; // wait for serial port to connect. Needed for native USB port only
+    }
+    //pinMode(2, INPUT);   // digital sensor is on digital pin 2
 
-  //FACADE POINTER EXAMPLEs (setup)
-  //test = &digitalWrite;
-  p_digitalWrite = &digitalWrite;
-  p_digitalRead = &digitalRead;
-  p_pinMode = &pinMode;
-  p_analogRead = &analogRead;
-  //+Sleep Modes
+    //FACADE POINTER EXAMPLES (setup)
+    //test = &digitalWrite;
+    p_digitalWrite = &digitalWrite;
+    p_digitalRead = &digitalRead;
+    p_pinMode = &pinMode;
+    p_analogRead = &analogRead;
+    //+Sleep Modes
 }
 
 
-// MAIN LOOP
+/*Runs repeatedly after setup has completed*/
 void loop() {
-  //
 
-  if (Serial.available() > 0) { //Serial.available() returns the number of bytes read
-    //delay(50);
-    //Serial.println(Serial.available());
+    if (Serial.available() > 2) { //Serial.available() returns the number of bytes read
+        //delay(50);
+        //Serial.println(Serial.available());
 
         //inByte = Serial.read(); //Serial.read() returns the first available byte in the serial buffer, then removes it.
         //delay(50);
@@ -70,95 +67,98 @@ void loop() {
 
         //Write Test
         command_read(RMSG);
-        delay(50); //delay is important
+        //delay(50); //delay is important
 
         if(crc_decode(RMSG)){
 
-          //Interpret Instructions
+            //Interpret Instructions (pin & test#)
 
-          //Send Back Results
-          command_write(RMSG[0], RMSG[1], RMSG[2]);
+            //Send Back Results
+            command_write(RMSG[0], RMSG[1], RMSG[2]);
         }
-  }
+    }
 }
 
-/* Command Read
- *  Input & Output: data[] (encodes unsigned char array)
- *
+/*
+ * Description: Reads the next three bytes from the serial communication port and stores them into the data array
+ * Accepts: unsigned char data[] - the data array used to store the read data
+ * Returns: void
  */
-int command_read(unsigned char data[]) {
-   //HAL_UART_Receive(&huart2, data, 3, 10000);
-   data[0] = Serial.read();
-   delay(5);
-   data[1] = Serial.read();
-   delay(5);
-   data[2] = Serial.read();
-   delay(5);
+void command_read(unsigned char data[]) {
+    //HAL_UART_Receive(&huart2, data, 3, 10000);
+    data[0] = Serial.read();
+    data[1] = Serial.read();
+    data[2] = Serial.read();
 
-   return 0;
+    return;
 }
-/* Serial Comm Commands Write
- * Parameters:
- * pin (unsigned int) -> data byte 0
- * result (unsigned int) -> data byte 1
- * test (unsigned int) -> data byte 2
+
+/*
+ * Description: Calls the crc_encode function then writes the resulting encoded bytes to the serial communication port
+ * Accepts: unsigned int pin - the pin number to encode and send
+ *          unsigned int result - the result of the test to encode and send
+ *          unsigned int test - the test number to encode and send
+ * Returns: void
  */
-int command_write(unsigned int pin, unsigned int result, unsigned int test) {
+void command_write(unsigned int pin, unsigned int result, unsigned int test) {
 
-  //Write
-  unsigned char data[3];
+    //Write
+    unsigned char data[3];
 
-  crc_encode(data, pin, result, test);
+    crc_encode(data, pin, result, test);
 
-  //HAL_UART_Transmit(&huart2, data, 3, 100);
-  Serial.write(data[0]);
-  Serial.write(data[1]);
-  Serial.write(data[2]);
+    //HAL_UART_Transmit(&huart2, data, 3, 100);
+    Serial.write(data[0]);
+    Serial.write(data[1]);
+    Serial.write(data[2]);
 
-  return 0;
+    return;
 }
-/* CRC Encoding
- * Input & Output: data[] (encodes unsigned char array)
- * Parameters:
- * pin (unsigned int) -> data byte 0
- * result (unsigned int) -> data byte 1
- * test (unsigned int) -> data byte 2
+
+/*
+ * Description: Encodes a crc packet with pin #, test, and result. Stores those three bytes into data[]
+ * Accepts: unsigned char data[] - the data array where the encoded message is written to
+ *          unsigned int pin - the pin number to encode
+ *          unsigned int result - the result of the test to encode
+ *          unsigned int test - the test number to encode
+ * Returns: void
  */
-int crc_encode(unsigned char data[], unsigned int pin, unsigned int result, unsigned int test) {
+void crc_encode(unsigned char data[], unsigned int pin, unsigned int result, unsigned int test) {
 
-  // Find the data
-  unsigned long int crc_packet = (((unsigned long int)pin << 16) & 0xFF0000) + ((result << 8) & 0xFF00) + ((test << 4) & 0xF0);
+    // Find the data
+    unsigned long int crc_packet = (((unsigned long int)pin << 16) & 0xFF0000) + ((result << 8) & 0xFF00) + ((test << 4) & 0xF0);
 
-  // Find
-  unsigned int remainder = crc_packet % 5;
-  unsigned int crc = 5 - remainder;
+    // Find
+    unsigned int remainder = crc_packet % 5;
+    unsigned int crc = 5 - remainder;
 
-  crc_packet += crc;
+    crc_packet += crc;
 
-  data[0] = ((crc_packet >> 16)) & 0xFF;
-  data[1] = ((crc_packet >> 8)) & 0xFF;
-  data[2] = ((crc_packet) & 0xFF);
+    data[0] = ((crc_packet >> 16)) & 0xFF;
+    data[1] = ((crc_packet >> 8)) & 0xFF;
+    data[2] = ((crc_packet) & 0xFF);
 
-  return 0;
+    return;
 }
 
-/* CRC Decoding and Error Checking
- * Input & Output: data[] (decodes unsigned char array)
- * Return Value: 1 indicates correct crc encoding & 0 indicates incorrect encoding
+/*
+ * Description: CRC Decoding and Error Checking
+ * Accepts: unsigned char data[] - the data array to decode
+ * Returns: int - 0 if the data size is wrong, 1 otherwise
  */
 int crc_decode(unsigned char data[]) {
 
-  // Find the data
-  unsigned long int crc_packet = (((unsigned long int)data[0] << 16) & 0xFF0000)
-      + (((unsigned long int)data[1] << 8) & 0xFF00) + (((unsigned long int)data[2]));
+    // Find the data
+    unsigned long int crc_packet = (((unsigned long int)data[0] << 16) & 0xFF0000)
+        + (((unsigned long int)data[1] << 8) & 0xFF00) + (((unsigned long int)data[2]));
 
-  if(crc_packet % 5) {
-    return 0;
-  }
+    if(crc_packet % 5) {
+        return 0;
+    }
 
-  data[2] = (data[2] & 0xF0) >> 4;
+    data[2] = (data[2] & 0xF0) >> 4;
 
-  return 1;
+    return 1;
 }
 
 /*
@@ -196,7 +196,6 @@ void configure_input_pullup(unsigned int pin) {
 
 
 /*
- * ADC TEST
  * Description: Returns the analog reading of the selected analog pin (A0, A1, ..., A5). Used for testing the Arduino's
  * ADC.
  * Accepts: unsigned int analogPin - the analog pin number to read
