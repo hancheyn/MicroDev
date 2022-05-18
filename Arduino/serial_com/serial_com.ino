@@ -34,9 +34,12 @@ int (*p_analogRead) (unsigned char);
 //sleep modes pointers?
 
 
+/* Global Variables */
+unsigned char RMSG[3];
+
 //SETUP
 void setup() {
-  
+
   Serial.begin(115200); //sets the baud rate
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
@@ -52,19 +55,18 @@ void setup() {
   //+Sleep Modes
 }
 
-unsigned char RMSG[3];
 
 // MAIN LOOP
 void loop() {
+  //
 
-  //FACADE FUNCTION POINTER EXAMPLE (LED)
-  //(*test)(13, HIGH);
-  //FACADE FUNCTION POINTER EXAMPLE (INPUT)
-  //Serial.println((*p_digitalRead)(2));
-
-  if (Serial.available() > 0) {
+  if (Serial.available() > 0) { //Serial.available() returns the number of bytes read
     //delay(50);
     //Serial.println(Serial.available());
+
+        //inByte = Serial.read(); //Serial.read() returns the first available byte in the serial buffer, then removes it.
+        //delay(50);
+        //Serial.write(inByte); //Serial.write(x) writes binary data to the serial port as a byte or series of bytes
 
         //Write Test
         command_read(RMSG);
@@ -77,18 +79,14 @@ void loop() {
           //Send Back Results
           command_write(RMSG[0], RMSG[1], RMSG[2]);
         }
-
   }
-
 }
-
 
 /* Command Read
  *  Input & Output: data[] (encodes unsigned char array)
  *
  */
 int command_read(unsigned char data[]) {
-
    //HAL_UART_Receive(&huart2, data, 3, 10000);
    data[0] = Serial.read();
    delay(5);
@@ -97,9 +95,8 @@ int command_read(unsigned char data[]) {
    data[2] = Serial.read();
    delay(5);
 
-  return 0;
+   return 0;
 }
-
 /* Serial Comm Commands Write
  * Parameters:
  * pin (unsigned int) -> data byte 0
@@ -120,7 +117,6 @@ int command_write(unsigned int pin, unsigned int result, unsigned int test) {
 
   return 0;
 }
-
 /* CRC Encoding
  * Input & Output: data[] (encodes unsigned char array)
  * Parameters:
@@ -175,11 +171,6 @@ void configure_output(unsigned int pin) {
     digitalWrite(pin, HIGH);
     return;
 }
-
-
-
-
-
 
 /*
  * Description: Configures GPIO pin as an INPUT. Used for testing input logic levels. The input pin cannot be a pullup,
