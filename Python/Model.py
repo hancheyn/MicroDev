@@ -280,14 +280,14 @@ def board_list():
 
         Family = STM[6].split(" ")
         Family = list(filter(None, Family))
-        str(Family).replace("x", "")
+        Family = str(Family[1]).replace("x", "")
 
         print(Chip_ID)
         print(Family)
-        if Family[1] == "F4" and Chip_ID[1] == "0x0431":
+        if Family == "F4" and Chip_ID[1] == "0x0431":
             return "STM32F411 Detected"
 
-        elif Family[1] == "F4" and Chip_ID[1] == "0x0433":
+        elif Family == "F4" and Chip_ID[1] == "0x0433":
             return "STM32F401 Detected"
 
     # Use class globals for board file path and id info
