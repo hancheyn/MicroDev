@@ -290,6 +290,9 @@ def board_list():
         elif Family == "F4" and Chip_ID[1] == "0x0433":
             return "STM32F401 Detected"
 
+        elif Family == "F446" and Chip_ID[1] == "0x0421":
+            return "STM32F446 Detected"
+
     # Use class globals for board file path and id info
     return "No Boards Detected"
 
