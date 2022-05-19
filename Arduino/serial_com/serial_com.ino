@@ -19,7 +19,7 @@ void configure_output(unsigned int pin);
 int configure_input(unsigned int pin);
 void configure_input_pullup(unsigned int pin);
 int configure_analog_input(unsigned int pin);
-void configure_sleep_mode(unsigned int sleepmode);
+void configure_sleep_mode(unsigned int sleepmode, unsigned int interruptPin);
 void wakeUp();
 
 
@@ -34,15 +34,16 @@ int (*p_analogRead) (unsigned char);
 
 /* Global Variables */
 unsigned char RMSG[3];
+unsigned int test_result;
 
-/*Runs once upon startup of the program*/
+
+/* Runs once upon startup of the program */
 void setup() {
 
     Serial.begin(115200); //sets the baud rate
     while (!Serial) {
         ; // wait for serial port to connect. Needed for native USB port only
     }
-    //pinMode(2, INPUT);   // digital sensor is on digital pin 2
 
     //FACADE POINTER EXAMPLES (setup)
     //test = &digitalWrite;
@@ -54,27 +55,40 @@ void setup() {
 }
 
 
-/*Runs repeatedly after setup has completed*/
+/* Runs repeatedly after setup has completed */
 void loop() {
 
     if (Serial.available() > 2) { //Serial.available() returns the number of bytes read
-        //delay(50);
-        //Serial.println(Serial.available());
-
-        //inByte = Serial.read(); //Serial.read() returns the first available byte in the serial buffer, then removes it.
-        //delay(50);
-        //Serial.write(inByte); //Serial.write(x) writes binary data to the serial port as a byte or series of bytes
-
         //Write Test
         command_read(RMSG);
-        //delay(50); //delay is important
+        //delay(50); //delay not needed...?
 
         if(crc_decode(RMSG)){
-
-            //Interpret Instructions (pin & test#)
-
+            //Interpret Instructions
+            //RMSG[0] = pin under test, RMSG[1] = Special Instructions, RMSG[2] = Test Identification
+            switch (RMSG[2]) { // Test Identification #
+                case 1:
+                    configure_output(RMSG[0]);
+                    break;
+                case 2:
+                    test_result = configure_input(RMSG[0]);
+                    command_write(RMSG[0], test_result, RMSG[2]);
+                    break;
+                case 3:
+                    configure_input_pullup(RMSG[0]);
+                    break;
+                case 4:
+                    test_result = configure_analog_input(RMSG[0]);
+                    command_write(RMSG[0], test_result, RMSG[2]);
+                    break;
+                case 5:
+                    configure_sleep_mode(RMSG[1], RMSG[0]); //send sleepmode & pin#
+                    break;
+                default:
+                    break;
+            }
             //Send Back Results
-            command_write(RMSG[0], RMSG[1], RMSG[2]);
+            //command_write(RMSG[0], RMSG[1], RMSG[2]);
         }
     }
 }
@@ -86,7 +100,7 @@ void loop() {
  */
 void command_read(unsigned char data[]) {
     //HAL_UART_Receive(&huart2, data, 3, 10000);
-    data[0] = Serial.read();
+    data[0] = Serial.read(); //Serial.read() returns the first available byte in the serial buffer, then removes it.
     data[1] = Serial.read();
     data[2] = Serial.read();
 
@@ -108,7 +122,7 @@ void command_write(unsigned int pin, unsigned int result, unsigned int test) {
     crc_encode(data, pin, result, test);
 
     //HAL_UART_Transmit(&huart2, data, 3, 100);
-    Serial.write(data[0]);
+    Serial.write(data[0]); //Serial.write(x) writes binary data to the serial port as a byte or series of bytes
     Serial.write(data[1]);
     Serial.write(data[2]);
 
