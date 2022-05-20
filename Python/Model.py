@@ -20,6 +20,7 @@ import time
 import serial
 import subprocess
 import string
+import Bigfoot
 
 # STM32 ADC = 16 | GPIO = 5 ports * 16 pins | Sleep Modes = 3
 from serial import to_bytes
@@ -37,7 +38,9 @@ def __init__(self):
     print("controller")
 
 
-#
+# Description:
+# Accepts:
+# Returns:
 def controller_init(self, model1, view1, driver1):
     # print(string)
     self.view = view1
@@ -74,6 +77,9 @@ def controller_init(self, model1, view1, driver1):
 
 # ******************************** Subject Board I/O ************************************
 #
+# Description:
+# Accepts:
+# Returns:
 def open_serial():
     ser = serial.Serial('/dev/ttyACM0', 115200)
     ser.flushInput()
@@ -81,10 +87,16 @@ def open_serial():
     return ser
 
 
+# Description:
+# Accepts:
+# Returns:
 def close_serial(ser):
     ser.close()
 
 
+# Description:
+# Accepts:
+# Returns:
 def subject_write(str_write, ser):
     try:
         # ser = serial.Serial('/dev/ttyACM0', 115200)
@@ -103,6 +115,9 @@ def subject_write(str_write, ser):
         print("write")
 
 
+# Description:
+# Accepts:
+# Returns:
 def subject_read(ser_):
     try:
         # ser_ = serial.Serial('/dev/ttyACM0', 115200)
@@ -134,6 +149,9 @@ def subject_read(ser_):
 
 
 # CRC Decoding
+# Description:
+# Accepts:
+# Returns:
 def crc_decode(value, out_type):
 
     out = 0
@@ -163,6 +181,9 @@ def crc_decode(value, out_type):
 
 
 # CRC Encoding
+# Description:
+# Accepts:
+# Returns:
 def crc_encode(test, pin, instruction):
 
     # CRC KEY => 0101 = 5
@@ -193,10 +214,143 @@ def crc_encode(test, pin, instruction):
 
 
 # ******************************** Subject Tests ************************************
-def run_gpio_output_loading_test():
+# GENERIC TEST FUNCTION
+# Description:
+# Accepts:
+# Returns:
+def run_subject_test(pin, test, facade):
+
+    # Call Test function
+
+    # return pass or fail for specified pin
+    return 1
+
+
+# Description:
+# Accepts:
+# Returns:
+def run_gpio_output_low_test(pin, facade):
+    # Configure Bigfoot without load to adc
+
+    # Communication to Subject Serial
+
+    # Read Bigfoot ADC
+
+    # return pass or fail of test
     print("test")
 
 
+# Description:
+# Accepts:
+# Returns:
+def run_gpio_output_loading_test(pin, facade):
+    # Configure Bigfoot with load
+
+    # Communication to Subject Serial
+
+    # Read Bigfoot ADC
+
+    # return pass or fail of test
+    print("test")
+
+
+# Description:
+# Accepts:
+# Returns:
+def run_gpio_input_resistance_test(pin, facade):
+    # Configure Bigfoot
+
+    # Communication to Subject Serial
+
+    #
+
+    # return pass or fail of test
+    print("test")
+
+
+# Description:
+# Accepts:
+# Returns:
+def run_gpio_input_pull_up_test(pin, facade):
+    # Configure Bigfoot
+
+    # Communication to Subject Serial
+
+    # Read Bigfoot ADC
+
+    # return pass or fail of test
+    print("test")
+
+
+# Description:
+# Accepts:
+# Returns:
+def run_gpio_input_pull_down_test(pin, facade):
+    # Configure Bigfoot
+
+    # Communication to Subject Serial
+
+    # Read Bigfoot ADC
+
+    # return pass or fail of test
+    print("test")
+
+
+# Description:
+# Accepts:
+# Returns:
+def run_gpio_input_logic_level_test(pin, facade):
+    # Reset/Configure Bigfoot to Low Logic
+
+    # Communication to Subject Serial
+
+    # Configure Bigfoot to high logic
+
+    # Communication to Subject Serial
+
+    # return pass or fail of test
+    print("test")
+
+
+# Description:
+# Accepts:
+# Returns:
+def run_adc_test(pin, facade):
+    # Configure Bigfoot to reset ADC pins
+
+    # Communication to Subject Serial to configure
+
+    # return pass or fail of test
+    print("test")
+
+
+# Description:
+# Accepts:
+# Returns:
+def run_power_mode_test(sleep_mode, facade):
+    # Configure Bigfoot
+
+    # Communication to Subject Serial
+
+    # Read Bigfoot Low Current Sensor
+
+    # return pass or fail of test
+    print("test")
+
+
+# Description:
+# Accepts:
+# Returns:
+def run_wakeup_test(pin, facade):
+    # Configure Bigfoot
+
+    # Red Bigfoot Low Current Sensor
+
+    # return pass or fail of test
+    print("test")
+
+
+# MAY DELETE INPUTS FROM MODEL
 # ******************************** User Input Reads ************************************
 def start_read():
     print("Something")
@@ -215,6 +369,9 @@ def arrow_down_read():
 
 # ******************************** Command Line Interface ************************************
 #
+# Description:
+# Accepts:
+# Returns:
 def subject_flash(board):
 
     # ARDUINO UNO FLASH
@@ -234,6 +391,9 @@ def subject_flash(board):
     print(res)
 
 
+# Description:
+# Accepts:
+# Returns:
 def board_list():
 
     # 1) ARDUINO DETECTION
@@ -297,7 +457,7 @@ def board_list():
     return "No Boards Detected"
 
 
-#
+# MAY BE REDUNDENT : FIX
 def subject_init(string):
     print(string)
     return "Something"

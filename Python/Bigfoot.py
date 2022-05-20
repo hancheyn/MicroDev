@@ -20,15 +20,6 @@ import time
 
 # import smbus
 
-# bus = smbus.SMBus(1)
-
-# BASIC EXAMPLES
-# GPIO.setwarnings(False)
-#GPIO.setmode(GPIO.BCM)
-#GPIO.setup(4, GPIO.OUT)
-#GPIO.setup(22,GPIO.IN)
-#GPIO.output(4,GPIO.input(22))
-
 # set_mux_add
 # Enable Mux  state = 1
 # Disable Mux state = 0
@@ -41,22 +32,37 @@ def set_mux_add(state, enable, add):
 
 
 # I2C Communication
+# Description:
+# Accepts:
+# Returns:
 def rpi_i2c_config():
 
 	print("config?")
 
+# Description:
+# Accepts:
+# Returns:
 def rpi_i2c_adc():
 
 	print("adc i2c test")
-	
+
+
+# Description:
+# Accepts:
+# Returns:
 def rpi_i2c_dac(val):
 
 	print("dac i2c test")
-	
+
+
+# Description:
+# Accepts:
+# Returns:
 # REF: rototron.info/raspberry-pi-ina219-tutorial/
 def rpi_i2c_ina219():
 
 	print("ina219 test")
+
 
 # High Current
 # GPIO 17

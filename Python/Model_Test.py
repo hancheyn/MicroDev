@@ -9,6 +9,67 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(True, False)  # add assertion here
 
 
+# ###### Debugging Test Code for Subject Tests ######### #
+class BoardTests(unittest.TestCase):
+    # Tests Subject Board Functionality
+    def test_run_gpio_output_low(self):
+
+        print("test")
+        self.assertEqual(True, True, "Failed Test")
+
+    # Tests Subject Board Functionality
+    def test_run_gpio_output_loading(self):
+
+        print("test")
+        self.assertEqual(True, True, "Failed Test")
+
+    # Tests Subject Board Functionality
+    def test_run_gpio_input_resistance(self):
+
+        print("test")
+        self.assertEqual(True, True, "Failed Test")
+
+    # Tests Subject Board Functionality
+    def test_gpio_input_pull_up(self):
+
+        print("test")
+        self.assertEqual(True, True, "Failed Test")
+
+    # Tests Subject Board Functionality
+    def test_gpio_input_pull_down(self):
+
+        print("test")
+        self.assertEqual(True, True, "Failed Test")
+
+    # Tests Subject Board Functionality
+    def test_run_gpio_input_logic_level(self):
+
+        print("test")
+        self.assertEqual(True, True, "Failed Test")
+
+    # Tests Subject Board Functionality
+    def test_run_adc(self):
+
+        print("test")
+        self.assertEqual(True, True, "Failed Test")
+
+    # Tests Subject Board Functionality
+    def test_run_power_mode(self):
+
+        print("test")
+        self.assertEqual(True, True, "Failed Test")
+
+    # Tests Subject Board Functionality
+    def test_run_wakeup(self):
+
+        print("test")
+        self.assertEqual(True, True, "Failed Test")
+
+
+
+
+
+
 # ###### Debugging Test Code for Serial ######### #
 class SerialTests(unittest.TestCase):
     # Tests that serial communication is established and subject board can reply
