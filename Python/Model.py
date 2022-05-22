@@ -56,7 +56,7 @@ def controller_init(self, model1, view1, driver1):
     bigfoot.high_current(1)
     bigfoot.low_current(1)
     # Reset GPIO Pins
-    bigfoot.set_mux_add(0,0,0)
+    bigfoot.set_mux_add(0, 0, 0)
 
     # Will the
     # GPIO Pin Amount
@@ -211,6 +211,7 @@ def crc_encode(test, pin, instruction):
 def run_subject_test(pin, test, facade):
 
     # Call Test function
+    # Conditional for Test
 
 
     # return pass or fail for specified pin
@@ -233,6 +234,7 @@ def run_gpio_output_low_test(pin, facade):
 
     # reset & return pass or fail of test
     bigfoot.adc_enable(0)
+    bigfoot.set_mux_add(0, 0, 0)
     print("test")
 
 
@@ -252,7 +254,7 @@ def run_gpio_output_loading_test(pin, facade):
     # return pass or fail of test
     bigfoot.adc_enable(0)
     bigfoot.adc_load(0)
-
+    bigfoot.set_mux_add(0, 0, 0)
     print("test")
 
 
@@ -273,6 +275,7 @@ def run_gpio_input_resistance_test(pin, facade):
     # return pass or fail of test
     bigfoot.adc_enable(0)
     bigfoot.adc_load(0)
+    bigfoot.set_mux_add(0, 0, 0)
     print("test")
 
 
@@ -290,6 +293,7 @@ def run_gpio_input_pull_up_test(pin, facade):
 
     # return pass or fail of test
     bigfoot.adc_enable(0)
+    bigfoot.set_mux_add(0, 0, 0)
     print("test")
 
 
@@ -307,6 +311,7 @@ def run_gpio_input_pull_down_test(pin, facade):
 
     # return pass or fail of test
     bigfoot.adc_enable(0)
+    bigfoot.set_mux_add(0, 0, 0)
     print("test")
 
 
@@ -327,6 +332,7 @@ def run_gpio_input_logic_level_test(pin, facade):
 
     # return pass or fail of test
     bigfoot.dac_enable(0)
+    bigfoot.set_mux_add(0, 0, 0)
     print("test")
 
 
@@ -334,11 +340,14 @@ def run_gpio_input_logic_level_test(pin, facade):
 # Accepts:
 # Returns:
 def run_adc_test(pin, facade):
-    # Configure Bigfoot to reset ADC pins
+    # Configure Bigfoot to reset Subject ADC pins
+    # Enable DAC
+    bigfoot.dac_enable(1)
 
     # Communication to Subject Serial to configure
 
     # return pass or fail of test
+    bigfoot.set_mux_add(0, 0, 0)
     print("test")
 
 
@@ -355,6 +364,8 @@ def run_power_mode_test(sleep_mode, facade):
     # Read Bigfoot Low Current Sensor
 
     # return pass or fail of test
+    bigfoot.dac_enable(0)
+    bigfoot.set_mux_add(0, 0, 0)
     print("test")
 
 
@@ -363,12 +374,16 @@ def run_power_mode_test(sleep_mode, facade):
 # Returns:
 def run_wakeup_test(pin, facade):
     # Configure Bigfoot
+    # Set Wakeup pin
+    # bigfoot.set_mux_add(1,0,0)
+    bigfoot.dac_enable(1)
     bigfoot.high_current(1)
     bigfoot.low_current(0)
 
     # Red Bigfoot Low Current Sensor
 
     # return pass or fail of test
+    bigfoot.set_mux_add(0, 0, 0)
     print("test")
 
 

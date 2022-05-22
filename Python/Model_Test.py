@@ -1,6 +1,6 @@
 import unittest
 import time
-import Model
+import Model as model
 
 
 # ###### Debugging Test Example ######### #
@@ -13,7 +13,7 @@ class MyTestCase(unittest.TestCase):
 class BoardTests(unittest.TestCase):
     # Tests Subject Board Functionality
     def test_run_gpio_output_low(self):
-
+        model.run_subject_test(1, 1, 1)
         print("test")
         self.assertEqual(True, True, "Failed Test")
 
@@ -74,7 +74,7 @@ class BoardTests(unittest.TestCase):
 class SerialTests(unittest.TestCase):
     # Tests that serial communication is established and subject board can reply
     def test_basic(self):
-        controller = Model
+
         s = bytearray(3)
         s[0] = 0x01
         s[1] = 0x10
@@ -82,12 +82,12 @@ class SerialTests(unittest.TestCase):
 
         # s[3] = 0x0a
         # s[4] = 0x0D
-        ser = controller.open_serial()
+        ser = model.open_serial()
         time.sleep(2)
-        controller.subject_write(str_write=s, ser=ser)
+        model.subject_write(str_write=s, ser=ser)
         #time.sleep(2)
-        test_bytes = controller.subject_read(ser_=ser)
-        controller.close_serial(ser)
+        test_bytes = model.subject_read(ser_=ser)
+        model.close_serial(ser)
 
         print(test_bytes)
         int_val = int.from_bytes(test_bytes, "big")
@@ -98,10 +98,10 @@ class SerialTests(unittest.TestCase):
 
     # Tests Encoding CRC for data packet
     def test_crc_encode(self):
-        controller = Model
+
         s = bytearray(3)
         # .encode([test], [pin], [instruction])
-        s = controller.crc_encode(0x00, 0x01, 0x10)
+        s = model.crc_encode(0x00, 0x01, 0x10)
 
         self.assertEqual(s[0], 0x01, "Failed to Encode CRC")
         self.assertEqual(s[1], 0x10, "Failed to Encode CRC")
@@ -110,7 +110,7 @@ class SerialTests(unittest.TestCase):
     # Tests decoding CRC data packet to pin, result, and test id
     # E.G. 1 = pin, 2 = test, 3 = results
     def test_crc_decode(self):
-        controller = Model
+
         s = bytearray(3)
         s[0] = 0x01
         s[1] = 0x10
@@ -118,15 +118,15 @@ class SerialTests(unittest.TestCase):
 
         # controller.crc_decode([byte array], [value to return])
         # Returns pin value [Byte s[0]]
-        output = controller.crc_decode(s, 1)
+        output = model.crc_decode(s, 1)
         self.assertEqual(output, 0x01, "Failed to Decode CRC")
 
         # Returns result value [Byte s[1]]
-        output = controller.crc_decode(s, 3)
+        output = model.crc_decode(s, 3)
         self.assertEqual(output, 0x10, "Failed to Decode CRC")
 
         # Returns test value [Byte s[2]]
-        output = controller.crc_decode(s, 2)
+        output = model.crc_decode(s, 2)
         self.assertEqual(output, 0x00, "Failed to Decode CRC")
 
 
@@ -136,24 +136,22 @@ class CLITests(unittest.TestCase):
 
     # Test that No Board Info is Obtained
     def test_board_list_None(self):
-        controller = Model
-        board_out = controller.board_list()
+        board_out = model.board_list()
         print(board_out)
         # Test of Output (? Output "No Boards Detected" for no useful board)
         self.assertEqual(board_out, "No Boards Detected", "No board identification failed.")
 
     # Test that Uno ID Info is Obtained
     def test_board_list_Uno(self):
-        controller = Model
-        board_out = controller.board_list()
+        board_out = model.board_list()
         print(board_out)
         # Test of Output (? Output "Arduino Uno Detected" for Arduino Uno)
         self.assertEqual(board_out, "Arduino Uno Detected", "Arduino Uno Failed to be Detected.")
 
     # Test that STM ID Info is Obtained
     def test_board_list_STM32F411(self):
-        controller = Model
-        board_out = controller.board_list()
+
+        board_out = model.board_list()
         print(board_out)
         # Test of Output (? Output "STM32F411 Detected" for STM32F411)
         self.assertEqual(board_out, "STM32F411 Detected", "STM32F411 Failed to be Detected.")
@@ -166,25 +164,25 @@ class CLITests(unittest.TestCase):
 
     # STM Board Addition Example
     def test_board_list_STM32F401(self):
-        controller = Model
-        board_out = controller.board_list()
+
+        board_out = model.board_list()
         print(board_out)
         # Test of Output (? Output "STM32F401 Detected" for STM32F401)
         self.assertEqual(board_out, "STM32F401 Detected", "STM32F401 Failed to be Detected.")
 
     # Test that Two or More boards Info is Obtained
     def test_board_list_Overflow(self):
-        controller = Model
-        board_out = controller.board_list()
+
+        board_out = model.board_list()
         print(board_out)
         # Test of Output (? Output "Overflow" for two+ board)
         self.assertEqual(board_out, "Overflow", "Two+ Boards Detected")
 
     # Flash Subject Board Test
     def test_board_flash(self):
-        controller = Model
-        board_out = controller.board_list()
-        controller.subject_flash(board_out)
+
+        board_out = model.board_list()
+        model.subject_flash(board_out)
 
 
 if __name__ == '__main__':
