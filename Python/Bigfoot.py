@@ -39,6 +39,7 @@ def rpi_i2c_config():
 
 	print("config?")
 
+
 # Description:
 # Accepts:
 # Returns:
@@ -107,7 +108,5 @@ def adc_load(state):
 def adc_enable(state):
 
 	print("adc enable test")
-
-
 
 print("end of test")

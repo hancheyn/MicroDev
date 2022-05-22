@@ -20,7 +20,7 @@ import time
 import serial
 import subprocess
 import string
-import Bigfoot
+import Bigfoot as bigfoot
 
 # STM32 ADC = 16 | GPIO = 5 ports * 16 pins | Sleep Modes = 3
 from serial import to_bytes
@@ -52,23 +52,13 @@ def controller_init(self, model1, view1, driver1):
     lines = f.readlines()
 
     # FIX CONFIGURATIONS
-    num = lines[1].split("\n")
-    globals()['GPIO_PINS'] = num[0]
-    print(GPIO_PINS)
+    # Enable Current to Subject Board
+    bigfoot.high_current(1)
+    bigfoot.low_current(1)
+    # Reset GPIO Pins
+    bigfoot.set_mux_add(0,0,0)
 
-    num = lines[3].split("\n")
-    globals()['ADC_PINS'] = num[0]
-    print(ADC_PINS)
-
-    num = lines[5].split("\n")
-    globals()['SLEEP_MODES'] = num[0]
-    print(SLEEP_MODES)
-
-    num = lines[7].split("\n")
-    globals()['BAUD_RATE'] = num[0]
-    print(BAUD_RATE)
-
-    # Update global variables with this data
+    # Will the
     # GPIO Pin Amount
     # Analog Pin Amount
     # Sleep Modes Amount
@@ -222,6 +212,7 @@ def run_subject_test(pin, test, facade):
 
     # Call Test function
 
+
     # return pass or fail for specified pin
     return 1
 
@@ -230,13 +221,18 @@ def run_subject_test(pin, test, facade):
 # Accepts:
 # Returns:
 def run_gpio_output_low_test(pin, facade):
+
     # Configure Bigfoot without load to adc
+    bigfoot.adc_load(0)
+    bigfoot.adc_enable(1)
 
     # Communication to Subject Serial
 
     # Read Bigfoot ADC
+    bigfoot.rpi_i2c_adc()
 
-    # return pass or fail of test
+    # reset & return pass or fail of test
+    bigfoot.adc_enable(0)
     print("test")
 
 
@@ -245,12 +241,18 @@ def run_gpio_output_low_test(pin, facade):
 # Returns:
 def run_gpio_output_loading_test(pin, facade):
     # Configure Bigfoot with load
+    bigfoot.adc_enable(1)
+    bigfoot.adc_load(1)
 
     # Communication to Subject Serial
 
     # Read Bigfoot ADC
+    bigfoot.rpi_i2c_adc()
 
     # return pass or fail of test
+    bigfoot.adc_enable(0)
+    bigfoot.adc_load(0)
+
     print("test")
 
 
@@ -259,12 +261,18 @@ def run_gpio_output_loading_test(pin, facade):
 # Returns:
 def run_gpio_input_resistance_test(pin, facade):
     # Configure Bigfoot
+    bigfoot.adc_enable(1)
+    bigfoot.adc_load(1)
 
     # Communication to Subject Serial
 
-    #
+
+    # ADC Test
+    bigfoot.rpi_i2c_adc()
 
     # return pass or fail of test
+    bigfoot.adc_enable(0)
+    bigfoot.adc_load(0)
     print("test")
 
 
@@ -272,13 +280,16 @@ def run_gpio_input_resistance_test(pin, facade):
 # Accepts:
 # Returns:
 def run_gpio_input_pull_up_test(pin, facade):
-    # Configure Bigfoot
+    # Configure Bigfoot w/
+    bigfoot.adc_enable(1)
 
     # Communication to Subject Serial
 
     # Read Bigfoot ADC
+    bigfoot.rpi_i2c_adc()
 
     # return pass or fail of test
+    bigfoot.adc_enable(0)
     print("test")
 
 
@@ -286,13 +297,16 @@ def run_gpio_input_pull_up_test(pin, facade):
 # Accepts:
 # Returns:
 def run_gpio_input_pull_down_test(pin, facade):
-    # Configure Bigfoot
+    # Configure Bigfoot w/
+    bigfoot.adc_enable(1)
 
     # Communication to Subject Serial
 
     # Read Bigfoot ADC
+    bigfoot.rpi_i2c_adc()
 
     # return pass or fail of test
+    bigfoot.adc_enable(0)
     print("test")
 
 
@@ -301,14 +315,18 @@ def run_gpio_input_pull_down_test(pin, facade):
 # Returns:
 def run_gpio_input_logic_level_test(pin, facade):
     # Reset/Configure Bigfoot to Low Logic
+    bigfoot.dac_enable(1)
+    bigfoot.rpi_i2c_dac(0)
 
     # Communication to Subject Serial
 
     # Configure Bigfoot to high logic
+    bigfoot.rpi_i2c_dac(1)
 
     # Communication to Subject Serial
 
     # return pass or fail of test
+    bigfoot.dac_enable(0)
     print("test")
 
 
@@ -329,6 +347,8 @@ def run_adc_test(pin, facade):
 # Returns:
 def run_power_mode_test(sleep_mode, facade):
     # Configure Bigfoot
+    bigfoot.dac_enable(1)
+    bigfoot.low_current(1)
 
     # Communication to Subject Serial
 
@@ -338,11 +358,13 @@ def run_power_mode_test(sleep_mode, facade):
     print("test")
 
 
-# Description:
+# Description: Runs wakup test
 # Accepts:
 # Returns:
 def run_wakeup_test(pin, facade):
     # Configure Bigfoot
+    bigfoot.high_current(1)
+    bigfoot.low_current(0)
 
     # Red Bigfoot Low Current Sensor
 
