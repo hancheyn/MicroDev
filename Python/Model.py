@@ -428,9 +428,9 @@ def subject_flash(board):
     print(res)
 
 
-# Description:
-# Accepts:
-# Returns:
+# Description: Uses CLI to read for subject board connections
+# Accepts: NA
+# Returns: [string] board type
 def board_list():
 
     # 1) ARDUINO DETECTION
@@ -492,6 +492,32 @@ def board_list():
 
     # Use class globals for board file path and id info
     return "No Boards Detected"
+
+
+# Description: Uses CLI to read for subject board connections
+# Accepts: NA
+# Returns: [string] usb file path or "None"
+def usb_list():
+
+    # CLI call
+    user = subprocess.getstatusoutput(f'whoami')
+    mess = "ls /media/" + str(user[1])
+    # res_usb = subprocess.getstatusoutput(f'lsusb')
+    res_usb = subprocess.getstatusoutput(mess)
+
+    # Split Lines
+
+
+    for i in res_usb:
+        if i != 0:
+            if "NOD" not in i:
+                print(i)
+                return "/media" + str(user[1]) + "/" + i
+
+    print("usb lists")
+    return "None"
+
+
 
 
 # MAY BE REDUNDENT : FIX

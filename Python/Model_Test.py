@@ -184,6 +184,11 @@ class CLITests(unittest.TestCase):
         board_out = model.board_list()
         model.subject_flash(board_out)
 
+    # USB Subject Board Test
+    def test_usb_flash(self):
+        board_out = model.usb_list()
+
+
 
 if __name__ == '__main__':
     unittest.main()
