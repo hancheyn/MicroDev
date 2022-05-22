@@ -205,29 +205,32 @@ def crc_encode(test, pin, instruction):
 
 # ******************************** Subject Tests ************************************
 # GENERIC TEST FUNCTION
-# Description:
-# Accepts:
-# Returns:
+# Description: Runs test based on test and pin IDs
+# Accepts: pin ID # | test ID # | facade flag
+# Returns: Test Results (volatage, logic, etc.)
 def run_subject_test(pin, test, facade):
 
     # Call Test function
     # Conditional for Test
+    if test == 1:
+        run_gpio_output_test(pin, facade)
 
 
-    # return pass or fail for specified pin
+    # return results for specified pin
     return 1
 
 
 # Description:
 # Accepts:
 # Returns:
-def run_gpio_output_low_test(pin, facade):
+def run_gpio_output_test(pin, facade):
 
     # Configure Bigfoot without load to adc
     bigfoot.adc_load(0)
     bigfoot.adc_enable(1)
 
     # Communication to Subject Serial
+    # Configures output low on subject board
 
     # Read Bigfoot ADC
     bigfoot.rpi_i2c_adc()
@@ -247,6 +250,7 @@ def run_gpio_output_loading_test(pin, facade):
     bigfoot.adc_load(1)
 
     # Communication to Subject Serial
+    # Configures output high on subject board
 
     # Read Bigfoot ADC
     bigfoot.rpi_i2c_adc()
@@ -267,7 +271,7 @@ def run_gpio_input_resistance_test(pin, facade):
     bigfoot.adc_load(1)
 
     # Communication to Subject Serial
-
+    # Configures input pull-up on subject board
 
     # ADC Test
     bigfoot.rpi_i2c_adc()
@@ -283,12 +287,16 @@ def run_gpio_input_resistance_test(pin, facade):
 # Accepts:
 # Returns:
 def run_gpio_input_pull_up_test(pin, facade):
+
+    # Communication to Subject Serial
+    # Configure input pull-ups
+    # Returns Subject Input Read
+
+
     # Configure Bigfoot w/
     bigfoot.adc_enable(1)
 
-    # Communication to Subject Serial
-
-    # Read Bigfoot ADC
+    # Read Bigfoot ADC Voltage
     bigfoot.rpi_i2c_adc()
 
     # return pass or fail of test
@@ -301,12 +309,14 @@ def run_gpio_input_pull_up_test(pin, facade):
 # Accepts:
 # Returns:
 def run_gpio_input_pull_down_test(pin, facade):
+    # Communication to Subject Serial
+    # Configure input pull-downs
+    # Returns Subject Input Read
+
     # Configure Bigfoot w/
     bigfoot.adc_enable(1)
 
-    # Communication to Subject Serial
-
-    # Read Bigfoot ADC
+    # Read Bigfoot ADC Voltage
     bigfoot.rpi_i2c_adc()
 
     # return pass or fail of test
@@ -315,6 +325,7 @@ def run_gpio_input_pull_down_test(pin, facade):
     print("test")
 
 
+##################### FIX: REDUNDENT TEST
 # Description:
 # Accepts:
 # Returns:
@@ -334,17 +345,31 @@ def run_gpio_input_logic_level_test(pin, facade):
     bigfoot.dac_enable(0)
     bigfoot.set_mux_add(0, 0, 0)
     print("test")
+#####################
 
 
 # Description:
 # Accepts:
 # Returns:
 def run_adc_test(pin, facade):
+
+    # Communication to Subject Serial to configure
+    # Configure to ADC Input
+
     # Configure Bigfoot to reset Subject ADC pins
     # Enable DAC
     bigfoot.dac_enable(1)
+    # Set DAC to first configuration
 
-    # Communication to Subject Serial to configure
+    # Communication to Subject Serial to read ADC
+
+    # Set DAC to second configuration
+
+    # Communication to Subject Serial to read ADC
+
+    # Set DAC to third configuration
+
+    # Communication to Subject Serial to read ADC
 
     # return pass or fail of test
     bigfoot.set_mux_add(0, 0, 0)
@@ -355,6 +380,7 @@ def run_adc_test(pin, facade):
 # Accepts:
 # Returns:
 def run_power_mode_test(sleep_mode, facade):
+
     # Configure Bigfoot
     bigfoot.dac_enable(1)
     bigfoot.low_current(1)
@@ -505,9 +531,7 @@ def usb_list():
     # res_usb = subprocess.getstatusoutput(f'lsusb')
     res_usb = subprocess.getstatusoutput(mess)
 
-    # Split Lines
-
-
+    # Find USB Drives (Not STM Board)
     for i in res_usb:
         if i != 0:
             if "NOD" not in i:
@@ -518,12 +542,6 @@ def usb_list():
     return "None"
 
 
-
-
-# MAY BE REDUNDENT : FIX
-def subject_init(string):
-    print(string)
-    return "Something"
 
 
 

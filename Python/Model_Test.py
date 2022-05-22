@@ -9,70 +9,66 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(True, False)  # add assertion here
 
 
-# ###### Debugging Test Code for Subject Tests ######### #
+# ###### (1) Debugging Test Code for Subject Tests ######### #
 class BoardTests(unittest.TestCase):
-    # Tests Subject Board Functionality
-    def test_run_gpio_output_low(self):
+    # 1.1 Tests Subject Board Functionality for Test #1
+    def test_run_gpio_output(self):
         model.run_subject_test(1, 1, 1)
         print("test")
         self.assertEqual(True, True, "Failed Test")
 
-    # Tests Subject Board Functionality
+    # 1.2 Tests Subject Board Functionality for Test #2
     def test_run_gpio_output_loading(self):
 
         print("test")
         self.assertEqual(True, True, "Failed Test")
 
-    # Tests Subject Board Functionality
+    # 1.3 Tests Subject Board Functionality for Test #3
     def test_run_gpio_input_resistance(self):
 
         print("test")
         self.assertEqual(True, True, "Failed Test")
 
-    # Tests Subject Board Functionality
+    # 1.4 Tests Subject Board Functionality for Test #4
     def test_gpio_input_pull_up(self):
 
         print("test")
         self.assertEqual(True, True, "Failed Test")
 
-    # Tests Subject Board Functionality
+    # 1.5 Tests Subject Board Functionality for Test #5
     def test_gpio_input_pull_down(self):
 
         print("test")
         self.assertEqual(True, True, "Failed Test")
 
-    # Tests Subject Board Functionality
+    # 1.6 Tests Subject Board Functionality for Test #6
     def test_run_gpio_input_logic_level(self):
 
         print("test")
         self.assertEqual(True, True, "Failed Test")
 
-    # Tests Subject Board Functionality
+    # 1.7 Tests Subject Board Functionality for Test #7
     def test_run_adc(self):
 
         print("test")
         self.assertEqual(True, True, "Failed Test")
 
-    # Tests Subject Board Functionality
+    # 1.8 Tests Subject Board Functionality for Test #8
     def test_run_power_mode(self):
 
         print("test")
         self.assertEqual(True, True, "Failed Test")
 
-    # Tests Subject Board Functionality
+    # 1.9 Tests Subject Board Functionality for Test #9
     def test_run_wakeup(self):
 
         print("test")
         self.assertEqual(True, True, "Failed Test")
 
 
-
-
-
-
-# ###### Debugging Test Code for Serial ######### #
+# ###### (2) Debugging Test Code for Serial ######### #
 class SerialTests(unittest.TestCase):
-    # Tests that serial communication is established and subject board can reply
+    # 2.1 Tests that serial communication is established and subject board can reply
     def test_basic(self):
 
         s = bytearray(3)
@@ -96,7 +92,7 @@ class SerialTests(unittest.TestCase):
         # Pin ID Echos Back
         self.assertEqual(test_bytes[0], s[0], "Basic Communication to Subject Board Failed.")
 
-    # Tests Encoding CRC for data packet
+    # 2.2 Tests Encoding CRC for data packet
     def test_crc_encode(self):
 
         s = bytearray(3)
@@ -107,7 +103,7 @@ class SerialTests(unittest.TestCase):
         self.assertEqual(s[1], 0x10, "Failed to Encode CRC")
         self.assertEqual(s[2], 0x03, "Failed to Encode CRC")
 
-    # Tests decoding CRC data packet to pin, result, and test id
+    # 2.3 Tests decoding CRC data packet to pin, result, and test id
     # E.G. 1 = pin, 2 = test, 3 = results
     def test_crc_decode(self):
 
@@ -130,25 +126,25 @@ class SerialTests(unittest.TestCase):
         self.assertEqual(output, 0x00, "Failed to Decode CRC")
 
 
-# ###### Debugging Test Code for CLI ########## #
+# ###### (3) Debugging Test Code for CLI ########## #
 # CLI Functionality Tests
 class CLITests(unittest.TestCase):
 
-    # Test that No Board Info is Obtained
+    # 3.1 Test that No Board Info is Obtained
     def test_board_list_None(self):
         board_out = model.board_list()
         print(board_out)
         # Test of Output (? Output "No Boards Detected" for no useful board)
         self.assertEqual(board_out, "No Boards Detected", "No board identification failed.")
 
-    # Test that Uno ID Info is Obtained
+    # 3.2 Test that Uno ID Info is Obtained
     def test_board_list_Uno(self):
         board_out = model.board_list()
         print(board_out)
         # Test of Output (? Output "Arduino Uno Detected" for Arduino Uno)
         self.assertEqual(board_out, "Arduino Uno Detected", "Arduino Uno Failed to be Detected.")
 
-    # Test that STM ID Info is Obtained
+    # 3.3 Test that STM ID Info is Obtained
     def test_board_list_STM32F411(self):
 
         board_out = model.board_list()
@@ -162,7 +158,7 @@ class CLITests(unittest.TestCase):
     # 2) Add Flash .bin file of board to subject_flash process
     # ###################################################################
 
-    # STM Board Addition Example
+    # 3.4 STM Board Addition Example
     def test_board_list_STM32F401(self):
 
         board_out = model.board_list()
@@ -170,7 +166,7 @@ class CLITests(unittest.TestCase):
         # Test of Output (? Output "STM32F401 Detected" for STM32F401)
         self.assertEqual(board_out, "STM32F401 Detected", "STM32F401 Failed to be Detected.")
 
-    # Test that Two or More boards Info is Obtained
+    # 3.5 Test that Two or More boards Info is Obtained
     def test_board_list_Overflow(self):
 
         board_out = model.board_list()
@@ -178,16 +174,16 @@ class CLITests(unittest.TestCase):
         # Test of Output (? Output "Overflow" for two+ board)
         self.assertEqual(board_out, "Overflow", "Two+ Boards Detected")
 
-    # Flash Subject Board Test
+    # 3.6 Flash Subject Board Test
     def test_board_flash(self):
 
         board_out = model.board_list()
         model.subject_flash(board_out)
 
-    # USB Subject Board Test
+    # 3.7 USB Subject Board Test
     def test_usb_flash(self):
-        board_out = model.usb_list()
-
+        usb_out = model.usb_list()
+        print("Filepath to USB: " + usb_out)
 
 
 if __name__ == '__main__':

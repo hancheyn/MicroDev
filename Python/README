@@ -1,7 +1,7 @@
 README
 
 TEST CONFIGURATION
-Test ID 1 => GPIO Output Voltage Under Load
+Test ID 1 => GPIO Output Voltage (under load)
 Test ID 2 => GPIO Output Pin Internal Resistance
 Test ID 3 => GPIO Input Pull-Up Voltage
 Test ID 4 => GPIO Input Pull-Down Voltage (STM Only)
