@@ -383,7 +383,8 @@ def run_power_mode_test(sleep_mode, facade):
 
     # Configure Bigfoot
     bigfoot.dac_enable(1)
-    bigfoot.low_current(1)
+    bigfoot.high_current(1)
+    bigfoot.low_current(1) # Always On
 
     # Communication to Subject Serial
 
@@ -403,8 +404,8 @@ def run_wakeup_test(pin, facade):
     # Set Wakeup pin
     # bigfoot.set_mux_add(1,0,0)
     bigfoot.dac_enable(1)
-    bigfoot.high_current(1)
-    bigfoot.low_current(0)
+    bigfoot.high_current(0)
+    bigfoot.low_current(1)  # Always On
 
     # Red Bigfoot Low Current Sensor
 
