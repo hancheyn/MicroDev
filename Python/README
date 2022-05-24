@@ -16,7 +16,7 @@ E [Enable Number]
 M [Mux Address]
 
 PIN CONFIGURATION
-Pin ID 1 => E1M0    | PC11 (STM)
+Pin ID 1 => E1M0    | PD2 (STM)
 Pin ID 2 => E1M1    | PC12 (STM)
 Pin ID 3 => E1M2    | PC11 (STM)
 Pin ID 4 => E1M3    | PC10 (STM)
@@ -38,7 +38,7 @@ Pin ID 19 => E3M2   | PA13 (STM)
 Pin ID 20 => E3M3   | RESET (Arduino) / RESET (STM)
 Pin ID 21 => E3M4   | D12 (Arduino) / PA6 (STM)
 Pin ID 22 => E3M5   | PA11 (STM)
-Pin ID 23 => E3M6   | D13 (Arduino) / PH1 (STM)
+Pin ID 23 => E3M6   | D13 (Arduino) / PA5 (STM)
 Pin ID 24 => E3M7   | PA12 (STM)
 Pin ID 25 => E4M0   | PC13 (STM)
 Pin ID 26 => E4M1   | PB7 (STM)
