@@ -110,7 +110,7 @@ def set_mux_add(state, enable, add):
         print("off")
 
 
-# I2C Communication
+# I2C Communication ??
 def rpi_i2c_config():
     # ADC set
 
@@ -120,6 +120,7 @@ def rpi_i2c_config():
     print("test")
 
 
+# ADC
 def rpi_i2c_adc():
     # 0xD0 ADDRESS
     # Read 1st byte
@@ -131,116 +132,6 @@ def rpi_i2c_adc():
     read = int(read_byte) + (int(read_block[1]) << 8)
 
     # Convert into Voltage
-
     print(read_byte)
     print("adc")
-
-
-def rpi_i2c_dac(val):
-    # 0x46 ADDRESS
-
-    write = bus.write_word_data(0x46, val)
-
-    print(read)
-    print("dac")
-
-
-# REF: rototron.info/raspberry-pi-ina219-tutorial/
-def rpi_i2c_ina219(shunt):
-    i2c = busio.I2C(board.SCL, board.SDA)
-    sensor = adafruit_ina219.INA219(i2c)
-
-    print("Bus Voltage: {} V".format(sensor.bus_voltage))
-    print("Shunt Voltage: {} mV".format(sensor.shunt_voltage / 1000))
-    print("Current: {} mA".format(sensor.current))
-
-    # Conditional for high or low current shunt
-
-    print("ina219")
-
-
-# High Current
-# GPIO 17
-# Enable: state = 1
-# Disable: state = 0
-def high_current(state):
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(17, GPIO.OUT)
-
-    if state == 1:
-        GPIO.output(17, GPIO.HIGH)
-    else:
-        GPIO.output(17, GPIO.LOW)
-
-    print("high current test")
-
-
-# Low Current
-# GPIO 27
-# Enable: state = 1
-# Disable: state = 0
-def low_current(state):
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(27, GPIO.OUT)
-    GPIO.output(27, GPIO.LOW)
-
-    if state == 1:
-        GPIO.output(27, GPIO.HIGH)
-    else:
-        GPIO.output(27, GPIO.LOW)
-
-
-# DAC Enable
-# GPIO 22
-# Enable: state = 1
-# Disable: state = 0
-def dac_enable(state):
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(22, GPIO.OUT)
-
-    if state == 1:
-        GPIO.output(22, GPIO.HIGH)
-    else:
-        GPIO.output(22, GPIO.LOW)
-
-
-# ADC with LOAD
-# GPIO 10
-# Enable: state = 1
-# Disable: state = 0
-def adc_load(state):
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(10, GPIO.OUT)
-
-    if state == 1:
-        GPIO.output(10, GPIO.HIGH)
-    else:
-        GPIO.output(10, GPIO.LOW)
-
-
-# ADC without LOAD
-# GPIO 9
-# Enable: state = 1
-# Disable: state = 0
-def adc_enable(state):
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(9, GPIO.OUT)
-
-    if state == 1:
-        GPIO.output(9, GPIO.HIGH)
-    else:
-        GPIO.output(9, GPIO.LOW)
-
-
-# TESTS
-# set_mux_add(0, 1, 7)
-# low_current(0)
-# high_current(0)
-# adc_enable(0)
-# adc_load(0)
-# dac_enable(0)
-
-# rpi_i2c_ina219()
-# rpi_i2c_adc()
-
-print("end of test")
+    return read
