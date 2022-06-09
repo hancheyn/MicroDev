@@ -226,25 +226,27 @@ def serial_setup():
 # Description: Runs test based on test and pin IDs
 # Accepts: pin ID # | enable # | address # | enabtest ID # | facade flag
 # Returns: Test Results (voltage, logic, etc.)
-def run_subject_test(pin, enable, address, test, facade):
+def run_subject_test(pin, enable, address, test, instruction):
 
     # Call Test function
     # Conditional for Test
     if test == 1:
-        run_gpio_output_test(pin, enable, address, facade)
+        run_gpio_output_test(pin, enable, address, instruction)
     elif test == 2:
-        run_gpio_output_loading_test(pin, enable, address, facade)
+        run_gpio_output_loading_test(pin, enable, address, instruction)
     elif test == 8:
-        run_power_mode_test(pin, facade)
+        run_power_mode_test(pin, instruction)
 
     # return results for specified pin
     return 1
 
 
-# Description: Test ID #1 | GPIO Output TEst
+# Description: Test ID #1 | GPIO Output Test
+# Send Logic Voltage as Parameter
+#
 # Accepts:
 # Returns:
-def run_gpio_output_test(pin, enable, address, facade):
+def run_gpio_output_test(pin, enable, address, instruction):
 
     # Configure Bigfoot without load to adc
     bigfoot.adc_load(0)
@@ -255,7 +257,7 @@ def run_gpio_output_test(pin, enable, address, facade):
     # Communication to Subject Serial
     # Configures output low on subject board
     # .encode([test], [pin], [instruction])
-    s = crc_encode(0x01, pin, facade)
+    s = crc_encode(0x01, pin, instruction)
     ser = open_serial()
     #time.sleep(2)
     subject_write(str_write=s, ser=ser)
@@ -277,7 +279,7 @@ def run_gpio_output_test(pin, enable, address, facade):
 # Description: Test ID #2 | GPIO Output Test /w Load
 # Accepts:
 # Returns:
-def run_gpio_output_loading_test(pin, enable, address, facade):
+def run_gpio_output_loading_test(pin, enable, address, instruction):
     # Configure Bigfoot with load
     bigfoot.adc_enable(1)
     bigfoot.adc_load(1)
@@ -288,7 +290,7 @@ def run_gpio_output_loading_test(pin, enable, address, facade):
     # Communication to Subject Serial
     # Configures output low on subject board
     # .encode([test], [pin], [instruction])
-    s = crc_encode(0x02, pin, facade)
+    s = crc_encode(0x02, pin, instruction)
     ser = open_serial()
     subject_write(str_write=s, ser=ser)
     test_bytes = subject_read(ser_=ser)
@@ -307,9 +309,10 @@ def run_gpio_output_loading_test(pin, enable, address, facade):
 
 
 # Description:
+#
 # Accepts:
 # Returns:
-def run_gpio_input_resistance_test(pin, enable, address, facade):
+def run_gpio_input_resistance_test(pin, enable, address, instruction):
     # Configure Bigfoot
     bigfoot.adc_enable(1)
     bigfoot.adc_load(1)
@@ -320,7 +323,7 @@ def run_gpio_input_resistance_test(pin, enable, address, facade):
     # Communication to Subject Serial
     # Configures output low on subject board
     # .encode([test], [pin], [instruction])
-    s = crc_encode(0x03, pin, facade)
+    s = crc_encode(0x03, pin, instruction)
     ser = open_serial()
     subject_write(str_write=s, ser=ser)
     test_bytes = subject_read(ser_=ser)
@@ -339,9 +342,10 @@ def run_gpio_input_resistance_test(pin, enable, address, facade):
 
 
 # Description:
+# ADC load resistor
 # Accepts:
 # Returns:
-def run_gpio_input_pull_up_test(pin, enable, address, facade):
+def run_gpio_input_pull_up_test(pin, enable, address, instruction):
 
     # Communication to Subject Serial
     # Configure input pull-ups
@@ -361,9 +365,10 @@ def run_gpio_input_pull_up_test(pin, enable, address, facade):
 
 
 # Description:
+# Configure DAC to Supply Voltage (To Test Internal Resistance)
 # Accepts:
 # Returns:
-def run_gpio_input_pull_down_test(pin, enable, address, facade):
+def run_gpio_input_pull_down_test(pin, enable, address, instruction):
     # Communication to Subject Serial
     # Configure input pull-downs
     # Returns Subject Input Read
@@ -384,7 +389,7 @@ def run_gpio_input_pull_down_test(pin, enable, address, facade):
 # Description:
 # Accepts:
 # Returns:
-def run_gpio_input_logic_level_test(pin, enable, address, facade):
+def run_gpio_input_logic_level_test(pin, enable, address, instruction):
     # Reset/Configure Bigfoot to Low Logic
     bigfoot.dac_enable(1)
     bigfoot.rpi_i2c_dac(0)
@@ -404,9 +409,10 @@ def run_gpio_input_logic_level_test(pin, enable, address, facade):
 
 
 # Description:
+# Pass in the voltage to use also
 # Accepts:
 # Returns:
-def run_adc_test(pin, enable, address, facade):
+def run_adc_test(pin, enable, address, instruction):
 
     # Communication to Subject Serial to configure
     # Configure to ADC Input
@@ -434,7 +440,7 @@ def run_adc_test(pin, enable, address, facade):
 # Description:
 # Accepts:
 # Returns:
-def run_power_mode_test(sleep_mode, facade):
+def run_power_mode_test(sleep_mode, instruction):
 
     # Configure Bigfoot
     bigfoot.dac_enable(1)
@@ -456,7 +462,7 @@ def run_power_mode_test(sleep_mode, facade):
 # Description: Runs wakup test
 # Accepts:
 # Returns:
-def run_wakeup_test(pin, enable, address, facade):
+def run_wakeup_test(pin, enable, address, instruction):
     # Configure Bigfoot
     # Set Wakeup pin
     # bigfoot.set_mux_add(1,0,0)
