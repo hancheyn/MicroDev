@@ -29,6 +29,7 @@ import time
 def set_mux_add(state, enable, add):
 	
 	print("Mux Address Test")
+	return 1
 
 
 # I2C Communication
@@ -38,6 +39,7 @@ def set_mux_add(state, enable, add):
 def rpi_i2c_config():
 
 	print("config?")
+	return 1
 
 
 # Description:
@@ -46,6 +48,7 @@ def rpi_i2c_config():
 def rpi_i2c_adc():
 
 	print("adc i2c test")
+	return 1
 
 
 # Description:
@@ -54,6 +57,7 @@ def rpi_i2c_adc():
 def rpi_i2c_dac(val):
 
 	print("dac i2c test")
+	return 1
 
 
 # Description:
@@ -72,6 +76,7 @@ def rpi_i2c_ina219():
 def high_current(state):	
 
 	print("high current test")
+	return 1
 
 
 # Low Current
@@ -81,6 +86,7 @@ def high_current(state):
 def low_current(state):
 
 	print("low current test")
+	return 1
 	
 	
 # DAC Enable
@@ -90,6 +96,7 @@ def low_current(state):
 def dac_enable(state):
 
 	print("dac test")
+	return 1
 
 
 # ADC with LOAD
@@ -99,6 +106,7 @@ def dac_enable(state):
 def adc_load(state):
 
 	print("adc load test")
+	return 1
 
 
 # ADC without LOAD
@@ -108,5 +116,6 @@ def adc_load(state):
 def adc_enable(state):
 
 	print("adc enable test")
+	return 1
 
 print("end of test")

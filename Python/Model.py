@@ -234,6 +234,16 @@ def run_subject_test(pin, enable, address, test, instruction):
         run_gpio_output_test(pin, enable, address, instruction)
     elif test == 2:
         run_gpio_output_loading_test(pin, enable, address, instruction)
+    elif test == 3:
+        run_gpio_output_loading_test(pin, enable, address, instruction)
+    elif test == 4:
+        run_gpio_output_loading_test(pin, enable, address, instruction)
+    elif test == 5:
+        run_gpio_output_loading_test(pin, enable, address, instruction)
+    elif test == 6:
+        run_gpio_output_loading_test(pin, enable, address, instruction)
+    elif test == 7:
+        run_gpio_output_loading_test(pin, enable, address, instruction)
     elif test == 8:
         run_power_mode_test(pin, instruction)
 
@@ -272,7 +282,7 @@ def run_gpio_output_test(pin, enable, address, instruction):
     # reset & return pass or fail of test
     bigfoot.adc_enable(0)
     bigfoot.set_mux_add(0, 0, 0)
-    print("test")
+    print("test 1")
     return adc
 
 
@@ -299,29 +309,30 @@ def run_gpio_output_loading_test(pin, enable, address, instruction):
     print(output)
 
     # Read Bigfoot ADC
-    bigfoot.rpi_i2c_adc()
+    adc = bigfoot.rpi_i2c_adc()
 
     # return pass or fail of test
     bigfoot.adc_enable(0)
     bigfoot.adc_load(0)
     bigfoot.set_mux_add(0, 0, 0)
-    print("test")
+    print("test 2")
+    return adc
 
 
-# Description:
-#
+# Description: Test ID #3 |
+# ADC Load Resistor
 # Accepts:
 # Returns:
-def run_gpio_input_resistance_test(pin, enable, address, instruction):
-    # Configure Bigfoot
+def run_gpio_input_pull_up_test(pin, enable, address, instruction):
+
+    # Configure Bigfoot w/
     bigfoot.adc_enable(1)
     bigfoot.adc_load(1)
-
-    # State (on,off) | Enable # | Address #
     bigfoot.set_mux_add(1, enable, address)
 
     # Communication to Subject Serial
-    # Configures output low on subject board
+    # Configure input pull-ups
+    # Returns Subject Input Read
     # .encode([test], [pin], [instruction])
     s = crc_encode(0x03, pin, instruction)
     ser = open_serial()
@@ -331,84 +342,90 @@ def run_gpio_input_resistance_test(pin, enable, address, instruction):
     output = crc_decode(test_bytes, 2)
     print(output)
 
-    # ADC Test
-    bigfoot.rpi_i2c_adc()
-
-    # return pass or fail of test
-    bigfoot.adc_enable(0)
-    bigfoot.adc_load(0)
-    bigfoot.set_mux_add(0, 0, 0)
-    print("test")
-
-
-# Description:
-# ADC load resistor
-# Accepts:
-# Returns:
-def run_gpio_input_pull_up_test(pin, enable, address, instruction):
-
-    # Communication to Subject Serial
-    # Configure input pull-ups
-    # Returns Subject Input Read
-
-
     # Configure Bigfoot w/
     bigfoot.adc_enable(1)
 
     # Read Bigfoot ADC Voltage
-    bigfoot.rpi_i2c_adc()
+    adc = bigfoot.rpi_i2c_adc()
 
     # return pass or fail of test
     bigfoot.adc_enable(0)
     bigfoot.set_mux_add(0, 0, 0)
-    print("test")
+    print("test 3")
+    return adc
 
 
-# Description:
+# Description: Test ID #4 |
 # Configure DAC to Supply Voltage (To Test Internal Resistance)
 # Accepts:
 # Returns:
 def run_gpio_input_pull_down_test(pin, enable, address, instruction):
-    # Communication to Subject Serial
-    # Configure input pull-downs
-    # Returns Subject Input Read
 
     # Configure Bigfoot w/
     bigfoot.adc_enable(1)
+    bigfoot.adc_load(0)
+    bigfoot.dac_enable(1)
+    bigfoot.set_mux_add(1, enable, address)
+
+
+    # Communication to Subject Serial
+    # Configure input pull-downs
+    # Returns Subject Input Read
+    # .encode([test], [pin], [instruction])
+    s = crc_encode(0x04, pin, instruction)
+    ser = open_serial()
+    subject_write(str_write=s, ser=ser)
+    test_bytes = subject_read(ser_=ser)
+    close_serial(ser)
+    output = crc_decode(test_bytes, 2)
+    print(output)
 
     # Read Bigfoot ADC Voltage
-    bigfoot.rpi_i2c_adc()
+    adc = bigfoot.rpi_i2c_adc()
 
     # return pass or fail of test
     bigfoot.adc_enable(0)
+    bigfoot.dac_enable(0)
     bigfoot.set_mux_add(0, 0, 0)
-    print("test")
+    print("test 4")
+    return adc
 
 
-##################### FIX: REDUNDENT TEST
-# Description:
+# Description: Test ID #5 |
 # Accepts:
 # Returns:
 def run_gpio_input_logic_level_test(pin, enable, address, instruction):
+
     # Reset/Configure Bigfoot to Low Logic
     bigfoot.dac_enable(1)
-    bigfoot.rpi_i2c_dac(0)
-
-    # Communication to Subject Serial
+    bigfoot.adc_load(0)
+    bigfoot.rpi_i2c_dac(1)
+    bigfoot.set_mux_add(1, enable, address)
 
     # Configure Bigfoot to high logic
-    bigfoot.rpi_i2c_dac(1)
+    bigfoot.rpi_i2c_dac(instruction)
 
     # Communication to Subject Serial
+    # .encode([test], [pin], [instruction])
+    s = crc_encode(0x05, pin, instruction)
+    ser = open_serial()
+    subject_write(str_write=s, ser=ser)
+    test_bytes = subject_read(ser_=ser)
+    close_serial(ser)
+    output = crc_decode(test_bytes, 2)
+    print(output)
+
+    # ADC
+    adc = int(test_bytes[1])
 
     # return pass or fail of test
     bigfoot.dac_enable(0)
     bigfoot.set_mux_add(0, 0, 0)
     print("test")
-#####################
+    return adc
 
 
-# Description:
+# Description: Test ID #6 |
 # Pass in the voltage to use also
 # Accepts:
 # Returns:
@@ -416,65 +433,82 @@ def run_adc_test(pin, enable, address, instruction):
 
     # Communication to Subject Serial to configure
     # Configure to ADC Input
+    bigfoot.adc_enable(0)
+    bigfoot.adc_load(0)
+    bigfoot.set_mux_add(1, enable, address)
 
     # Configure Bigfoot to reset Subject ADC pins
     # Enable DAC
     bigfoot.dac_enable(1)
-    # Set DAC to first configuration
+    # Set DAC to first configuration instruction
+    # .encode([test], [pin], [instruction])
+    s = crc_encode(0x06, pin, instruction)
+    ser = open_serial()
+    subject_write(str_write=s, ser=ser)
+    test_bytes = subject_read(ser_=ser)
+    close_serial(ser)
+    output = crc_decode(test_bytes, 2)
+    print(output)
 
     # Communication to Subject Serial to read ADC
+    # ADC
+    adc = int(test_bytes[1])
 
-    # Set DAC to second configuration
-
-    # Communication to Subject Serial to read ADC
-
-    # Set DAC to third configuration
-
-    # Communication to Subject Serial to read ADC
-
-    # return pass or fail of test
+    # return pass or  fail of test
     bigfoot.set_mux_add(0, 0, 0)
-    print("test")
+    print("test 6")
+    return adc
 
 
-# Description:
+# Description: Test ID #7 |
 # Accepts:
 # Returns:
 def run_power_mode_test(sleep_mode, instruction):
 
     # Configure Bigfoot
-    bigfoot.dac_enable(1)
+    bigfoot.dac_enable(0)
     bigfoot.high_current(0)
-    bigfoot.low_current(0) # Always On
+    bigfoot.low_current(0)
+    # Always On
 
     # Communication to Subject Serial
-
+    # .encode([test], [pin], [instruction])
+    s = crc_encode(0x07, sleep_mode, instruction)
+    ser = open_serial()
+    subject_write(str_write=s, ser=ser)
+    test_bytes = subject_read(ser_=ser)
+    close_serial(ser)
+    output = crc_decode(test_bytes, 2)
+    print(output)
 
     # Read Bigfoot Low Current Sensor
-
+    current = bigfoot.rpi_i2c_ina219()
 
     # return pass or fail of test
     bigfoot.dac_enable(0)
     bigfoot.set_mux_add(0, 0, 0)
-    print("test")
+    print("test 7")
+    return current
 
 
-# Description: Runs wakup test
+# Description: Test ID #8 | Runs wake up test
 # Accepts:
 # Returns:
 def run_wakeup_test(pin, enable, address, instruction):
     # Configure Bigfoot
     # Set Wakeup pin
-    # bigfoot.set_mux_add(1,0,0)
+    bigfoot.set_mux_add(1, enable, address)
     bigfoot.dac_enable(1)
     bigfoot.high_current(0)
     bigfoot.low_current(0)  # Always On
 
     # Red Bigfoot Low Current Sensor
+    current = bigfoot.rpi_i2c_ina219()
 
     # return pass or fail of test
     bigfoot.set_mux_add(0, 0, 0)
-    print("test")
+    print("test 8")
+    return current
 
 
 # MAY DELETE INPUTS FROM MODEL
@@ -506,7 +540,6 @@ def subject_flash(board):
         res = subprocess.getstatusoutput(
             f'arduino-cli upload -b arduino:avr:uno -p /dev/ttyACM0 -i Flash/serial_com.ino.with_bootloader.hex')
         # Confirm Success with CLI output
-
 
     # STM32F411 FLASH
 
