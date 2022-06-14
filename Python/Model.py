@@ -480,12 +480,13 @@ def run_adc_test(pin, enable, address, instruction):
 
 
 # Description: Test ID #7 | Power Mode Test
-# Sleep Mode sent as 'Pin' to serial com.
+# Sleep Mode sent as 'instruction' to serial com.
 # instruction BIT7 controls facade test
+# Wakeup Pin Set through 'pin' ID
 # Spec: 3.08 Power Modes
-# Accepts: sleep_mode (pin) ID # | instruction
+# Accepts: pin ID # | instruction (sleep_mode)
 # Returns: Bigfoot current
-def run_power_mode_test(sleep_mode, instruction):
+def run_power_mode_test(pin, instruction):
 
     # Configure Bigfoot
     bigfoot.dac_enable(0)
@@ -495,15 +496,17 @@ def run_power_mode_test(sleep_mode, instruction):
 
     # Communication to Subject Serial
     # .encode([test], [pin], [instruction])
-    s = crc_encode(0x07, sleep_mode, instruction)
+    s = crc_encode(0x07, pin, instruction)
     ser = open_serial()
     subject_write(str_write=s, ser=ser)
-    test_bytes = subject_read(ser_=ser)
+    # test_bytes = subject_read(ser_=ser)
     close_serial(ser)
-    output = crc_decode(test_bytes, 2)
-    print(output)
+    # output = crc_decode(test_bytes, 2)
+    # print(output)
 
     # Read Bigfoot Low Current Sensor
+    # TIME DELAY
+    time.sleep(1)
     current = bigfoot.rpi_i2c_ina219()
 
     # return pass or fail of test
@@ -524,6 +527,10 @@ def run_wakeup_test(pin, enable, address, instruction):
     bigfoot.dac_enable(1)
     bigfoot.high_current(0)
     bigfoot.low_current(0)  # Always On
+
+    # Configure Bigfoot to high logic
+    bigfoot.rpi_i2c_dac(instruction)
+    # TIME DELAY?
 
     # Red Bigfoot Low Current Sensor
     current = bigfoot.rpi_i2c_ina219()
