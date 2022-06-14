@@ -56,7 +56,8 @@ class BoardTests(unittest.TestCase):
     # 1.8 Tests Subject Board Functionality for Test #8
     def test_run_power_mode(self):
 
-        print("test")
+        # Activates Desired Sleep Mode
+        model.run_power_mode_test(1, 3)
         self.assertEqual(True, True, "Failed Test")
 
     # 1.9 Tests Subject Board Functionality for Test #9
@@ -84,6 +85,7 @@ class SerialTests(unittest.TestCase):
         #time.sleep(2)
         test_bytes = model.subject_read(ser_=ser)
         model.close_serial(ser)
+        print(model.crc_decode(test_bytes, 0))
 
         print(test_bytes)
         int_val = int.from_bytes(test_bytes, "big")
@@ -165,6 +167,13 @@ class CLITests(unittest.TestCase):
         print(board_out)
         # Test of Output (? Output "STM32F401 Detected" for STM32F401)
         self.assertEqual(board_out, "STM32F401 Detected", "STM32F401 Failed to be Detected.")
+
+    def test_board_list_STM32F446(self):
+
+        board_out = model.board_list()
+        print(board_out)
+        # Test of Output (? Output "STM32F401 Detected" for STM32F401)
+        self.assertEqual(board_out, "STM32F446 Detected", "STM32F446 Failed to be Detected.")
 
     # 3.5 Test that Two or More boards Info is Obtained
     def test_board_list_Overflow(self):

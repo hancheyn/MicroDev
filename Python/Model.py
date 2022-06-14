@@ -149,6 +149,7 @@ def crc_decode(value, out_type):
     int_val = int.from_bytes(value, "big")
     if (int_val % 5) == 0:
         print("CRC Pass")
+        out = 1
         # Conditional on which data point to decode
         # E.G. 1 = pin, 2 = test, 3 = results
         if out_type == 1:
@@ -205,6 +206,7 @@ def crc_encode(test, pin, instruction):
 
 # Serial Setup
 # Opens and Closes Serial to Double-Check Com.
+# Return: (int) 1 == Connection Success | 0 == Failed Connection
 def serial_setup():
 
     s = bytearray(3)
@@ -218,7 +220,17 @@ def serial_setup():
     test_bytes = subject_read(ser_=ser)
     close_serial(ser)
 
+    print(len(test_bytes))
+    if len(test_bytes) == 3:
+        if test_bytes[0] == s[0] and test_bytes[1] == s[1] and test_bytes[2] == s[2]:
+            val = 1
+        else:
+            val = 0
+    else:
+        val = -1
+
     print("serial setup complete")
+    return val
 
 
 # ******************************** Subject Tests ************************************
@@ -279,7 +291,12 @@ def run_gpio_output_test(pin, enable, address, instruction):
     print(output)
 
     # Read Bigfoot ADC
-    adc = bigfoot.rpi_i2c_adc()
+    # adc = bigfoot.rpi_i2c_adc()
+    if crc_decode(test_bytes, 0) == 0:
+        adc = -1
+    else:
+        adc = bigfoot.rpi_i2c_adc()
+
 
     # reset & return pass or fail of test
     bigfoot.adc_enable(0)
@@ -315,7 +332,11 @@ def run_gpio_output_loading_test(pin, enable, address, instruction):
     print(output)
 
     # Read Bigfoot ADC
-    adc = bigfoot.rpi_i2c_adc()
+    # adc = bigfoot.rpi_i2c_adc()
+    if crc_decode(test_bytes, 0) == 0:
+        adc = -1
+    else:
+        adc = bigfoot.rpi_i2c_adc()
 
     # return pass or fail of test
     bigfoot.adc_enable(0)
@@ -354,7 +375,11 @@ def run_gpio_input_pull_up_test(pin, enable, address, instruction):
     bigfoot.adc_enable(1)
 
     # Read Bigfoot ADC Voltage
-    adc = bigfoot.rpi_i2c_adc()
+    # adc = bigfoot.rpi_i2c_adc()
+    if crc_decode(test_bytes, 0) == 0:
+        adc = -1
+    else:
+        adc = bigfoot.rpi_i2c_adc()
 
     # return pass or fail of test
     bigfoot.adc_enable(0)
@@ -392,7 +417,11 @@ def run_gpio_input_pull_down_test(pin, enable, address, instruction):
     print(output)
 
     # Read Bigfoot ADC Voltage
-    adc = bigfoot.rpi_i2c_adc()
+    # adc = bigfoot.rpi_i2c_adc()
+    if crc_decode(test_bytes, 0) == 0:
+        adc = -1
+    else:
+        adc = bigfoot.rpi_i2c_adc()
 
     # return pass or fail of test
     bigfoot.adc_enable(0)
@@ -431,7 +460,10 @@ def run_gpio_input_logic_level_test(pin, enable, address, instruction):
     print(output)
 
     # ADC
-    adc = int(test_bytes[1])
+    if crc_decode(test_bytes, 0) == 0:
+        adc = -1
+    else:
+        adc = int(test_bytes[1])
 
     # return pass or fail of test
     bigfoot.dac_enable(0)
@@ -471,7 +503,10 @@ def run_adc_test(pin, enable, address, instruction):
 
     # Communication to Subject Serial to read ADC
     # ADC
-    adc = int(test_bytes[1])
+    if crc_decode(test_bytes, 0) == 0:
+        adc = -1
+    else:
+        adc = int(test_bytes[1])
 
     # return pass or  fail of test
     bigfoot.set_mux_add(0, 0, 0)
@@ -667,7 +702,6 @@ def usb_list():
 
     print("usb lists")
     return "None"
-
 
 
 
