@@ -224,7 +224,7 @@ def serial_setup():
 # ******************************** Subject Tests ************************************
 # GENERIC TEST FUNCTION
 # Description: Runs test based on test and pin IDs
-# Accepts: pin ID # | enable # | address # | enabtest ID # | facade flag
+# Accepts: pin ID # | enable # | address # | enable ID # | instruction
 # Returns: Test Results (voltage, logic, etc.)
 def run_subject_test(pin, enable, address, test, instruction):
 
@@ -252,10 +252,12 @@ def run_subject_test(pin, enable, address, test, instruction):
 
 
 # Description: Test ID #1 | GPIO Output Test
-# Send Logic Voltage as Parameter
-#
-# Accepts:
-# Returns:
+# Send Logic Voltage as Parameter (sets logic based on BIT0 of instruction)
+# HIGH = 1 | LOW = 0
+# instruction BIT7 controls facade test
+# Spec: 3.00 Output Logic
+# Accepts: pin ID # | enable # | address # | enable ID # | instruction
+# Returns: Bigfoot adc voltage
 def run_gpio_output_test(pin, enable, address, instruction):
 
     # Configure Bigfoot without load to adc
@@ -287,8 +289,12 @@ def run_gpio_output_test(pin, enable, address, instruction):
 
 
 # Description: Test ID #2 | GPIO Output Test /w Load
-# Accepts:
-# Returns:
+# Send Logic Voltage as Parameter (sets voltage based on BIT3-BIT0 of instruction)
+# (Approximate Values) 0.311 = 0x01 | 0.619	= 0x02 | ... | 3.08	= 0x0A | ... | 4.59	= 0x0F
+# instruction BIT7 controls facade test
+# Spec: 3.02 Voltage Under Load
+# Accepts: pin ID # | enable # | address # | enable ID # | instruction
+# Returns: Bigfoot adc
 def run_gpio_output_loading_test(pin, enable, address, instruction):
     # Configure Bigfoot with load
     bigfoot.adc_enable(1)
@@ -319,10 +325,12 @@ def run_gpio_output_loading_test(pin, enable, address, instruction):
     return adc
 
 
-# Description: Test ID #3 |
+# Description: Test ID #3 | Input Pull Up Resister Test
+# instruction BIT7 controls facade test
+# Spec: 3.03 Input Resistance Value & 3.04 Pull Up Test
 # ADC Load Resistor
-# Accepts:
-# Returns:
+# Accepts: pin ID # | enable # | address # | enable ID # | instruction
+# Returns: Bigfoot adc
 def run_gpio_input_pull_up_test(pin, enable, address, instruction):
 
     # Configure Bigfoot w/
@@ -355,10 +363,14 @@ def run_gpio_input_pull_up_test(pin, enable, address, instruction):
     return adc
 
 
-# Description: Test ID #4 |
+# Description: Test ID #4 | Input Pull Down Test
+# Send Voltage as Parameter (sets voltage based on BIT3-BIT0 of instruction)
+# (Approximate Values) 0.311 = 0x01 | 0.619	= 0x02 | ... | 3.08	= 0x0A | ... | 4.59	= 0x0F
+# instruction BIT7 controls facade test
+# Spec: 3.03 Input Resistance Value & 3.05 Pull Down Test
 # Configure DAC to Supply Voltage (To Test Internal Resistance)
-# Accepts:
-# Returns:
+# Accepts: pin ID # | enable # | address # | enable ID # | instruction
+# Returns: Bigfoot adc
 def run_gpio_input_pull_down_test(pin, enable, address, instruction):
 
     # Configure Bigfoot w/
@@ -366,7 +378,6 @@ def run_gpio_input_pull_down_test(pin, enable, address, instruction):
     bigfoot.adc_load(0)
     bigfoot.dac_enable(1)
     bigfoot.set_mux_add(1, enable, address)
-
 
     # Communication to Subject Serial
     # Configure input pull-downs
@@ -391,9 +402,13 @@ def run_gpio_input_pull_down_test(pin, enable, address, instruction):
     return adc
 
 
-# Description: Test ID #5 |
-# Accepts:
-# Returns:
+# Description: Test ID #5 | Input Logic Level Test
+# Send Voltage as Parameter (sets voltage based on BIT3-BIT0 of instruction)
+# (Approximate Values) 0.311 = 0x01 | 0.619	= 0x02 | ... | 3.08	= 0x0A | ... | 4.59	= 0x0F
+# instruction BIT7 controls facade test
+# Spec: 3.06 Input Logic Test
+# Accepts: pin ID # | enable # | address # | enable ID # | instruction
+# Returns: Bigfoot adc
 def run_gpio_input_logic_level_test(pin, enable, address, instruction):
 
     # Reset/Configure Bigfoot to Low Logic
@@ -425,10 +440,14 @@ def run_gpio_input_logic_level_test(pin, enable, address, instruction):
     return adc
 
 
-# Description: Test ID #6 |
+# Description: Test ID #6 | ADC Test
+# Send Voltage as Parameter (sets voltage based on BIT3-BIT0 of instruction)
+# (Approximate Values) 0.311 = 0x01 | 0.619	= 0x02 | ... | 3.08	= 0x0A | ... | 4.59	= 0x0F
+# instruction BIT7 controls facade test
+# Spec: 3.07 ADC Test
 # Pass in the voltage to use also
-# Accepts:
-# Returns:
+# Accepts: pin ID # | enable # | address # | enable ID # | instruction
+# Returns: Subject adc
 def run_adc_test(pin, enable, address, instruction):
 
     # Communication to Subject Serial to configure
@@ -460,14 +479,17 @@ def run_adc_test(pin, enable, address, instruction):
     return adc
 
 
-# Description: Test ID #7 |
-# Accepts:
-# Returns:
+# Description: Test ID #7 | Power Mode Test
+# Sleep Mode sent as 'Pin' to serial com.
+# instruction BIT7 controls facade test
+# Spec: 3.08 Power Modes
+# Accepts: sleep_mode (pin) ID # | instruction
+# Returns: Bigfoot current
 def run_power_mode_test(sleep_mode, instruction):
 
     # Configure Bigfoot
     bigfoot.dac_enable(0)
-    bigfoot.high_current(0)
+    bigfoot.high_current(1)
     bigfoot.low_current(0)
     # Always On
 
@@ -492,8 +514,9 @@ def run_power_mode_test(sleep_mode, instruction):
 
 
 # Description: Test ID #8 | Runs wake up test
-# Accepts:
-# Returns:
+# Accepts: pin ID # | enable # | address # | enable ID # | instruction
+# Spec: 3.08 Wakeup
+# Returns: Bigfoot current
 def run_wakeup_test(pin, enable, address, instruction):
     # Configure Bigfoot
     # Set Wakeup pin
