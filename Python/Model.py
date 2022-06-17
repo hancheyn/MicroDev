@@ -220,7 +220,7 @@ def serial_setup():
     test_bytes = subject_read(ser_=ser)
     close_serial(ser)
 
-    print(len(test_bytes))
+    # print(len(test_bytes))
     if len(test_bytes) == 3:
         if test_bytes[0] == s[0] and test_bytes[1] == s[1] and test_bytes[2] == s[2]:
             val = 1
@@ -690,7 +690,6 @@ def usb_list():
     # CLI call
     user = subprocess.getstatusoutput(f'whoami')
     mess = "ls /media/" + str(user[1])
-    # res_usb = subprocess.getstatusoutput(f'lsusb')
     res_usb = subprocess.getstatusoutput(mess)
 
     # Find USB Drives (Not STM Board)
