@@ -67,9 +67,9 @@ def controller_init(self, model1, view1, driver1):
 
 # ******************************** Subject Board I/O ************************************
 #
-# Description:
-# Accepts:
-# Returns:
+# Description: This will open a serial port
+# Accepts: NA
+# Returns: serial port
 def open_serial():
     ser = serial.Serial('/dev/ttyACM0', 115200)
     ser.flushInput()
@@ -77,16 +77,16 @@ def open_serial():
     return ser
 
 
-# Description:
-# Accepts:
-# Returns:
+# Description: Closes Serial Port
+# Accepts: serial port
+# Returns: NA
 def close_serial(ser):
     ser.close()
 
 
-# Description:
-# Accepts:
-# Returns:
+# Description: Writes Serial 3 byte array to Subject Board
+# Accepts: 3 byte array | open serial port
+# Returns: NA
 def subject_write(str_write, ser):
     try:
         # ser = serial.Serial('/dev/ttyACM0', 115200)
@@ -107,7 +107,7 @@ def subject_write(str_write, ser):
 
 # Description:
 # Accepts:
-# Returns:
+# Returns: data packet of 3 byte array
 def subject_read(ser_):
     try:
         # ser_ = serial.Serial('/dev/ttyACM0', 115200)
@@ -139,9 +139,9 @@ def subject_read(ser_):
 
 
 # CRC Decoding
-# Description:
-# Accepts:
-# Returns:
+# Description: CRC Fail
+# Accepts: 3 byte array | which value to decode
+# Returns: integer value of byte array
 def crc_decode(value, out_type):
 
     out = 0
@@ -172,9 +172,9 @@ def crc_decode(value, out_type):
 
 
 # CRC Encoding
-# Description:
-# Accepts:
-# Returns:
+# Description: Encodes the Value with CRC encoding
+# Accepts: Test ID # | Pin ID # | Instruction
+# Returns: 3 byte array value
 def crc_encode(test, pin, instruction):
 
     # CRC KEY => 0101 = 5
@@ -240,27 +240,31 @@ def serial_setup():
 # Returns: Test Results (voltage, logic, etc.)
 def run_subject_test(pin, enable, address, test, instruction):
 
+    # Conditional for Facade Test
+    if instruction >= 64:
+        print("facade")
+
     # Call Test function
     # Conditional for Test
     if test == 1:
-        run_gpio_output_test(pin, enable, address, instruction)
+        val = run_gpio_output_test(pin, enable, address, instruction)
     elif test == 2:
-        run_gpio_output_loading_test(pin, enable, address, instruction)
+        val = run_gpio_output_loading_test(pin, enable, address, instruction)
     elif test == 3:
-        run_gpio_output_loading_test(pin, enable, address, instruction)
+        val = run_gpio_output_loading_test(pin, enable, address, instruction)
     elif test == 4:
-        run_gpio_output_loading_test(pin, enable, address, instruction)
+        val = run_gpio_output_loading_test(pin, enable, address, instruction)
     elif test == 5:
-        run_gpio_output_loading_test(pin, enable, address, instruction)
+        val = run_gpio_output_loading_test(pin, enable, address, instruction)
     elif test == 6:
-        run_gpio_output_loading_test(pin, enable, address, instruction)
+        val = run_gpio_output_loading_test(pin, enable, address, instruction)
     elif test == 7:
-        run_gpio_output_loading_test(pin, enable, address, instruction)
+        val = run_gpio_output_loading_test(pin, enable, address, instruction)
     elif test == 8:
-        run_power_mode_test(pin, instruction)
+        val = run_power_mode_test(pin, instruction)
 
     # return results for specified pin
-    return 1
+    return val
 
 
 # Description: Test ID #1 | GPIO Output Test
@@ -594,10 +598,9 @@ def arrow_down_read():
 
 
 # ******************************** Command Line Interface ************************************
-#
-# Description:
-# Accepts:
-# Returns:
+# Description: Flashes the Subject Board
+# Accepts: board detected string (from board_list function)
+# Returns: NA
 def subject_flash(board):
 
     # ARDUINO UNO FLASH

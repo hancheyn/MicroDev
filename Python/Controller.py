@@ -48,6 +48,8 @@ controller = Controller
 view = View
 model = Model
 
+# Facade Macro
+Facade = 0
 
 # Initialize
 # controller.controller_init(controller, model, view, driver)
@@ -85,7 +87,16 @@ while True:
                 # Using readlines()
                 file1 = open('unoTest.config', 'r')
                 Lines = file1.readlines()
+                # Loop until end of file line array
                 print(Lines[1])
+                test = Lines[1].split(",")
+                print(test[0])
+                print(test[1])
+
+                # Facade
+                if Facade == 1:
+                    print("Facade")
+
 
 
 
