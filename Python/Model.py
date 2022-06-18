@@ -244,6 +244,8 @@ def run_subject_test(pin, enable, address, test, instruction):
     if instruction >= 64:
         print("facade")
 
+    val = 0
+
     # Call Test function
     # Conditional for Test
     if test == 1:

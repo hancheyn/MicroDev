@@ -13,40 +13,82 @@ from time import sleep
 import Model
 import View
 
+view = View
+model = Model
 
 ###################################################################################
-class Controller:
-    driver = None
-    view = None
 
-    def __init__(self):
-        print("init")
 
-    #
-    def init_model(self, view, driver):
-        print("model")
-        self.view = view
-        self.driver = driver
-        return None
+#
+def init_model(self, view, driver):
+    print("model")
+    self.view = view
+    self.driver = driver
+    return None
 
-    #
-    def wait_model(self):
-        print("wait")
-        return None
 
-    #
-    def display_model(self):
-        print("display")
-        self
-        return None
+#
+def wait_model(self):
+    print("wait")
+    return None
+
+
+#
+def display_model(self):
+    print("display")
+    return None
+
+
+# Description: For looping through serial check if communication works
+# Returns True only if serial communication is established
+def serial_check():
+    # While Loop Confirms Serial Connection
+    val = model.serial_setup()
+    count = 0
+    while val != 1 and count < 5:
+        val = model.serial_setup()
+        count = count + 1
+    if count < 5:
+        return True
+    return False
+
+
+# Description: Preforms Test Comparisons
+# Parameters: Test ID Int | Pin ID Int | Address Int | Enable Int | Board type String
+# Returns: Boolean Pass or Fail
+def subject_test(t, p, a, e, board):
+
+    # Gather Config Data from Config file of board type
+    if board_type == "Arduino Uno Detected":
+        file2 = open('unoThreshold.config', 'r')
+
+    lines2 = file1.readlines()
+
+    # Run tests and compare based on test configured values
+    if t == 1:
+        print("Test 1")
+        compare = lines2[1].split(",")
+
+        # Read adc value of logic high from micro
+        high = model.run_subject_test(p, e, a, t, 1)
+
+        # Read adc value of logic low from micro
+        low = model.run_subject_test(p, e, a, t, 0)
+
+        # Compare to Config threshold and Return Pass or Fail Boolean
+        if float(compare[1]) < high and float(compare[2]) > low:
+            return True
+        return False
+
+    elif t == 2:
+        print("Test 2")
+
+    return False
 
 
 # ###############################################################################
 # MAIN LOOP
 # ###############################################################################
-controller = Controller
-view = View
-model = Model
 
 # Facade Macro
 Facade = 0
@@ -74,31 +116,34 @@ while True:
     # Loop Through Config File
     # Test Conditions In Loop
     if start:
-        if board_type == "Arduino Uno Detected":
-            model.subject_flash(board_type)
-            val = model.serial_setup()
-            count = 0
-            while val != 1 and count < 5:
-                val = model.serial_setup()
-                count = count + 1
 
-            if count < 5:
-                # Read Config | Loop Through Tests
-                # Using readlines()
+        model.subject_flash(board_type)
+
+        # While Loop Confirms Serial Connection
+        if serial_check():
+            # Read Config | Loop Through Tests
+            # Using readlines()
+            if board_type == "Arduino Uno Detected":
                 file1 = open('unoTest.config', 'r')
-                Lines = file1.readlines()
-                # Loop until end of file line array
-                print(Lines[1])
-                test = Lines[1].split(",")
-                print(test[0])
-                print(test[1])
+            elif board_type == "STM32F411 Detected":
+                file1 = open('stm32f411Test.config', 'r')
+            else:
+                file1 = open('unoTest.config', 'r')
+            Lines = file1.readlines()
+            test_count = len(Lines)
+            loop_count = 1
 
-                # Facade
-                if Facade == 1:
-                    print("Facade")
+            # Facade ?
+            if Facade == 1:
+                print("Facade")
 
-
-
+            res = [False for i in range(test_count-1)]
+            # Loop until end of file line array
+            while loop_count < test_count:
+                print(Lines[loop_count])
+                test = Lines[loop_count].split(",")
+                # res[loop_count-1] = subject_test(int(test[0]), int(test[1]), int(test[2]), int(test[3]), board_type)
+                loop_count = loop_count + 1
 
     # End of Test Screen
     # Save Condition States
