@@ -103,8 +103,10 @@ Facade = 0
 while True:
 
     # Wait for Subject Board Connection / Shutdown Screen
-    # Check Board Type | Save Variable
+    # Check Board Type | Save Variable | Blocking Loop
+    # FIX: MOVE TO MODEL // OR ADD BUTTON CONDITION
     cont = 1
+    board_type = model.board_list()
     while cont == 1:
         board_type = model.board_list()
         if board_type == "No Boards Detected" or board_type == "Overflow":
@@ -112,6 +114,7 @@ while True:
         else:
             cont = 0
             print(board_type)
+    #################
 
     # Start Menu Screen Function
     # FIX: States Controlled by View?
@@ -120,6 +123,7 @@ while True:
     # Start Test Condition
     # Loop Through Config File
     # Test Conditions In Loop
+    # FIX MOVE START TEST to FUNCTION?
     if start:
 
         model.subject_flash(board_type)
