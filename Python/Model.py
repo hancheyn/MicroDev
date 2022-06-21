@@ -618,6 +618,11 @@ def subject_flash(board):
         res = subprocess.getstatusoutput(
             f'st-flash write Flash/stmf401.bin 0x08000000')
 
+    # STM32F446 FLASH
+    elif board == "STM32F446 Detected":
+        res = subprocess.getstatusoutput(
+            f'st-flash write Flash/stmf446.bin 0x08000000')
+
     print(res)
 
 

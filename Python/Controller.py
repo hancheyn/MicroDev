@@ -59,10 +59,14 @@ def serial_check():
 def subject_test(t, p, a, e, board):
 
     # Gather Config Data from Config file of board type
-    if board_type == "Arduino Uno Detected":
+    if board == "Arduino Uno Detected":
         file2 = open('unoThreshold.config', 'r')
+    elif board == "STM32F446 Detected":
+        file2 = open('stm32f411Threshold.config', 'r')
+    else:
+        return False
 
-    lines2 = file1.readlines()
+    lines2 = file2.readlines()
 
     # Run tests and compare based on test configured values
     if t == 1:
@@ -110,6 +114,7 @@ while True:
             print(board_type)
 
     # Start Menu Screen Function
+    # FIX: States Controlled by View?
     start = True
 
     # Start Test Condition
@@ -143,6 +148,7 @@ while True:
                 print(Lines[loop_count])
                 test = Lines[loop_count].split(",")
                 # res[loop_count-1] = subject_test(int(test[0]), int(test[1]), int(test[2]), int(test[3]), board_type)
+                # print(res[loop_count-1])
                 loop_count = loop_count + 1
 
     # End of Test Screen
