@@ -9,6 +9,7 @@
 # Corey
 # #################################################
 
+import os
 import threading
 import time
 from tkinter import *
@@ -74,9 +75,7 @@ class View:
 # Used to run the View module independently for testing purposes
 if __name__ == '__main__':
     view = View()
-    view.setStandbyScreen()
-    time.sleep(5)
-    view.setStartScreen()
-    while 1:
+    os.fork()
+    while True:
         continue
 
