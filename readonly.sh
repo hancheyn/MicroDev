@@ -18,6 +18,7 @@ sudo dpkg --purge rsyslog
 # FIX: Change Line in /boot/cmdline.txt tofastboot noswap ro
 echo "Manually Disable Swap"
 read -p "Ready to Proceed? (press enter)" yn
+sudo cat cmdline.txt > /boot/cmdline.txt
 
 # Move from /var to /tmp
 sudo rm -rf /var/lib/dhcp /var/lib/dhcpcd5 /var/run /var/spool /var/lock /etc/resolv.conf
@@ -34,6 +35,7 @@ sudo ln -s /tmp/dhcpcd.resolv.conf /etc/resolv.conf
 echo "Manually Edit Lock File"
 read -p "Ready to Proceed? (press enter)" yn
 
+
 # Readonly Random Seed
 sudo rm /var/lib/systemd/random-seed
 sudo ln -s /tmp/random-seed /var/lib.systemd/random-seed
@@ -42,6 +44,7 @@ sudo ln -s /tmp/random-seed /var/lib.systemd/random-seed
 # FIX; 
 echo "Manually Edit Service Configuration File"
 read -p "Ready to Proceed? (press enter)" yn
+sudo cat systemd-random-seed.service > /lib/systemd/system/systemd-random-seed.service
 
 sudo systemctl daemon-reload
 
@@ -49,6 +52,7 @@ sudo systemctl daemon-reload
 # FIX
 echo "Manually Edit File System Configuration"
 read -p "Ready to Proceed? (press enter)" yn
+sudo cat fstab > /etc/fstab
 
 # RO to RW Switch
 sudo cat set_bash >> /etc/bash.bashrc

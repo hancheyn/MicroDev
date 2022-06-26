@@ -298,6 +298,7 @@ def run_gpio_output_test(pin, enable, address, instruction):
 
     # Read Bigfoot ADC
     # adc = bigfoot.rpi_i2c_adc()
+    time.sleep(0.01)
     if crc_decode(test_bytes, 0) == 0:
         adc = -1
     else:
@@ -339,6 +340,7 @@ def run_gpio_output_loading_test(pin, enable, address, instruction):
 
     # Read Bigfoot ADC
     # adc = bigfoot.rpi_i2c_adc()
+    time.sleep(0.01)
     if crc_decode(test_bytes, 0) == 0:
         adc = -1
     else:
@@ -382,6 +384,7 @@ def run_gpio_input_pull_up_test(pin, enable, address, instruction):
 
     # Read Bigfoot ADC Voltage
     # adc = bigfoot.rpi_i2c_adc()
+    time.sleep(0.01)
     if crc_decode(test_bytes, 0) == 0:
         adc = -1
     else:
@@ -424,6 +427,7 @@ def run_gpio_input_pull_down_test(pin, enable, address, instruction):
 
     # Read Bigfoot ADC Voltage
     # adc = bigfoot.rpi_i2c_adc()
+    time.sleep(0.01)
     if crc_decode(test_bytes, 0) == 0:
         adc = -1
     else:
@@ -466,6 +470,7 @@ def run_gpio_input_logic_level_test(pin, enable, address, instruction):
     print(output)
 
     # ADC
+    time.sleep(0.01)
     if crc_decode(test_bytes, 0) == 0:
         adc = -1
     else:
@@ -509,6 +514,7 @@ def run_adc_test(pin, enable, address, instruction):
 
     # Communication to Subject Serial to read ADC
     # ADC
+    time.sleep(0.01)
     if crc_decode(test_bytes, 0) == 0:
         adc = -1
     else:
@@ -547,7 +553,7 @@ def run_power_mode_test(pin, instruction):
 
     # Read Bigfoot Low Current Sensor
     # TIME DELAY
-    time.sleep(1)
+    time.sleep(0.01)
     current = bigfoot.rpi_i2c_ina219()
 
     # return pass or fail of test
@@ -574,6 +580,7 @@ def run_wakeup_test(pin, enable, address, instruction):
     # TIME DELAY?
 
     # Red Bigfoot Low Current Sensor
+    time.sleep(0.01)
     current = bigfoot.rpi_i2c_ina219()
 
     # return pass or fail of test
