@@ -640,8 +640,11 @@ def board_list():
     boards = len(ARD)
 
     # No Board Detection
-    if boards <= 2:
+    if boards < 2:
         return "No Boards Detected"
+
+    elif boards == 2:
+        print("Internet Disconnected")
 
     # Arduino Uno Detection
     elif boards == 3 or boards == 4:

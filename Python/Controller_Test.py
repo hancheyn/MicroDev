@@ -1,6 +1,7 @@
 import unittest
 import time
-import Controller
+import Controller as controller
+import Model as model
 
 
 # ###### Debugging Test Example ################# #
@@ -12,3 +13,7 @@ class MyTestCase(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+# Testing Subject Board Tests
+board = model.board_list()
+controller.subject_test(1, 23, 6, 3, board)
