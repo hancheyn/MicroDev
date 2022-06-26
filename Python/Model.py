@@ -367,6 +367,10 @@ def run_gpio_input_pull_up_test(pin, enable, address, instruction):
     bigfoot.adc_load(1)
     bigfoot.set_mux_add(1, enable, address)
 
+    # FIX: Configure DAC
+    bigfoot.dac_enable(1)
+    bigfoot.rpi_i2c_dac(instruction)
+
     # Communication to Subject Serial
     # Configure input pull-ups
     # Returns Subject Input Read
@@ -381,7 +385,6 @@ def run_gpio_input_pull_up_test(pin, enable, address, instruction):
 
     # Configure Bigfoot w/
     bigfoot.adc_enable(1)
-
     # Read Bigfoot ADC Voltage
     # adc = bigfoot.rpi_i2c_adc()
     time.sleep(0.01)
@@ -392,6 +395,7 @@ def run_gpio_input_pull_up_test(pin, enable, address, instruction):
 
     # return pass or fail of test
     bigfoot.adc_enable(0)
+    bigfoot.dac_enable(0)
     bigfoot.set_mux_add(0, 0, 0)
     print("test 3")
     return adc
@@ -412,6 +416,10 @@ def run_gpio_input_pull_down_test(pin, enable, address, instruction):
     bigfoot.adc_load(0)
     bigfoot.dac_enable(1)
     bigfoot.set_mux_add(1, enable, address)
+
+    # FIX: Configure DAC
+    bigfoot.dac_enable(1)
+    bigfoot.rpi_i2c_dac(instruction)
 
     # Communication to Subject Serial
     # Configure input pull-downs
@@ -502,6 +510,8 @@ def run_adc_test(pin, enable, address, instruction):
     # Configure Bigfoot to reset Subject ADC pins
     # Enable DAC
     bigfoot.dac_enable(1)
+    bigfoot.rpi_i2c_dac(instruction)
+
     # Set DAC to first configuration instruction
     # .encode([test], [pin], [instruction])
     s = crc_encode(0x06, pin, instruction)
@@ -521,6 +531,7 @@ def run_adc_test(pin, enable, address, instruction):
         adc = int(test_bytes[1])
 
     # return pass or  fail of test
+    bigfoot.dac_enable(0)
     bigfoot.set_mux_add(0, 0, 0)
     print("test 6")
     return adc

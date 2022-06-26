@@ -62,7 +62,7 @@ def subject_test(t, p, a, e, board):
     if board == "Arduino Uno Detected":
         file2 = open('unoThreshold.config', 'r')
     elif board == "STM32F446 Detected":
-        file2 = open('stm32f411Threshold.config', 'r')
+        file2 = open('stm32f4Threshold.config', 'r')
     else:
         return False
 
@@ -86,6 +86,22 @@ def subject_test(t, p, a, e, board):
 
     elif t == 2:
         print("Test 2")
+        compare = lines2[2].split(",")
+
+        # Read adc value of logic high from micro
+        high = model.run_subject_test(p, e, a, t, 1)
+
+        # Read adc value of logic low from micro
+        low = model.run_subject_test(p, e, a, t, 0)
+
+        # Compare to Config threshold and Return Pass or Fail Boolean
+        if float(compare[1]) < high and float(compare[2]) > low:
+            return True
+        return False
+
+    elif t == 3:
+        print("Test 3")
+        return False
 
     return False
 
@@ -135,7 +151,7 @@ while True:
             if board_type == "Arduino Uno Detected":
                 file1 = open('unoTest.config', 'r')
             elif board_type == "STM32F411 Detected":
-                file1 = open('stm32f411Test.config', 'r')
+                file1 = open('stm32f4Test.config', 'r')
             else:
                 file1 = open('unoTest.config', 'r')
             Lines = file1.readlines()
