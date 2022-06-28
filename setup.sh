@@ -10,4 +10,8 @@ export PATH=$PATH:$f/bin/
 arduino-cli core install arduino:avr
 arduino-cli board list
 
+# Setup the I2C / Bigfoot Libraries
+sudo pip3 install smbus
+sudo pip3 install board
+sudo pip3 install adafruit-circuitpython-ina219
 
