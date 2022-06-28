@@ -7,8 +7,13 @@ curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.
 
 f=$(pwd)
 export PATH=$PATH:$f/bin/
+
+sudo cp $f/bin/arduino-cli /bin
+
 arduino-cli core install arduino:avr
 arduino-cli board list
+
+
 
 # Setup the I2C / Bigfoot Libraries
 sudo pip3 install smbus
