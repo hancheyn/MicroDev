@@ -6,7 +6,7 @@ cp Python/Integration/Bigfoot.py Python
 curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
 
 f=$(pwd)
-export PATH=$PATH:$f/bin/arduino-cli
+export PATH=$PATH:$f/bin/
 arduino-cli core install arduino:avr
 arduino-cli board list
 
