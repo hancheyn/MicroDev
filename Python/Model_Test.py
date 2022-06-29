@@ -13,7 +13,13 @@ class MyTestCase(unittest.TestCase):
 class BoardTests(unittest.TestCase):
     # 1.1 Tests Subject Board Functionality for Test #1
     def test_run_gpio_output(self):
-        model.run_subject_test(1, 1, 1)
+        ser = model.open_serial()
+        time.sleep(2)
+        # Test LED Pin
+        model.run_subject_test(23, 3, 6, 1, 1, ser)
+        time.sleep(0.01)
+        model.run_subject_test(23, 3, 6, 1, 0, ser)
+        model.close_serial(ser)
         print("test")
         self.assertEqual(True, True, "Failed Test")
 
@@ -23,44 +29,40 @@ class BoardTests(unittest.TestCase):
         print("test")
         self.assertEqual(True, True, "Failed Test")
 
-    # 1.3 Tests Subject Board Functionality for Test #3
-    def test_run_gpio_input_resistance(self):
-
-        print("test")
-        self.assertEqual(True, True, "Failed Test")
-
-    # 1.4 Tests Subject Board Functionality for Test #4
+    # 1.3 Tests Subject Board Functionality for Test #4
     def test_gpio_input_pull_up(self):
 
         print("test")
         self.assertEqual(True, True, "Failed Test")
 
-    # 1.5 Tests Subject Board Functionality for Test #5
+    # 1.4 Tests Subject Board Functionality for Test #5
     def test_gpio_input_pull_down(self):
 
         print("test")
         self.assertEqual(True, True, "Failed Test")
 
-    # 1.6 Tests Subject Board Functionality for Test #6
+    # 1.5 Tests Subject Board Functionality for Test #6
     def test_run_gpio_input_logic_level(self):
 
         print("test")
         self.assertEqual(True, True, "Failed Test")
 
-    # 1.7 Tests Subject Board Functionality for Test #7
+    # 1.6 Tests Subject Board Functionality for Test #7
     def test_run_adc(self):
 
         print("test")
         self.assertEqual(True, True, "Failed Test")
 
-    # 1.8 Tests Subject Board Functionality for Test #8
+    # 1.7 Tests Subject Board Functionality for Test #8
     def test_run_power_mode(self):
-
+        ser = model.open_serial()
+        time.sleep(2)
         # Activates Desired Sleep Mode
-        model.run_power_mode_test(1, 3)
+        model.run_power_mode_test(1, 3, ser)
+        model.close_serial(ser)
         self.assertEqual(True, True, "Failed Test")
 
-    # 1.9 Tests Subject Board Functionality for Test #9
+    # 1.8 Tests Subject Board Functionality for Test #9
     def test_run_wakeup(self):
 
         print("test")

@@ -22,7 +22,6 @@ int configure_analog_input(unsigned int pin);
 void configure_sleep_mode(unsigned int sleepmode, unsigned int interruptPin);
 void wakeUp();
 
-
 /* Facade and Actual Function Pointer Prototypes */
 void (*test) (uint8_t, uint8_t);
 void (*p_pinMode) (uint8_t, uint8_t);
@@ -30,12 +29,11 @@ void (*p_digitalWrite) (uint8_t, uint8_t);
 void (*p_analogWrite) (uint8_t, uint8_t);
 int (*p_digitalRead) (unsigned char);
 int (*p_analogRead) (unsigned char);
-//sleep modes pointers?
+// sleep modes pointers?
 
 /* Global Variables */
 unsigned char RMSG[3];
 unsigned int test_result;
-
 
 /* Runs once upon startup of the program */
 void setup() {
@@ -58,37 +56,53 @@ void setup() {
 /* Runs repeatedly after setup has completed */
 void loop() {
 
-    if (Serial.available() > 2) { //Serial.available() returns the number of bytes read
+    if (Serial.available() > 0) { //Serial.available() returns the number of bytes read
+        delay(50); //NEEDED
+        
         //Write Test
         command_read(RMSG);
-        //delay(50); //delay not needed...?
 
         if(crc_decode(RMSG)){
             //Interpret Instructions
             //RMSG[0] = pin under test, RMSG[1] = Special Instructions, RMSG[2] = Test Identification
             switch (RMSG[2]) { // Test Identification #
-                case 1:
+                case 1: 
                     configure_output(RMSG[0]);
+                    command_write(RMSG[0], RMSG[1], RMSG[2]);
                     break;
                 case 2:
-                    test_result = configure_input(RMSG[0]);
-                    command_write(RMSG[0], test_result, RMSG[2]);
+                    configure_output(RMSG[0]);
+                    command_write(RMSG[0], RMSG[1], RMSG[2]);
                     break;
                 case 3:
                     configure_input_pullup(RMSG[0]);
+                    command_write(RMSG[0], RMSG[1], RMSG[2]);
                     break;
                 case 4:
+                    // configure pull down (does not exist for arduino)
+                    command_write(RMSG[0], RMSG[1], RMSG[2]);
+                    break;
+                case 5:
+                    test_result = configure_input(RMSG[0]);
+                    command_write(RMSG[0], test_result, RMSG[2]);
+                    break;
+                case 6:
                     test_result = configure_analog_input(RMSG[0]);
                     command_write(RMSG[0], test_result, RMSG[2]);
                     break;
-                case 5:
+                case 7:
                     configure_sleep_mode(RMSG[1], RMSG[0]); //send sleepmode & pin#
+                    command_write(RMSG[0], RMSG[1], RMSG[2]);
                     break;
                 default:
+                    command_write(RMSG[0], RMSG[1], RMSG[2]);
                     break;
             }
             //Send Back Results
             //command_write(RMSG[0], RMSG[1], RMSG[2]);
+        }
+        else {
+          command_write(RMSG[0], RMSG[1], RMSG[2]);
         }
     }
 }
