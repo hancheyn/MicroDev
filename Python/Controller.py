@@ -176,14 +176,11 @@ def subject_test(t, p, a, e, board, _ser):
         # Read adc from subject board
         # Instruction is in config
         while test_num < test_len:
-            instruct = compare[1]
+            instruct = int(compare[test_num])
             subject_adc_high = model.run_subject_test(p, e, a, t, instruct, _ser)
             print(subject_adc_high)
-
             # convert instruction to voltage
-
             # compare subject voltage to dac voltage
-
             test_num = test_num + 1
 
         if condition_success:
