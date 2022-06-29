@@ -103,6 +103,26 @@ def subject_test(t, p, a, e, board):
         print("Test 3")
         return False
 
+    elif t == 4:
+        print("Test 3")
+        return False
+
+    elif t == 5:
+        print("Test 3")
+        return False
+
+    elif t == 6:
+        print("Test 3")
+        return False
+
+    elif t == 7:
+        print("Test 3")
+        return False
+
+    elif t == 8:
+        print("Test 3")
+        return False
+
     return False
 
 
@@ -150,8 +170,9 @@ while True:
             # Using readlines()
             if board_type == "Arduino Uno Detected":
                 file1 = open('unoTest.config', 'r')
-            elif board_type == "STM32F411 Detected":
+            elif board_type == "STM32F411 Detected" or board_type == "STM32F446 Detected":
                 file1 = open('stm32f4Test.config', 'r')
+
             else:
                 file1 = open('unoTest.config', 'r')
             Lines = file1.readlines()
