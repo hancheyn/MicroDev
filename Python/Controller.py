@@ -222,17 +222,25 @@ def subject_test(t, p, a, e, board, _ser):
 Facade = 0
 
 # Initialize
-# controller.controller_init(controller, model, view, driver)
-# model.init_model(model, view, driver)
+# Fork | Pipe View
+
+
+# New test
 while True:
+
+    # Assign -> View Standby Screen
 
     # Wait for Subject Board Connection / Shutdown Screen
     # Check Board Type | Save Variable | Blocking Loop
     board_type = model.board_wait()
 
+    # Assign -> View Start Test Screen
+
     # Start Menu Screen Function
-    # FIX: States Controlled by View?
+    # FIX: States Controlled by View -> button input
     start = True
+
+    # Assign -> View Testing Screen
 
     # Start Test Condition
     # Loop Through Config File
@@ -253,15 +261,17 @@ while True:
             if Facade == 1:
                 print("Facade")
 
-            res = [False for i in range(test_count-1)]
+            res = [False for i in range(test_count - 1)]
 
             # Loop until end of file line array | Open Serial
+            # Try Except Thing / Exception
             ser = model.open_serial()
             sleep(2)
 
             while loop_count < test_count:
                 test = Lines[loop_count].split(",")
-                res[loop_count-1] = subject_test(int(test[0]), int(test[1]), int(test[2]), int(test[3]), board_type, ser)
+                res[loop_count - 1] = subject_test(int(test[0]), int(test[1]), int(test[2]), int(test[3]), board_type,
+                                                   ser)
                 # print(res[loop_count-1])
                 print("Test#,PinID,Address,Enable: " + str(Lines[loop_count]))
                 loop_count = loop_count + 1
@@ -278,5 +288,10 @@ while True:
     # Loop
     print("Flash")
     sleep(5)
+
+    # NEW LOOP
+    # Assign -> View General Results Screen with 3 button inuputs
+
+
 
 
