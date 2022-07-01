@@ -91,7 +91,7 @@ def subject_write(str_write, ser):
     try:
         # ser = serial.Serial('/dev/ttyACM0', 115200)
         # Writes byte array
-        print(str_write)
+        # print(str_write)
         ser.write(str_write)  # write a string
         # read acknowledge byte to continue
         # ser.close()
@@ -111,7 +111,7 @@ def subject_write(str_write, ser):
 def subject_read(ser_):
     try:
         # ser_ = serial.Serial('/dev/ttyACM0', 115200)
-        print(ser_.portstr)  # check which port was really used
+        # print(ser_.portstr)  # check which port was really used
 
         # Read Byte array
         data = bytearray(3)
@@ -122,7 +122,7 @@ def subject_read(ser_):
         data = ser_.read(3)
 
         # Debugging
-        print(data)
+        # print(data)
 
        # parse info for correct start and stop characters then send Acknowledge
        # ser_.close()
@@ -290,7 +290,6 @@ def run_gpio_output_test(pin, enable, address, instruction, ser):
     s = crc_encode(0x01, pin, instruction)
     # ser = open_serial()
 
-    #time.sleep(2)
     subject_write(str_write=s, ser=ser)
     test_bytes = subject_read(ser_=ser)
     # close_serial(ser)
@@ -365,7 +364,7 @@ def run_gpio_input_pull_up_test(pin, enable, address, instruction, ser):
 
     # Configure Bigfoot w/
     bigfoot.adc_enable(1)
-    bigfoot.adc_load(1)
+    bigfoot.adc_load(0)
     bigfoot.set_mux_add(1, enable, address)
 
     # FIX: Configure DAC
@@ -463,6 +462,14 @@ def run_gpio_input_logic_level_test(pin, enable, address, instruction, ser):
     bigfoot.dac_enable(1)
     bigfoot.adc_load(0)
     bigfoot.rpi_i2c_dac(1)
+
+    # Init Pins | Communication to Subject Serial
+    # .encode([test], [pin], [instruction])
+    s = crc_encode(0x05, pin, instruction)
+    subject_write(str_write=s, ser=ser)
+    test_bytes = subject_read(ser_=ser)
+    output = crc_decode(test_bytes, 2)
+
     bigfoot.set_mux_add(1, enable, address)
 
     # Configure Bigfoot to high logic
@@ -471,12 +478,10 @@ def run_gpio_input_logic_level_test(pin, enable, address, instruction, ser):
     # Communication to Subject Serial
     # .encode([test], [pin], [instruction])
     s = crc_encode(0x05, pin, instruction)
-    # ser = open_serial()
     subject_write(str_write=s, ser=ser)
     test_bytes = subject_read(ser_=ser)
-    # close_serial(ser)
-    output = crc_decode(test_bytes, 2)
-    print(output)
+    output = crc_decode(test_bytes, 3)
+    print("Logic: " + output)
 
     # ADC
     time.sleep(0.02)
@@ -488,7 +493,6 @@ def run_gpio_input_logic_level_test(pin, enable, address, instruction, ser):
     # return pass or fail of test
     bigfoot.dac_enable(0)
     bigfoot.set_mux_add(0, 0, 0)
-    print("test")
     return adc
 
 
@@ -520,8 +524,8 @@ def run_adc_test(pin, enable, address, instruction, ser):
     subject_write(str_write=s, ser=ser)
     test_bytes = subject_read(ser_=ser)
     # close_serial(ser)
-    output = crc_decode(test_bytes, 2)
-    print(output)
+    output = crc_decode(test_bytes, 3)
+    print("ADC val: " + output)
 
     # Communication to Subject Serial to read ADC
     # ADC

@@ -24,10 +24,6 @@ bus = smbus.SMBus(1)
 
 # BASIC EXAMPLES
 GPIO.setwarnings(False)
-#GPIO.setmode(GPIO.BCM)
-#GPIO.setup(4, GPIO.OUT)
-#GPIO.setup(22,GPIO.IN)
-#GPIO.output(4,GPIO.input(22))
 
 # set_mux_add
 # Enable Mux  state = 1
@@ -74,8 +70,8 @@ def set_mux_add(state, enable, add):
 		
 	# Conditional for state [on or off]
 	if state==1:
-		#convert add to binary 
-		#conditional for each add bit
+		# convert add to binary
+		# conditional for each add bit
 		if (add & 1) == 1:
 			GPIO.output(16, GPIO.HIGH)
 			#print("bit0")
@@ -108,8 +104,6 @@ def set_mux_add(state, enable, add):
 		print("gpios off")
 	
 
-
-
 # I2C Communication ??
 def rpi_i2c_config():
 	
@@ -129,40 +123,36 @@ def rpi_i2c_config():
 	GPIO.setwarnings(False)
 	low_current(0)
 	high_current(0)
-	#rpi_i2c_ina219(0)	
+	# rpi_i2c_ina219(0)
 	
-	print("i2c config")
-	
+	print("i2c config complete")
+
+
 # ADC
 def rpi_i2c_adc():
-	#0x4D ADDRESS? 0x48
-	#Read 1st byte 
-	#read second byte with read_i2c block data
+	# 0x4D ADDRESS? 0x48
+	# Read 1st byte
+	# read second byte with read_i2c block data
 	read_byte = bus.read_byte(0x4C)
-	#time.sleep(1)
 	read_word = bus.read_word_data(0x4C, 0)
 	
-	#combine first and second byte
+	# combine first and second byte
 	read = ((read_word & 0xFF) << 8) | ((read_word & 0xFF00) >> 8)
 	read = read >> 2
-	
-	#Convert into Voltage
-	#print(read_byte)
-	#print(read_word)	
-	print((read * 5.2) / 1023.0)
+
+	# Convert into Voltage
+	print("ADC VAL" + (read * 5.2) / 1023.0)
 	read = (read * 5.2) / 1023.0
-	print("adc")
 	return read
+
 
 # DAC	
 def rpi_i2c_dac(val):
-	#0x0D ADDRESS
-	
+	# 0x0D ADDRESS
 	write = bus.write_word_data(0x0D, val, 0x03)
+	print("dac set")
 
-	#print(read)
-	print("dac")
-	
+
 # REF: rototron.info/raspberry-pi-ina219-tutorial/
 def rpi_i2c_ina219(shunt):
 	
@@ -191,6 +181,7 @@ def rpi_i2c_ina219(shunt):
 	print(current)
 	return current
 
+
 # High Current
 # GPIO 17
 # Enable: state = 1
@@ -203,7 +194,6 @@ def high_current(state):
 		GPIO.output(17, GPIO.HIGH)
 	else:
 		GPIO.output(17, GPIO.LOW)
-		
 	# print("high current test")
 
 
@@ -221,8 +211,7 @@ def low_current(state):
 	else:
 		GPIO.output(27, GPIO.LOW)
 
-	
-	
+
 # DAC Enable
 # GPIO 22
 # Enable: state = 1
@@ -236,7 +225,6 @@ def dac_enable(state):
 		GPIO.output(22, GPIO.HIGH)
 	else:
 		GPIO.output(22, GPIO.LOW)
-
 
 
 # ADC with LOAD
@@ -254,7 +242,6 @@ def adc_load(state):
 		GPIO.output(10, GPIO.LOW)
 
 
-
 # ADC without LOAD
 # GPIO 9
 # Enable: state = 1
@@ -270,21 +257,4 @@ def adc_enable(state):
 		GPIO.output(9, GPIO.LOW)
 
 
-
-#rpi_i2c_config()
-#low_current(1)
-#high_current(0)
-
-#adc_enable(1)
-#dac_enable(1)
-#adc_load(1)
-#time.sleep(2)
-#rpi_i2c_ina219(1)
-
-#rpi_i2c_dac(0x00)
-#time.sleep(2)
-#rpi_i2c_adc()
-
-#set_mux_add(0, 0, 0)
-
-print("end of test")
+print("End of Bigfoot Init")

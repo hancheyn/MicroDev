@@ -88,7 +88,7 @@ def subject_test(t, p, a, e, board, _ser):
 
     # Run tests and compare based on test configured values
     if t == 1:
-        print("Test 1")
+        print("Test 1: Output without Load")
         compare = lines2[1].split(",")
 
         # Read adc value of logic high from micro
@@ -103,7 +103,7 @@ def subject_test(t, p, a, e, board, _ser):
         return False
 
     elif t == 2:
-        print("Test 2")
+        print("Test 2: Output w/ Load")
         compare = lines2[2].split(",")
 
         # Read adc value of logic high from micro
@@ -118,22 +118,21 @@ def subject_test(t, p, a, e, board, _ser):
         return False
 
     elif t == 3:
-        print("Test 3")
+        print("Test 3: Pull-Up Input")
 
-        # Read adc value at threshold voltage
+        # Read adc value at threshold voltage Pull Up Test
         # Instruction depends on logic level (controls dac)
         if logic == 5:
-            adc3 = model.run_subject_test(p, e, a, t, 0x0F, _ser)
+            adc3 = model.run_subject_test(p, e, a, t, 0x00, _ser)
         else:
-            adc3 = model.run_subject_test(p, e, a, t, 0x0A, _ser)
+            adc3 = model.run_subject_test(p, e, a, t, 0x00, _ser)
 
         # calculation with adc to pull down resistance value
-        print("test adc: ")
-        print(adc3)
+        print("Test adc val: " + adc3)
         return False
 
     elif t == 4:
-        print("Test 4")
+        print("Test 4: Pull-Down Input")
 
         # Read adc value at threshold voltage
         if logic == 5:
@@ -142,12 +141,11 @@ def subject_test(t, p, a, e, board, _ser):
             adc4 = model.run_subject_test(p, e, a, t, 0x0A, _ser)
 
         # calculation with adc to pull down resistance value
-        print("test adc: ")
-        print(adc4)
+        print("Test adc val: " + adc4)
         return False
 
     elif t == 5:
-        print("Test 5")
+        print("Test 5: Input Logic")
 
         # Read digital pin from subject board
         if logic == 5:
@@ -157,14 +155,15 @@ def subject_test(t, p, a, e, board, _ser):
 
         # Read Digital Pin Low
         subject_input_low = model.run_subject_test(p, e, a, t, 0, _ser)
-        print(subject_input_high)
+        print("Logic High: " + subject_input_high)
+        print("Logic Low: " + subject_input_low)
 
         if 1 == subject_input_high and 0 == subject_input_low:
             return True
         return False
 
     elif t == 6:
-        print("Test 6")
+        print("Test 6: ADC Check")
         compare = lines2[t].split(",")
 
         test_num = 1
