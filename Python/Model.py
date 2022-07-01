@@ -261,7 +261,7 @@ def run_subject_test(pin, enable, address, test, instruction, ser):
     elif test == 6:
         val = run_adc_test(pin, enable, address, instruction, ser)
     elif test == 7:
-        val = run_power_mode_test(pin, instruction, ser)
+        val = run_power_mode_test(pin, enable, ser)
     elif test == 8:
         val = run_wakeup_test(pin, enable, address, instruction)
 
@@ -515,6 +515,7 @@ def run_adc_test(pin, enable, address, instruction, ser):
     # Enable DAC
     bigfoot.dac_enable(1)
     bigfoot.rpi_i2c_dac(instruction)
+    time.sleep(0.02)
 
     # Set DAC to first configuration instruction
     # .encode([test], [pin], [instruction])
@@ -595,7 +596,7 @@ def run_wakeup_test(pin, enable, address, instruction):
     # TIME DELAY?
 
     # Red Bigfoot Low Current Sensor
-    time.sleep(0.02)
+    time.sleep(0.1)
     current = bigfoot.rpi_i2c_ina219()
 
     # return pass or fail of test

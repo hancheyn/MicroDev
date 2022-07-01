@@ -179,7 +179,7 @@ def subject_test(t, p, a, e, board, _ser):
         while test_num < test_len:
             instruct = int(compare[test_num])
             subject_adc_high = model.run_subject_test(p, e, a, t, instruct, _ser)
-            print("ADC Return Value " + str(test_num) + ": " + str(subject_adc_high))
+            print("ADC Return Value: " + str(test_num) + ": " + str(subject_adc_high))
             # convert instruction to voltage
             # compare subject voltage to dac voltage
             test_num = test_num + 1
@@ -189,23 +189,24 @@ def subject_test(t, p, a, e, board, _ser):
         return False
 
     elif t == 7:
-        print("Test 7")
+        print("Test 7: Set Power Mode")
 
         # Reads current
         # Instruction is in config
-        current = model.run_subject_test(p, e, a, t, 0, _ser)
 
+        current = model.run_subject_test(p, e, a, t, 0, _ser)
+        print("Current Val: " + str(current))
         # compare subject current to threshold
 
         return False
 
     elif t == 8:
-        print("Test 8")
+        print("Test 8: Wakeup From Sleep")
 
         # Reads current
         # Instruction is in config
         current = model.run_subject_test(p, e, a, t, 0, _ser)
-
+        print("Current Val: " + str(current))
         # compare subject current to threshold
 
         return False
