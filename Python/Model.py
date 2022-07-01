@@ -101,8 +101,8 @@ def subject_write(str_write, ser):
         pass
     except OSError:
         pass
-    finally:
-        print("")
+    # finally:
+    #    print("")
 
 
 # Description:
@@ -132,8 +132,8 @@ def subject_read(ser_):
         pass
     except OSError:
         pass
-    finally:
-        print("")
+    # finally:
+    #     print("")
 
     return data
 

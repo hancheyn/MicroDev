@@ -92,9 +92,11 @@ def subject_test(t, p, a, e, board, _ser):
         compare = lines2[1].split(",")
 
         # Read adc value of logic high from micro
+        print("Test Logic High")
         high = model.run_subject_test(p, e, a, t, 1, _ser)
 
         # Read adc value of logic low from micro
+        print("Test Logic Low")
         low = model.run_subject_test(p, e, a, t, 0, _ser)
 
         # Compare to Config threshold and Return Pass or Fail Boolean
@@ -107,9 +109,11 @@ def subject_test(t, p, a, e, board, _ser):
         compare = lines2[2].split(",")
 
         # Read adc value of logic high from micro
+        print("Test Logic High")
         high = model.run_subject_test(p, e, a, t, 1, _ser)
 
         # Read adc value of logic low from micro
+        print("Test Logic Low")
         low = model.run_subject_test(p, e, a, t, 0, _ser)
 
         # Compare to Config threshold and Return Pass or Fail Boolean
@@ -155,8 +159,8 @@ def subject_test(t, p, a, e, board, _ser):
 
         # Read Digital Pin Low
         subject_input_low = model.run_subject_test(p, e, a, t, 0, _ser)
-        print("Logic High: " + str(subject_input_high))
-        print("Logic Low: " + str(subject_input_low))
+        print("Logic High Val: " + str(subject_input_high))
+        print("Logic Low Val: " + str(subject_input_low))
 
         if 1 == subject_input_high and 0 == subject_input_low:
             return True
@@ -257,10 +261,10 @@ while True:
             sleep(2)
 
             while loop_count < test_count:
-                print(Lines[loop_count])
                 test = Lines[loop_count].split(",")
                 res[loop_count-1] = subject_test(int(test[0]), int(test[1]), int(test[2]), int(test[3]), board_type, ser)
                 # print(res[loop_count-1])
+                print(Lines[loop_count])
                 loop_count = loop_count + 1
                 sleep(0.01)
 
