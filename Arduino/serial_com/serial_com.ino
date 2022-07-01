@@ -251,7 +251,7 @@ void configure_input_pullup(unsigned int pin) {
  */
 int configure_analog_input(unsigned int analogPin) {
    
-   return analogRead(analogPin); //returns a value 0-1023 (0=GND, 1023 = 5V)
+   return (analogRead(analogPin) >> 2); //returns a value 0-1023 (0=GND, 1023 = 5V)
 }
 
 /*

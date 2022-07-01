@@ -169,11 +169,9 @@ def subject_test(t, p, a, e, board, _ser):
     elif t == 6:
         print("Test 6: ADC Check")
         compare = lines2[t].split(",")
-
         test_num = 1
         test_len = len(compare)
-        print(test_len)
-
+        # print(test_len)
         condition_success = True
 
         # Read adc from subject board
@@ -264,7 +262,7 @@ while True:
                 test = Lines[loop_count].split(",")
                 res[loop_count-1] = subject_test(int(test[0]), int(test[1]), int(test[2]), int(test[3]), board_type, ser)
                 # print(res[loop_count-1])
-                print(Lines[loop_count])
+                print("Test#,PinID,Address,Enable: " + str(Lines[loop_count]))
                 loop_count = loop_count + 1
                 sleep(0.01)
 
