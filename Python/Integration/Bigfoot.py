@@ -124,8 +124,7 @@ def rpi_i2c_config():
 	low_current(0)
 	high_current(0)
 	# rpi_i2c_ina219(0)
-	
-	print("i2c config complete")
+	# print("i2c config complete")
 
 
 # ADC
@@ -141,7 +140,7 @@ def rpi_i2c_adc():
 	read = read >> 2
 
 	# Convert into Voltage
-	print("ADC VAL" + str((read * 5.2) / 1023.0))
+	print("ADC VAL: " + str((read * 5.2) / 1023.0))
 	read = (read * 5.2) / 1023.0
 	return read
 
@@ -150,7 +149,7 @@ def rpi_i2c_adc():
 def rpi_i2c_dac(val):
 	# 0x0D ADDRESS
 	write = bus.write_word_data(0x0D, val, 0x03)
-	print("dac set")
+	# print("dac set")
 
 
 # REF: rototron.info/raspberry-pi-ina219-tutorial/
@@ -177,7 +176,7 @@ def rpi_i2c_ina219(shunt):
 		# Current = shunt voltage / 40.24 * 1000
 		current = (sensor.shunt_voltage) / 40.24
 	
-	print("ina219 current: " + str(current))
+	# print("ina219 current: " + str(current))
 	return current
 
 

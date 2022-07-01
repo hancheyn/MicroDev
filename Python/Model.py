@@ -102,7 +102,7 @@ def subject_write(str_write, ser):
     except OSError:
         pass
     finally:
-        print("write")
+        print("")
 
 
 # Description:
@@ -133,7 +133,7 @@ def subject_read(ser_):
     except OSError:
         pass
     finally:
-        print("read")
+        print("")
 
     return data
 
@@ -162,7 +162,7 @@ def crc_decode(value, out_type):
             print("test")
         elif out_type == 3:
             out = int(value[1])
-            print("results")
+            # print("results")
 
     else:
         print("CRC Fail")
@@ -200,7 +200,7 @@ def crc_encode(test, pin, instruction):
     packet[2] = crc_byte
 
     # return byte array
-    print("encode")
+    # print("encode")
     return packet
 
 
@@ -294,7 +294,7 @@ def run_gpio_output_test(pin, enable, address, instruction, ser):
     test_bytes = subject_read(ser_=ser)
     # close_serial(ser)
     output = crc_decode(test_bytes, 2)
-    print(output)
+    # print(output)
 
     # Read Bigfoot ADC
     # adc = bigfoot.rpi_i2c_adc()
@@ -307,7 +307,7 @@ def run_gpio_output_test(pin, enable, address, instruction, ser):
     # reset & return pass or fail of test
     bigfoot.adc_enable(0)
     bigfoot.set_mux_add(0, 0, 0)
-    print("test 1")
+    # print("test 1")
     return adc
 
 
@@ -335,7 +335,7 @@ def run_gpio_output_loading_test(pin, enable, address, instruction, ser):
     test_bytes = subject_read(ser_=ser)
     # close_serial(ser)
     output = crc_decode(test_bytes, 2)
-    print(output)
+    # print(output)
 
     # Read Bigfoot ADC
     # adc = bigfoot.rpi_i2c_adc()
@@ -349,7 +349,7 @@ def run_gpio_output_loading_test(pin, enable, address, instruction, ser):
     bigfoot.adc_enable(0)
     bigfoot.adc_load(0)
     bigfoot.set_mux_add(0, 0, 0)
-    print("test 2")
+    # print("test 2")
     return adc
 
 
@@ -396,7 +396,7 @@ def run_gpio_input_pull_up_test(pin, enable, address, instruction, ser):
     bigfoot.adc_enable(0)
     bigfoot.dac_enable(0)
     bigfoot.set_mux_add(0, 0, 0)
-    print("test 3")
+    # print("test 3")
     return adc
 
 
@@ -444,7 +444,7 @@ def run_gpio_input_pull_down_test(pin, enable, address, instruction, ser):
     bigfoot.adc_enable(0)
     bigfoot.dac_enable(0)
     bigfoot.set_mux_add(0, 0, 0)
-    print("test 4")
+    # print("test 4")
     return adc
 
 
@@ -532,12 +532,12 @@ def run_adc_test(pin, enable, address, instruction, ser):
     if crc_decode(test_bytes, 0) == 0:
         adc = -1
     else:
-        adc = int(test_bytes[1])
+        adc = int(output)
 
     # return pass or  fail of test
     bigfoot.dac_enable(0)
     bigfoot.set_mux_add(0, 0, 0)
-    print("test 6")
+    # print("test 6")
     return adc
 
 
@@ -574,7 +574,7 @@ def run_power_mode_test(pin, instruction, ser):
     # return pass or fail of test
     bigfoot.dac_enable(0)
     bigfoot.set_mux_add(0, 0, 0)
-    print("test 7")
+    # print("test 7")
     return current
 
 
@@ -600,7 +600,7 @@ def run_wakeup_test(pin, enable, address, instruction):
 
     # return pass or fail of test
     bigfoot.set_mux_add(0, 0, 0)
-    print("test 8")
+    # print("test 8")
     return current
 
 
