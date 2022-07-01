@@ -347,7 +347,7 @@ void init_pins(struct pin pins[]) {
   //Pin 4 | NA
   pins[4] = pin_set(0x00,  4);
 
-  //Pin 5 | D15
+  //Pin 5 | SCL I2C
   pins[5] = pin_set(15,  5);
 
   //Pin 6 | NA
@@ -377,7 +377,7 @@ void init_pins(struct pin pins[]) {
   //Pin 14 | NA
   pins[14] = pin_set(0x00, 14);
 
-  //Pin 15 | D14
+  //Pin 15 | SDA I2C
   pins[15] = pin_set(14, 15);
 
   //Pin 16 | NA
@@ -434,7 +434,7 @@ void init_pins(struct pin pins[]) {
   //Pin 33 | NA
   pins[33] = pin_set(0x0F, 33);
 
-  //Pin 34 | A0
+  //Pin 34 | A0 & D14
   pins[34] = pin_set(14, 34);
 
   //Pin 35 | NA
@@ -465,7 +465,7 @@ void init_pins(struct pin pins[]) {
   //Pin 43 | NA
   pins[43] = pin_set(0x00, 43);
 
-  //Pin 44 | A1
+  //Pin 44 | A1 & D15
   pins[44] = pin_set(15, 44);
 
   //Pin 45 | D5

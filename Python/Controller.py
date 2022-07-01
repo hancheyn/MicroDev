@@ -128,7 +128,7 @@ def subject_test(t, p, a, e, board, _ser):
             adc3 = model.run_subject_test(p, e, a, t, 0x00, _ser)
 
         # calculation with adc to pull down resistance value
-        print("Test adc val: " + adc3)
+        print("Test adc val: " + str(adc3))
         return False
 
     elif t == 4:
@@ -141,7 +141,7 @@ def subject_test(t, p, a, e, board, _ser):
             adc4 = model.run_subject_test(p, e, a, t, 0x0A, _ser)
 
         # calculation with adc to pull down resistance value
-        print("Test adc val: " + adc4)
+        print("Test adc val: " + str(adc4))
         return False
 
     elif t == 5:
@@ -155,8 +155,8 @@ def subject_test(t, p, a, e, board, _ser):
 
         # Read Digital Pin Low
         subject_input_low = model.run_subject_test(p, e, a, t, 0, _ser)
-        print("Logic High: " + subject_input_high)
-        print("Logic Low: " + subject_input_low)
+        print("Logic High: " + str(subject_input_high))
+        print("Logic Low: " + str(subject_input_low))
 
         if 1 == subject_input_high and 0 == subject_input_low:
             return True
