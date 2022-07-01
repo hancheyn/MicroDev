@@ -64,8 +64,7 @@ def rpi_i2c_dac(val):
 # Accepts:
 # Returns:
 # REF: rototron.info/raspberry-pi-ina219-tutorial/
-def rpi_i2c_ina219():
-
+def rpi_i2c_ina219(i):
 	print("ina219 test")
 
 
