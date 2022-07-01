@@ -304,7 +304,6 @@ def run_gpio_output_test(pin, enable, address, instruction, ser):
     else:
         adc = bigfoot.rpi_i2c_adc()
 
-
     # reset & return pass or fail of test
     bigfoot.adc_enable(0)
     bigfoot.set_mux_add(0, 0, 0)
@@ -481,7 +480,7 @@ def run_gpio_input_logic_level_test(pin, enable, address, instruction, ser):
     subject_write(str_write=s, ser=ser)
     test_bytes = subject_read(ser_=ser)
     output = crc_decode(test_bytes, 3)
-    print("Logic: " + output)
+    print("Logic: " + str(output))
 
     # ADC
     time.sleep(0.02)
@@ -525,7 +524,7 @@ def run_adc_test(pin, enable, address, instruction, ser):
     test_bytes = subject_read(ser_=ser)
     # close_serial(ser)
     output = crc_decode(test_bytes, 3)
-    print("ADC val: " + output)
+    print("ADC val: " + str(output))
 
     # Communication to Subject Serial to read ADC
     # ADC

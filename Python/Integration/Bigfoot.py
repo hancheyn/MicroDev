@@ -141,7 +141,7 @@ def rpi_i2c_adc():
 	read = read >> 2
 
 	# Convert into Voltage
-	print("ADC VAL" + (read * 5.2) / 1023.0)
+	print("ADC VAL" + str((read * 5.2) / 1023.0))
 	read = (read * 5.2) / 1023.0
 	return read
 
@@ -177,8 +177,7 @@ def rpi_i2c_ina219(shunt):
 		# Current = shunt voltage / 40.24 * 1000
 		current = (sensor.shunt_voltage) / 40.24
 	
-	print("ina219 current:")
-	print(current)
+	print("ina219 current: " + str(current))
 	return current
 
 
