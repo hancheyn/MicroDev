@@ -753,3 +753,7 @@ def usb_list():
 
     print("usb lists")
     return "None"
+
+
+def shutdown():
+    subprocess.getstatusoutput(f'sudo shutdown -n now')

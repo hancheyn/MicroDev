@@ -224,6 +224,10 @@ Facade = 0
 # Initialize
 # Fork | Pipe View
 
+# Button Interrupts
+model.bigfoot.b1_enable()
+model.bigfoot.b2_enable()
+model.bigfoot.b3_enable()
 
 # New test
 while True:

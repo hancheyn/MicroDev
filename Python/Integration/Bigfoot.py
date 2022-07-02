@@ -282,7 +282,7 @@ button_state = 0
 
 # Button 1 Interrupt Handler
 # Returns : Changes button state global
-def b1_release():
+def b1_release(channel):
 	# Extra Comment
 	global button_state
 	button_state |= 1
@@ -291,13 +291,17 @@ def b1_release():
 
 # Button 2 Interrupt Handler
 # Returns : Changes button state global
-def b2_release():
+def b2_release(channel):
+	global button_state
+	button_state |= 2
 	print("B2 Pressed")
 
 
 # Button 3 Interrupt Handler
 # Returns : Changes button state global
-def b3_release():
+def b3_release(channel):
+	global button_state
+	button_state |= 4
 	print("B3 Pressed")
 
 
@@ -319,6 +323,43 @@ def b1_disable():
 	GPIO.setup(B1_GPIO, GPIO.OUT)
 	print("b1 disable")
 
+
+# Button 2 Interrupt Enable
+# Returns : Changes button state global
+def b2_enable():
+	global B2_GPIO
+	GPIO.setup(B2_GPIO, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+	GPIO.add_event_detect(B2_GPIO, GPIO.RISING, callback=b2_release, bouncetime=200)
+	signal.signal(signal.SIGINT, signal_handler)
+	print("b2 enable")
+
+
+# Button 2 Interrupt Disable
+# Returns : Changes button state global
+def b2_disable():
+	global button_state
+	button_state &= ~2
+	GPIO.setup(B2_GPIO, GPIO.OUT)
+	print("b2 disable")
+
+
+# Button 3 Interrupt Enable
+# Returns : Changes button state global
+def b3_enable():
+	global B3_GPIO
+	GPIO.setup(B3_GPIO, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+	GPIO.add_event_detect(B3_GPIO, GPIO.RISING, callback=b3_release, bouncetime=200)
+	signal.signal(signal.SIGINT, signal_handler)
+	print("b3 enable")
+
+
+# Button 3 Interrupt Disable
+# Returns : Changes button state global
+def b3_disable():
+	global button_state
+	button_state &= ~2
+	GPIO.setup(B3_GPIO, GPIO.OUT)
+	print("b3 disable")
 
 # Get Function for Buttons State
 # Returns: State of Buttons
