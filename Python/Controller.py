@@ -224,13 +224,14 @@ Facade = 0
 # Initialize
 # Fork | Pipe View
 
-# Button Interrupts
-model.bigfoot.b1_enable()
-model.bigfoot.b2_enable()
-model.bigfoot.b3_enable()
 
 # New test
 while True:
+
+    # Button Interrupts
+    model.bigfoot.b1_enable()
+    model.bigfoot.b2_enable()
+    model.bigfoot.b3_enable()
 
     # Assign -> View Standby Screen
 
@@ -248,6 +249,7 @@ while True:
         state_buttons = model.bigfoot.get_button_state()
         if state_buttons == 1:
             start = True
+            model.bigfoot.b1_disable()
 
     # Assign -> View Testing Screen
 
@@ -255,39 +257,42 @@ while True:
     # Loop Through Config File
     # Test Conditions In Loop
     # FIX MOVE START TEST to FUNCTION?
-    if start:
-        model.subject_flash(board_type)
+    try:
+        if start:
+            model.subject_flash(board_type)
 
-        # While Loop Confirms Serial Connection
-        if serial_check():
-            # Read Config | Loop Through Tests
-            file1 = test_config_file(board_type)
-            Lines = file1.readlines()
-            test_count = len(Lines)
-            loop_count = 1
+            # While Loop Confirms Serial Connection
+            if serial_check():
+                # Read Config | Loop Through Tests
+                file1 = test_config_file(board_type)
+                Lines = file1.readlines()
+                test_count = len(Lines)
+                loop_count = 1
 
-            # Facade ?
-            if Facade == 1:
-                print("Facade")
+                # Facade ?
+                if Facade == 1:
+                    print("Facade")
 
-            res = [False for i in range(test_count - 1)]
+                res = [False for i in range(test_count - 1)]
 
-            # Loop until end of file line array | Open Serial
-            # Try Except Thing / Exception
-            ser = model.open_serial()
-            sleep(2)
+                # Loop until end of file line array | Open Serial
+                # Try Except Thing / Exception
+                ser = model.open_serial()
+                sleep(2)
 
-            while loop_count < test_count:
-                test = Lines[loop_count].split(",")
-                res[loop_count - 1] = subject_test(int(test[0]), int(test[1]), int(test[2]), int(test[3]), board_type,
-                                                   ser)
-                # print(res[loop_count-1])
-                print("Test#,PinID,Address,Enable: " + str(Lines[loop_count]))
-                loop_count = loop_count + 1
-                sleep(0.01)
+                while loop_count < test_count:
+                    test = Lines[loop_count].split(",")
+                    res[loop_count - 1] = subject_test(int(test[0]), int(test[1]), int(test[2]), int(test[3]), board_type,
+                                                       ser)
+                    # print(res[loop_count-1])
+                    print("Test#,PinID,Address,Enable: " + str(Lines[loop_count]))
+                    loop_count = loop_count + 1
+                    sleep(0.01)
 
-            # Close Serial Port
-            model.close_serial(ser)
+                # Close Serial Port
+                model.close_serial(ser)
+    finally:
+        print("Failed to Complete Test Cycle")
 
     # End of Test Screen
     # Save Condition States
