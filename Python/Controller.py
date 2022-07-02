@@ -290,7 +290,7 @@ while True:
     sleep(5)
 
     # NEW LOOP
-    # Assign -> View General Results Screen with 3 button inuputs
+    # Assign -> View General Results Screen with 3 button inputs
 
 
 

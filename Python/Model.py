@@ -753,7 +753,3 @@ def usb_list():
 
     print("usb lists")
     return "None"
-
-
-
-

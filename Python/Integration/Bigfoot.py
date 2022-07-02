@@ -12,6 +12,8 @@
 # raspberry-projects.com/pi/programming-in-python/i2c-programming-in-python/using-the-i2c-interface-2
 # #################################################
 
+import sys
+import signal
 import time
 import RPi.GPIO as GPIO
 import board
@@ -21,10 +23,10 @@ import adafruit_ina219
 import smbus
 
 bus = smbus.SMBus(1)
-
-# BASIC EXAMPLES
 GPIO.setwarnings(False)
 
+
+# ******************************** Set for Subject Board Mux  ************************************
 # set_mux_add
 # Enable Mux  state = 1
 # Disable Mux state = 0
@@ -104,9 +106,10 @@ def set_mux_add(state, enable, add):
 		print("gpios off")
 	
 
-# I2C Communication ??
+# I2C Communication Config
+# Parameters: NA
+# Returns: NA
 def rpi_i2c_config():
-	
 	# GPIO reset
 	set_mux_add(0, 1, 7)
 	
@@ -127,7 +130,9 @@ def rpi_i2c_config():
 	# print("i2c config complete")
 
 
-# ADC
+# ADC Capture
+# Parameters: NA
+# Returns: adc value (volts)
 def rpi_i2c_adc():
 	# 0x4D ADDRESS? 0x48
 	# Read 1st byte
@@ -145,7 +150,9 @@ def rpi_i2c_adc():
 	return read
 
 
-# DAC	
+# DAC Set
+# Parameters: DAC value to set (4 bit value)
+# Returns: NA
 def rpi_i2c_dac(val):
 	# 0x0D ADDRESS
 	write = bus.write_word_data(0x0D, val, 0x03)
@@ -153,6 +160,9 @@ def rpi_i2c_dac(val):
 
 
 # REF: rototron.info/raspberry-pi-ina219-tutorial/
+# INA219 Capture
+# Parameters: shunt type ( 0 = high current | 1 = low current )
+# Returns: current value in amps
 def rpi_i2c_ina219(shunt):
 	
 	i2c = busio.I2C(board.SCL, board.SDA)
@@ -179,6 +189,8 @@ def rpi_i2c_ina219(shunt):
 	# print("ina219 current: " + str(current))
 	return current
 
+
+# ******************************** Peripheral Enables ************************************
 
 # High Current
 # GPIO 17
@@ -255,4 +267,66 @@ def adc_enable(state):
 		GPIO.output(9, GPIO.LOW)
 
 
+# ******************************** Button Interrupts ************************************
+def signal_handler(sig, frame):
+    GPIO.cleanup()
+    sys.exit(0)
+
+
+# Globals for Buttons
+B1_GPIO = 14
+B2_GPIO = 15
+B3_GPIO = 18
+button_state = 0
+
+
+# Button 1 Interrupt Handler
+# Returns : Changes button state global
+def b1_release():
+	# Extra Comment
+	global button_state
+	button_state |= 1
+	print("B1 Pressed")
+
+
+# Button 2 Interrupt Handler
+# Returns : Changes button state global
+def b2_release():
+	print("B2 Pressed")
+
+
+# Button 3 Interrupt Handler
+# Returns : Changes button state global
+def b3_release():
+	print("B3 Pressed")
+
+
+# Button 1 Interrupt Enable
+# Returns : Changes button state global
+def b1_enable():
+	global B1_GPIO
+	GPIO.setup(B1_GPIO, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+	GPIO.add_event_detect(B1_GPIO, GPIO.RISING, callback=b1_release, bouncetime=200)
+	signal.signal(signal.SIGINT, signal_handler)
+	print("b1 enable")
+
+
+# Button 1 Interrupt Disable
+# Returns : Changes button state global
+def b1_disable():
+	global button_state
+	button_state &= ~1
+	GPIO.setup(B1_GPIO, GPIO.OUT)
+	print("b1 disable")
+
+
+# Get Function for Buttons State
+# Returns: State of Buttons
+# (BIT0 = Button 1 | BIT1 = Button 2 |BIT2 = Button 3 )
+def get_button_state():
+	global button_state
+	return button_state
+
+
 print("End of Bigfoot Init")
+
