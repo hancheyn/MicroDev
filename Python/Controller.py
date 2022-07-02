@@ -291,6 +291,8 @@ while True:
 
                 # Close Serial Port
                 model.close_serial(ser)
+    except Exception:
+        pass
     finally:
         print("Failed to Complete Test Cycle")
 

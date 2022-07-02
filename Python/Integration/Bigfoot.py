@@ -310,9 +310,13 @@ def b3_release(channel):
 def b1_enable():
 	global B1_GPIO
 	GPIO.setup(B1_GPIO, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	GPIO.add_event_detect(B1_GPIO, GPIO.RISING, callback=b1_release, bouncetime=200)
-	signal.signal(signal.SIGINT, signal_handler)
-	print("b1 enable")
+	try:
+		GPIO.add_event_detect(B1_GPIO, GPIO.RISING, callback=b1_release, bouncetime=200)
+	except Exception:
+			pass
+	finally:
+		signal.signal(signal.SIGINT, signal_handler)
+		print("b1 enable")
 
 
 # Button 1 Interrupt Disable
@@ -329,9 +333,13 @@ def b1_disable():
 def b2_enable():
 	global B2_GPIO
 	GPIO.setup(B2_GPIO, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	GPIO.add_event_detect(B2_GPIO, GPIO.RISING, callback=b2_release, bouncetime=200)
-	signal.signal(signal.SIGINT, signal_handler)
-	print("b2 enable")
+	try:
+		GPIO.add_event_detect(B2_GPIO, GPIO.RISING, callback=b2_release, bouncetime=200)
+	except Exception:
+		pass
+	finally:
+		signal.signal(signal.SIGINT, signal_handler)
+		print("b2 enable")
 
 
 # Button 2 Interrupt Disable
@@ -348,9 +356,13 @@ def b2_disable():
 def b3_enable():
 	global B3_GPIO
 	GPIO.setup(B3_GPIO, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	GPIO.add_event_detect(B3_GPIO, GPIO.RISING, callback=b3_release, bouncetime=200)
-	signal.signal(signal.SIGINT, signal_handler)
-	print("b3 enable")
+	try:
+		GPIO.add_event_detect(B3_GPIO, GPIO.RISING, callback=b3_release, bouncetime=200)
+	except Exception:
+			pass
+	finally:
+		signal.signal(signal.SIGINT, signal_handler)
+		print("b3 enable")
 
 
 # Button 3 Interrupt Disable
