@@ -361,6 +361,7 @@ def b3_disable():
 	GPIO.setup(B3_GPIO, GPIO.OUT)
 	print("b3 disable")
 
+
 # Get Function for Buttons State
 # Returns: State of Buttons
 # (BIT0 = Button 1 | BIT1 = Button 2 |BIT2 = Button 3 )

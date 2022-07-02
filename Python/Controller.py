@@ -242,7 +242,12 @@ while True:
 
     # Start Menu Screen Function
     # FIX: States Controlled by View -> button input
-    start = True
+    print("Press Button 1 to Start New Test")
+    start = False
+    while start is False:
+        state_buttons = model.bigfoot.get_button_state()
+        if state_buttons == 1:
+            start = True
 
     # Assign -> View Testing Screen
 
