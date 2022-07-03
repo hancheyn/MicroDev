@@ -588,7 +588,7 @@ def run_wakeup_test(pin, enable, address, instruction):
     # Set Wakeup pin
     bigfoot.set_mux_add(1, enable, address)
     bigfoot.dac_enable(1)
-    bigfoot.high_current(0)
+    bigfoot.high_current(1)
     bigfoot.low_current(0)  # Always On
 
     # Configure Bigfoot to high logic
@@ -597,7 +597,7 @@ def run_wakeup_test(pin, enable, address, instruction):
 
     # Red Bigfoot Low Current Sensor
     time.sleep(0.1)
-    current = bigfoot.rpi_i2c_ina219(1)
+    current = bigfoot.rpi_i2c_ina219(0)
 
     # return pass or fail of test
     bigfoot.set_mux_add(0, 0, 0)
