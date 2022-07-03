@@ -15,12 +15,15 @@ void command_read(unsigned char data[]);
 void command_write(unsigned int pin, unsigned int result, unsigned int test);
 void crc_encode(unsigned char data[], unsigned int pin, unsigned int result, unsigned int test);
 int crc_decode(unsigned char data[]);
+
+/* Config Function Prototypes */
 void configure_output(unsigned int pin, unsigned int logic);
 int configure_input(unsigned int pin);
 void configure_input_pullup(unsigned int pin);
 int configure_analog_input(unsigned int pin);
 void configure_sleep_mode(unsigned int sleepmode, unsigned int interruptPin);
 void wakeUp();
+
 struct pin pin_set(uint32_t pin, uint8_t pin_id);
 void init_pins(struct pin pins[]);
 
@@ -105,7 +108,7 @@ void loop() {
                     break;
                 case 7:
                     configure_sleep_mode(RMSG[1], RMSG[0]); //send sleepmode & pin#
-                    command_write(RMSG[0], RMSG[1], RMSG[2]);
+                    //command_write(RMSG[0], RMSG[1], RMSG[2]);
                     break;
                 default:
                     command_write(RMSG[0], RMSG[1], RMSG[2]);
