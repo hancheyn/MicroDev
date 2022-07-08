@@ -130,7 +130,7 @@ def DAC_Test6(pin, enable, address, instruction):
 
 if __name__ == '__main__':
     # PullUp_Test3(23,6,3,0)
-    DAC_Test6(34,1,5,0x08)
+    DAC_Test6(34,5,1,0x08)
   
     # unittest.main()
 
