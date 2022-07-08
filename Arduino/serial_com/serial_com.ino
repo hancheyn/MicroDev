@@ -253,7 +253,8 @@ void configure_input_pullup(unsigned int pin) {
  * Returns: int - 0 to 1023, depending on the voltage reading of the ADC. (0 = GND, 1023 = 5V)
  */
 int configure_analog_input(unsigned int analogPin) {
-   return (analogRead(analogPin)); //returns a value 0-1023 (0=GND, 1023 = 5V)
+  pinMode(analogPin, INPUT);
+   return (analogRead(analogPin) >> 2); //returns a value 0-1023 (0=GND, 1023 = 5V)
 }
 
 /*
