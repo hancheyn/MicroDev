@@ -1,5 +1,6 @@
 import unittest
 import time
+import os
 # import Controller as controller
 import Model as model
 
@@ -9,6 +10,9 @@ class MyTestCase(unittest.TestCase):
     def test_something(self):
         self.assertEqual(True, False)  # add assertion here
 
+
+def pause():
+    programPause = input("Press the <ENTER> key to continue...")
 
 def Reset_Pins():
     model.bigfoot.set_mux_add(0, 0, 0)
@@ -128,12 +132,36 @@ def DAC_Test6(pin, enable, address, instruction):
     # Configure Bigfoot to high logic
     model.bigfoot.rpi_i2c_dac(instruction)
 
+
+# ###### Validation Test 3.07.1 for 5V Logic ################# #
+def Validation_3071_5V_Logic(pin, e, a):
+    input("Press the <ENTER> to begin Test 3.07.1")
+    DAC_Test6(pin, e, a, 0x0F)
+    pause()
+    DAC_Test6(pin, e, a, 0x0A)
+    pause()
+    DAC_Test6(pin, e, a, 0x04)
+    pause()
+    DAC_Test6(pin, e, a, 0x00)
+    input("Press the <ENTER> to Exit")
+
+# ###### Validation Test 3.07.1 for 3.3 Logic ################# #
+def Validation_3071_3V3_Logic(pin, e, a):
+    input("Press the <ENTER> to begin Test 3.07.1")
+    DAC_Test6(pin, e, a, 0x0A)
+    pause()
+    DAC_Test6(pin, e, a, 0x08)
+    pause()
+    DAC_Test6(pin, e, a, 0x03)
+    pause()
+    DAC_Test6(pin, e, a, 0x00)
+    input("Press the <ENTER> to Exit")
+
+
+
 if __name__ == '__main__':
     # PullUp_Test3(23,6,3,0)
-    DAC_Test6(34,5,1,0x08)
+    DAC_Test6(34, 5, 1, 0x08)
   
     # unittest.main()
 
-# Testing Subject Board Tests
-# board = model.board_list()
-# controller.subject_test(1, 23, 6, 3, board)
