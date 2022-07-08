@@ -363,12 +363,12 @@ def run_gpio_input_pull_up_test(pin, enable, address, instruction, ser):
 
     # Configure Bigfoot w/
     bigfoot.adc_enable(1)
-    bigfoot.adc_load(0)
+    bigfoot.adc_load(1)
     bigfoot.set_mux_add(1, enable, address)
 
     # FIX: Configure DAC
-    bigfoot.dac_enable(1)
-    bigfoot.rpi_i2c_dac(instruction)
+    # bigfoot.dac_enable(1)
+    # bigfoot.rpi_i2c_dac(instruction)
 
     # Communication to Subject Serial
     # Configure input pull-ups
@@ -395,6 +395,7 @@ def run_gpio_input_pull_up_test(pin, enable, address, instruction, ser):
     # return pass or fail of test
     bigfoot.adc_enable(0)
     bigfoot.dac_enable(0)
+    bigfoot.adc_load(0)
     bigfoot.set_mux_add(0, 0, 0)
     # print("test 3")
     return adc
@@ -473,6 +474,7 @@ def run_gpio_input_logic_level_test(pin, enable, address, instruction, ser):
 
     # Configure Bigfoot to high logic
     bigfoot.rpi_i2c_dac(instruction)
+    time.sleep(0.02)
 
     # Communication to Subject Serial
     # .encode([test], [pin], [instruction])
@@ -589,7 +591,7 @@ def run_wakeup_test(pin, enable, address, instruction):
     bigfoot.set_mux_add(1, enable, address)
     bigfoot.dac_enable(1)
     bigfoot.high_current(0)
-    bigfoot.low_current(1)  # Always On
+    bigfoot.low_current(1)
 
     # Configure Bigfoot to high logic
     bigfoot.rpi_i2c_dac(instruction)
