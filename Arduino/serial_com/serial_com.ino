@@ -437,7 +437,7 @@ void init_pins(struct pin pins[]) {
   pins[33] = pin_set(0x0F, 33);
 
   //Pin 34 | A0 & D14
-  pins[34] = pin_set(14, 34);
+  pins[34] = pin_set(A0, 34);
 
   //Pin 35 | NA
   pins[35] = pin_set(0x0E, 35);
@@ -462,13 +462,13 @@ void init_pins(struct pin pins[]) {
   pins[41] = pin_set(0x00, 41);
 
   //Pin 42 | A2
-  pins[42] = pin_set(16, 42);
+  pins[42] = pin_set(A2, 42);
 
   //Pin 43 | NA
   pins[43] = pin_set(0x00, 43);
 
   //Pin 44 | A1 & D15
-  pins[44] = pin_set(15, 44);
+  pins[44] = pin_set(A1, 44);
 
   //Pin 45 | D5
   pins[45] = pin_set(5, 45);
@@ -486,13 +486,13 @@ void init_pins(struct pin pins[]) {
   pins[49] = pin_set(0x02, 49);
 
   //Pin 50 | A4
-  pins[50] = pin_set(18, 50);
+  pins[50] = pin_set(A4, 50);
 
   //Pin 51 | VBAT
   pins[51] = pin_set(0x00, 51);
 
   //Pin 52 | A3
-  pins[52] = pin_set(17, 52);
+  pins[52] = pin_set(A3, 52);
 
   //Pin 53 | D3
   pins[53] = pin_set(3, 53);
@@ -510,7 +510,7 @@ void init_pins(struct pin pins[]) {
   pins[57] = pin_set(0x03, 57);
 
   //Pin 58 | A5
-  pins[58] = pin_set(19, 58);
+  pins[58] = pin_set(A5, 58);
 
   //Pin 59 | D0
   pins[59] = pin_set(0, 59);
