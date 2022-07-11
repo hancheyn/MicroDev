@@ -15,7 +15,16 @@ def Reset_Pins():
     model.bigfoot.dac_enable(0)
     model.bigfoot.adc_load(0)
 
-   
+def DAC_Set(volt):
+    model.bigfoot.dac_enable(0)
+    Vout = volt * 788
+    v1 = (int(Vout) & 0x0F00) >> 8
+    v2 = (int(Vout) & 0x00FF)
+    model.bigfoot.bus.write_word_data(0x0D, v1, v2)
+
+
+# ##############################################################
+# ################## Subject Serial Calls ######################
 # ###### Test # 1 | Output Test    ################# #
 def Output_Test1(pin, enable, address, instruction):
     # Configure Bigfoot without load to adc
@@ -106,6 +115,7 @@ def PullDown_Test4(pin, enable, address, instruction):
     # .encode([test], [pin], [instruction])
     s = model.crc_encode(0x04, pin, instruction)
     ser = model.open_serial()
+    time.sleep(2)
     model.subject_write(str_write=s, ser=ser)
     test_bytes = model.subject_read(ser_=ser)
     model.close_serial(ser)
@@ -149,13 +159,14 @@ def PowerMode_Test7(pin, instruction):
     # .encode([test], [pin], [instruction])
     s = model.crc_encode(0x07, pin, instruction)
     ser = model.open_serial()
+    time.sleep(2)
     model.subject_write(str_write=s, ser=ser)
     # test_bytes = subject_read(ser_=ser)
     model.close_serial(ser)
 
     # Read Bigfoot Low Current Sensor
     # TIME DELAY
-    time.sleep(0.02)
+    time.sleep(0.2)
     current = model.bigfoot.rpi_i2c_ina219(1)
     print(current)
 
@@ -188,6 +199,7 @@ def Validation_2051():
     Reset_Pins()
     model.bigfoot.low_current(0)
     model.bigfoot.adc_enable(1)
+    model.bigfoot.adc_load(0)
     while l == "y":
         adc = model.bigfoot.rpi_i2c_adc()
         print(adc)
@@ -202,8 +214,9 @@ def Validation_2061():
     l = input("Press the <y> to begin Test 2.06.1")
     Reset_Pins()
     model.bigfoot.dac_enable(0)
-    model.bigfoot.high_current(0)
+    
     model.bigfoot.low_current(0)
+    model.bigfoot.high_current(1)
     while l == "y":
         current = model.bigfoot.rpi_i2c_ina219(0)
         l = input("Press the <y> to begin Test 2.06.1")
@@ -228,19 +241,21 @@ def Validation_2062():
 
 # ##############################################################
 # ################## Integration Tests #########################
-# ###### Validation Test 3.02.1    Pull-Up  ################# #
+# ###### Validation Test 3.02.1    Output  ################# #
 def Validation_3021(pin, e, a):
     input("Press the <ENTER> to begin Test 3.04.1")
     Output_Test1(pin, e, a, 0x0A)
     input("Press the <ENTER> to Exit")
     Reset_Pins()
 
-# ###### Validation Test 3.03.1    Pull-Up  ################# #
+
+# ###### Validation Test 3.03.1    Load     ################# #
 def Validation_3031(pin, e, a):
     input("Press the <ENTER> to begin Test 3.04.1")
     OutputLoad_Test2(pin, e, a, 0x0A)
     input("Press the <ENTER> to Exit")
     Reset_Pins()
+
 
 # ###### Validation Test 3.04.1    Pull-Up  ################# #
 def Validation_3041(pin, e, a):
@@ -306,8 +321,11 @@ def Validation_3071_3V3_Logic(pin, e, a):
 
 # ###### Validation Test 3.08.1              ################# #
 def Validation_3081(pin, instruction):
+    Reset_Pins()
+    model.serial_setup()
     input("Press the <ENTER> to begin Test 3.08.1")
     PowerMode_Test7(pin, instruction)
+    Validation_2062()
     input("Press the <ENTER> to Exit")
     Reset_Pins()
 
@@ -323,6 +341,14 @@ def Validation_3091_3V3_Logic(pin, e, a):
 if __name__ == '__main__':
     # PullUp_Test3(23,6,3,0)
     # DAC_Test(34, 5, 1, 0x08, 0x06)
-    Validation_2051()
+    # model.bigfoot.dac_enable(0)
+    # model.bigfoot.bus.write_word_data(0x0D, 0x00, 0x00)
+    Validation_3081(2, 0)
+    # Validation_2062()
+    
+    
+    
+    
+    
 
 
