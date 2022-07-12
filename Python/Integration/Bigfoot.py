@@ -26,6 +26,18 @@ bus = smbus.SMBus(1)
 GPIO.setwarnings(False)
 
 
+# ********************************** SET BIGFOOT ADC *****************************************
+# Description: SET ADC value
+# Accepts: Voltage for DAC Output
+# Returns: NA
+VOUT = 3.3
+
+
+def set_vout(vout):
+    global VOUT
+    VOUT = vout
+
+
 # ******************************** Set for Subject Board Mux  ************************************
 # set_mux_add
 # Enable Mux  state = 1
@@ -153,9 +165,13 @@ def rpi_i2c_adc():
 # DAC Set
 # Parameters: DAC value to set (4 bit value)
 # Returns: NA
-def rpi_i2c_dac(val):
+def rpi_i2c_dac():
 	# 0x0D ADDRESS
-	write = bus.write_word_data(0x0D, val, 0x03)
+	global VOUT
+	Vout = VOUT * 788
+	v1 = (int(Vout) & 0x0F00) >> 8
+	v2 = (int(Vout) & 0x00FF)
+	write = bus.write_word_data(0x0D, v1, v2)
 	# print("dac set")
 
 

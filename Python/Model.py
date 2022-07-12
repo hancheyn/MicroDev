@@ -24,10 +24,6 @@ import Bigfoot as bigfoot
 
 # STM32 ADC = 16 | GPIO = 5 ports * 16 pins | Sleep Modes = 3
 from serial import to_bytes
-ADC_PINS = 0
-GPIO_PINS = 0
-SLEEP_MODES = 0
-BAUD_RATE = 0
 
 view = None
 model = None
@@ -419,7 +415,7 @@ def run_gpio_input_pull_down_test(pin, enable, address, instruction, ser):
 
     # FIX: Configure DAC
     bigfoot.dac_enable(1)
-    bigfoot.rpi_i2c_dac(instruction)
+    bigfoot.rpi_i2c_dac()
 
     # Communication to Subject Serial
     # Configure input pull-downs
@@ -473,7 +469,7 @@ def run_gpio_input_logic_level_test(pin, enable, address, instruction, ser):
     bigfoot.set_mux_add(1, enable, address)
 
     # Configure Bigfoot to high logic
-    bigfoot.rpi_i2c_dac(instruction)
+    bigfoot.rpi_i2c_dac()
     time.sleep(0.02)
 
     # Communication to Subject Serial
@@ -516,7 +512,7 @@ def run_adc_test(pin, enable, address, instruction, ser):
     # Configure Bigfoot to reset Subject ADC pins
     # Enable DAC
     bigfoot.dac_enable(1)
-    bigfoot.rpi_i2c_dac(instruction)
+    bigfoot.rpi_i2c_dac()
     time.sleep(0.02)
 
     # Set DAC to first configuration instruction
@@ -594,7 +590,7 @@ def run_wakeup_test(pin, enable, address, instruction):
     bigfoot.low_current(1)
 
     # Configure Bigfoot to high logic
-    bigfoot.rpi_i2c_dac(instruction)
+    bigfoot.rpi_i2c_dac()
     # TIME DELAY?
 
     # Red Bigfoot Low Current Sensor
@@ -605,23 +601,6 @@ def run_wakeup_test(pin, enable, address, instruction):
     bigfoot.set_mux_add(0, 0, 0)
     # print("test 8")
     return current
-
-
-# MAY DELETE INPUTS FROM MODEL
-# ******************************** User Input Reads ************************************
-def start_read():
-    print("Something")
-    return None
-
-
-#
-def arrow_up_read():
-    print("Up")
-
-
-#
-def arrow_down_read():
-    print("clear")
 
 
 # ******************************** Command Line Interface ************************************

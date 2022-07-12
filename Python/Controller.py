@@ -140,8 +140,10 @@ def subject_test(t, p, a, e, board, _ser):
 
         # Read adc value at threshold voltage
         if logic == 5:
+            model.bigfoot.set_vout(5)
             adc4 = model.run_subject_test(p, e, a, t, 0x0F, _ser)
         else:
+            model.bigfoot.set_vout(3.3)
             adc4 = model.run_subject_test(p, e, a, t, 0x0A, _ser)
 
         # calculation with adc to pull down resistance value
@@ -153,11 +155,14 @@ def subject_test(t, p, a, e, board, _ser):
 
         # Read digital pin from subject board
         if logic == 5:
+            model.bigfoot.set_vout(5)
             subject_input_high = model.run_subject_test(p, e, a, t, 0x0F, _ser)
         else:
+            model.bigfoot.set_vout(3.3)
             subject_input_high = model.run_subject_test(p, e, a, t, 0x0A, _ser)
 
         # Read Digital Pin Low
+        model.bigfoot.set_vout(0)
         subject_input_low = model.run_subject_test(p, e, a, t, 0, _ser)
         print("Logic High Val: " + str(subject_input_high))
         print("Logic Low Val: " + str(subject_input_low))
@@ -177,8 +182,9 @@ def subject_test(t, p, a, e, board, _ser):
         # Read adc from subject board
         # Instruction is in config
         while test_num < test_len:
-            instruct = int(compare[test_num])
-            subject_adc_high = model.run_subject_test(p, e, a, t, instruct, _ser)
+            instruct = float(compare[test_num])
+            model.bigfoot.set_vout(instruct)
+            subject_adc_high = model.run_subject_test(p, e, a, t, 0, _ser)
             print("ADC Return Value: " + str(test_num) + ": " + str(subject_adc_high))
             # convert instruction to voltage
             # compare subject voltage to dac voltage
@@ -202,9 +208,9 @@ def subject_test(t, p, a, e, board, _ser):
 
     elif t == 8:
         print("Test 8: Wakeup From Sleep")
-
         # Reads current
         # Instruction is in config
+        model.bigfoot.set_vout(0)
         current = model.run_subject_test(p, e, a, t, 0, _ser)
         print("Current Val: " + str(current))
         # compare subject current to threshold

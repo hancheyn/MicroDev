@@ -20,6 +20,8 @@ import time
 
 # import smbus
 
+VOUT = 3.3
+
 # set_mux_add
 # Enable Mux  state = 1
 # Disable Mux state = 0
@@ -116,6 +118,11 @@ def adc_enable(state):
 
 	print("adc enable test")
 	return 1
+
+
+def set_vout(vout):
+    print("Set VOUT")
+
 
 # ******************************** Button Interrupts ************************************
 

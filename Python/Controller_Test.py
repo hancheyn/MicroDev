@@ -15,6 +15,7 @@ def Reset_Pins():
     model.bigfoot.dac_enable(0)
     model.bigfoot.adc_load(0)
 
+
 def DAC_Set(volt):
     model.bigfoot.dac_enable(0)
     Vout = volt * 788
@@ -51,6 +52,7 @@ def Output_Test1(pin, enable, address, instruction):
         adc = -1
     else:
         adc = model.bigfoot.rpi_i2c_adc()
+
 
 # ###### Test # 2 | Output w/ Load ################# #
 def OutputLoad_Test2(pin, enable, address, instruction):
