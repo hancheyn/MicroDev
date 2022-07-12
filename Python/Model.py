@@ -457,7 +457,7 @@ def run_gpio_input_logic_level_test(pin, enable, address, instruction, ser):
     # Reset/Configure Bigfoot to Low Logic
     bigfoot.dac_enable(1)
     bigfoot.adc_load(0)
-    bigfoot.rpi_i2c_dac(1)
+    bigfoot.rpi_i2c_dac()
 
     # Init Pins | Communication to Subject Serial
     # .encode([test], [pin], [instruction])
@@ -531,7 +531,7 @@ def run_adc_test(pin, enable, address, instruction, ser):
     if crc_decode(test_bytes, 0) == 0:
         adc = -1
     else:
-        adc = int(output)
+        adc = int(output) << 4
 
     # return pass or  fail of test
     bigfoot.dac_enable(0)
