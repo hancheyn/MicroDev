@@ -112,7 +112,7 @@ def PullDown_Test4(pin, enable, address, instruction):
 
     # FIX: Configure DAC
     model.bigfoot.dac_enable(1)
-    model.bigfoot.rpi_i2c_dac(instruction)
+    model.bigfoot.rpi_i2c_dac()
 
     # .encode([test], [pin], [instruction])
     s = model.crc_encode(0x04, pin, instruction)
@@ -146,7 +146,7 @@ def DAC_Test(pin, enable, address, instruction, test):
     model.bigfoot.set_mux_add(1, enable, address)
 
     # Configure Bigfoot to high logic
-    model.bigfoot.rpi_i2c_dac(instruction)
+    model.bigfoot.rpi_i2c_dac()
 
 
 # ###### Test # 7  | Set Power Mode ################# #
@@ -183,7 +183,8 @@ def WakeUp_Test8(enable, address, instruction):
     model.bigfoot.low_current(1)
 
     # Configure Bigfoot to high logic
-    model.bigfoot.rpi_i2c_dac(instruction)
+    model.bigfoot.set_vout(instruction)
+    model.bigfoot.rpi_i2c_dac()
 
     # Red Bigfoot Low Current Sensor
     time.sleep(0.1)
@@ -270,6 +271,7 @@ def Validation_3041(pin, e, a):
 # ###### Validation Test 3.05.1    Pull-Down ################# #
 def Validation_3051(pin, e, a):
     input("Press the <ENTER> to begin Test 3.05.1")
+    model.bigfoot.set_vout(3.3)
     PullDown_Test4(pin, e, a, 0)
     input("Press the <ENTER> to Exit")
     Reset_Pins()
@@ -278,16 +280,22 @@ def Validation_3051(pin, e, a):
 # ###### Validation Test 3.06.1  Input Logic  ################# #
 def Validation_3061_3V3_Logic(pin, e, a):
     input("Press the <ENTER> to begin Test 3.06.1")
+    model.bigfoot.set_vout(0)
     DAC_Test(pin, e, a, 0x00, 0x05)
     pause()
+    model.bigfoot.set_vout(0.3)
     DAC_Test(pin, e, a, 0x01, 0x05)
     pause()
+    model.bigfoot.set_vout(0.6)
     DAC_Test(pin, e, a, 0x02, 0x05)
     pause()
+    model.bigfoot.set_vout(1.5)
     DAC_Test(pin, e, a, 0x08, 0x05)
     pause()
+    model.bigfoot.set_vout(1.8)
     DAC_Test(pin, e, a, 0x09, 0x05)
     pause()
+    model.bigfoot.set_vout(3.3)
     DAC_Test(pin, e, a, 0x0A, 0x05)
     input("Press the <ENTER> to Exit")
     Reset_Pins()
@@ -296,12 +304,16 @@ def Validation_3061_3V3_Logic(pin, e, a):
 # ###### Validation Test 3.07.1 for 5V Logic ################# #
 def Validation_3071_5V_Logic(pin, e, a):
     input("Press the <ENTER> to begin Test 3.07.1")
+    model.bigfoot.set_vout(5)
     DAC_Test(pin, e, a, 0x0F, 0x06)
     pause()
+    model.bigfoot.set_vout(3.3)
     DAC_Test(pin, e, a, 0x0A, 0x06)
     pause()
+    model.bigfoot.set_vout(1.5)
     DAC_Test(pin, e, a, 0x05, 0x06)
     pause()
+    model.bigfoot.set_vout(0)
     DAC_Test(pin, e, a, 0x00, 0x06)
     input("Press the <ENTER> to Exit")
     Reset_Pins()
@@ -310,12 +322,16 @@ def Validation_3071_5V_Logic(pin, e, a):
 # ###### Validation Test 3.07.1 for 3.3 Logic ################# #
 def Validation_3071_3V3_Logic(pin, e, a):
     input("Press the <ENTER> to begin Test 3.07.1")
+    model.bigfoot.set_vout(3.3)
     DAC_Test(pin, e, a, 0x0A, 0x06)
     pause()
+    model.bigfoot.set_vout(1.5)
     DAC_Test(pin, e, a, 0x08, 0x06)
     pause()
+    model.bigfoot.set_vout(1)
     DAC_Test(pin, e, a, 0x05, 0x06)
     pause()
+    model.bigfoot.set_vout(0)
     DAC_Test(pin, e, a, 0x00, 0x06)
     input("Press the <ENTER> to Exit")
     Reset_Pins()
@@ -333,21 +349,28 @@ def Validation_3081(pin, instruction):
 
 
 # ###### Validation Test 3.09.1              ################# #
-def Validation_3091_3V3_Logic(pin, e, a):
+def Validation_3091(pin, e, a):
     input("Press the <ENTER> to begin Test 3.09.1")
-    WakeUp_Test8(e, a, 0x0A)
+    WakeUp_Test8(e, a, 0)
     input("Press the <ENTER> to Exit")
     Reset_Pins()
 
 
 if __name__ == '__main__':
-    # PullUp_Test3(23,6,3,0)
+    print("Run Tests")
+
     # DAC_Test(34, 5, 1, 0x08, 0x06)
-    # model.bigfoot.dac_enable(0)
-    # model.bigfoot.bus.write_word_data(0x0D, 0x00, 0x00)
-    Validation_3081(2, 0)
-    # Validation_2062()
-    
+    # Validation_2051()                     # ADC Check
+    # Validation_2061()                     # LOW CURRENT
+    # Validation_2062()                     # HIGH CURRENT
+
+    # Validation_3021(23, 3, 6)             # Test 1
+    # Validation_3031(23, 3, 6)             # Test 2
+    # Validation_3051(23, 3, 6)             # Test 3
+    # Validation_3061_3V3_Logic(23, 3, 6)   # Test 5
+    # Validation_3071_5V_Logic(34, 5, 1)    # Test 6
+    # Validation_3081(2, 1)                 # Test 7
+    # Validation_3091(61, 8, 6)             # Test 8
     
     
     

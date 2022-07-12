@@ -531,7 +531,7 @@ def run_adc_test(pin, enable, address, instruction, ser):
     if crc_decode(test_bytes, 0) == 0:
         adc = -1
     else:
-        adc = int(output) << 4
+        adc = ((int(output) << 2) * 5.2) / 1024
 
     # return pass or  fail of test
     bigfoot.dac_enable(0)
