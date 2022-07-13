@@ -428,6 +428,7 @@ if __name__ == '__main__':
     print("Run Validation Tests on Arduino")
     # Generic DAC Setting
     # DAC_Set(3.3)
+    # Littlefoot_Test()
 
     # No Subject Board
     Validation_2051()                     # ADC Check
