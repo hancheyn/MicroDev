@@ -23,6 +23,7 @@ def DAC_Set(volt):
     model.bigfoot.bus.write_word_data(0x0D, v1, v2)
 
 
+
 # ##############################################################
 # ################## Subject Serial Calls ######################
 # ###### Test # 1 | Output Test    ################# #
@@ -411,6 +412,18 @@ def Validation_3091(pin, e, a):
     Reset_Pins()
 
 
+# ###### Littlefoot Test                     ################# #
+def Littlefoot_Test():
+    input("Press the <ENTER> to begin Test Little-foot")
+    DAC_Set(3.3)
+    for i in range(1, 9):
+        for j in range(8):
+            print("Enable " + str(i) + " | Address " + str(j))
+            model.bigfoot.set_mux_add(1, i, j)
+            pause()
+    print("Littlefoot Test")
+
+
 if __name__ == '__main__':
     print("Run Validation Tests on Arduino")
     # Generic DAC Setting
@@ -435,7 +448,7 @@ if __name__ == '__main__':
 
 
     
-    
+
     
     
 
