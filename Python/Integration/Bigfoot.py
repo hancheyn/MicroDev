@@ -194,13 +194,20 @@ def rpi_i2c_ina219(shunt):
 		# Res. 0.04
 		print("high current")
 		# Current = (shunt voltage / 0.04) * 1000 mV
+		# Account for Pi Filter =>
+
+		# Without Pi Filter =>
 		current = (sensor.shunt_voltage) / 0.00004
 		
 	elif shunt == 0:
 		# Res. 40.24
 		print("low current")
-		# Current = (shunt voltage / 40.24) * 1000
+
+		# Account for Pi Filter =>
+		# current = ((sensor.shunt_voltage + 0.000236) / 0.04024) - 0.028 	# Board 3
+		# Without Pi Filter Circuit =>
 		current = (sensor.shunt_voltage) / 0.04024
+		current = current - (186 * current) - 3.7476  # Board 1 / 3 / 4
 	
 	# print("ina219 current: " + str(current))
 	return current

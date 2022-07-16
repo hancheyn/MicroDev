@@ -11,22 +11,35 @@ class MyTestCase(unittest.TestCase):
 
 # ###### (1) Debugging Test Code for Subject Tests ######### #
 class BoardTests(unittest.TestCase):
-    # 1.1 Tests Subject Board Functionality for Test #1
+    # 1.1 Tests Subject Board Functionality for Test #1 with LED
     def test_run_gpio_output(self):
         ser = model.open_serial()
         time.sleep(2)
         # Test LED Pin
         model.run_subject_test(23, 3, 6, 1, 1, ser)
-        time.sleep(0.01)
+        time.sleep(1)
         model.run_subject_test(23, 3, 6, 1, 0, ser)
         model.close_serial(ser)
         print("test")
         self.assertEqual(True, True, "Failed Test")
 
-    # 1.2 Tests Subject Board Functionality for Test #2
+    # 1.2 Facade Tests Subject Board Functionality for Test #2
     def test_run_gpio_output_loading(self):
 
-        print("test")
+        s = bytearray(3)
+        s[0] = 23
+        s[1] = 0x80  # FACADE
+        s[2] = 0x01
+        ser = model.open_serial()
+        time.sleep(2)
+        model.subject_write(str_write=s, ser=ser)
+        test_bytes = model.subject_read(ser_=ser)
+        model.close_serial(ser)
+        print(model.crc_decode(test_bytes, 0))
+        print(test_bytes)
+        int_val = int.from_bytes(test_bytes, "big")
+        print(int_val)
+
         self.assertEqual(True, True, "Failed Test")
 
     # 1.3 Tests Subject Board Functionality for Test #4

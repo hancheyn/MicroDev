@@ -25,7 +25,7 @@ def DAC_Set(volt):
 
 
 # ##############################################################
-# ################## Subject Serial Calls ######################
+# ################## (1) Subject Serial Calls ##################
 # ###### Test # 1 | Output Test    ################# #
 def Output_Test1(pin, enable, address, instruction):
     # Configure Bigfoot without load to adc
@@ -208,7 +208,7 @@ def WakeUp_Test8(enable, address, instruction):
 
 
 # ##############################################################
-# ##################### Hardware Tests #########################
+# ##################### (2) Hardware Tests #####################
 
 # ############## Validation Test 2.05.1      ################# #
 def Validation_2051():
@@ -222,7 +222,7 @@ def Validation_2051():
         adc = model.bigfoot.rpi_i2c_adc()
         print(adc)
         l = input("Press the <y> to begin Test 2.05.1")
-    input("Press the <ENTER> to Exit")
+    # input("Press the <ENTER> to Exit")
     Reset_Pins()
 
 
@@ -239,7 +239,7 @@ def Validation_2061():
         current = model.bigfoot.rpi_i2c_ina219(0)
         print(current)
         l = input("Press the <y> to begin Test 2.06.1")
-    input("Press the <ENTER> to Exit")
+    # input("Press the <ENTER> to Exit")
     Reset_Pins()
 
 
@@ -255,12 +255,12 @@ def Validation_2062():
         current = model.bigfoot.rpi_i2c_ina219(1)
         print(current)
         l = input("Press the <y> to begin Test 2.06.2")
-    input("Press the <ENTER> to Exit")
+    # input("Press the <ENTER> to Exit")
     Reset_Pins()
 
 
 # ##############################################################
-# ################## Integration Tests #########################
+# ################## (3) Integration Tests #####################
 # ######## Validation Test 3.02.1    Output  ################# #
 def Validation_3021(pin, e, a):
     input("Press the <ENTER> to begin Test 3.02.1")
@@ -322,6 +322,7 @@ def Validation_3061_3V3_Logic(pin, e, a):
     DAC_Test(pin, e, a, 0x0A, 0x05)
     input("Press the <ENTER> to Exit")
     Reset_Pins()
+
 
 # ###### Validation Test 3.06.1  Input Logic 3V3 ############## #
 def Validation_3061_5V_Logic(pin, e, a):
@@ -400,7 +401,7 @@ def Validation_3081(pin, instruction):
     input("Press the <ENTER> to begin Test 3.08.1")
     PowerMode_Test7(pin, instruction)
     Validation_2062()
-    input("Press the <ENTER> to Exit")
+    # input("Press the <ENTER> to Exit")
     Reset_Pins()
 
 
@@ -411,6 +412,9 @@ def Validation_3091(pin, e, a):
     input("Press the <ENTER> to Exit")
     Reset_Pins()
 
+
+# ##############################################################
+# ################## (4) Software Tests ########################
 
 # ###### Littlefoot Test                     ################# #
 def Littlefoot_Test():
@@ -423,6 +427,34 @@ def Littlefoot_Test():
             pause()
     print("Littlefoot Test")
 
+
+# ###### Arduino Power Modes Test                     ################# #
+def ArduinoSleep_Test():
+    input("Press the <ENTER> to begin Test on Arduino Sleep Modes")
+    Validation_3081(2, 1)
+    Validation_3091(61, 8, 6)  # Test 8 Wake up + (INA)
+    Validation_3081(2, 2)
+    Validation_3091(61, 8, 6)  # Test 8 Wake up + (INA)
+    Validation_3081(2, 3)
+    Validation_3091(61, 8, 6)  # Test 8 Wake up + (INA)
+    Validation_3081(2, 4)
+    Validation_3091(61, 8, 6)  # Test 8 Wake up + (INA)
+    Validation_3081(2, 5)
+    Validation_3091(61, 8, 6)  # Test 8 Wake up + (INA)
+    Validation_3081(2, 6)
+    Validation_3091(61, 8, 6)  # Test 8 Wake up + (INA)
+    print("End of Sleep Mode Test")
+
+# ###### Arduino Power Modes Test                     ################# #
+def STM32Sleep_Test():
+    input("Press the <ENTER> to begin Test on Arduino Sleep Modes")
+    Validation_3081(2, 1)
+    Validation_3091(61, 8, 6)  # Test 8 Wake up + (INA)
+    Validation_3081(2, 2)
+    Validation_3091(61, 8, 6)  # Test 8 Wake up + (INA)
+    Validation_3081(2, 3)
+    Validation_3091(61, 8, 6)  # Test 8 Wake up + (INA)
+    print("End of Sleep Mode Test")
 
 if __name__ == '__main__':
     print("Run Validation Tests on Arduino")
