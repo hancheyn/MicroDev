@@ -371,7 +371,7 @@ def Validation_3061_3V3_Logic(pin, e, a):
     Reset_Pins()
 
 
-# ###### Validation Test 3.06.1  Input Logic 3V3 ############## #
+# ###### Validation Test 3.06.1 & 3.07.1 Input Logic 3V3 ############## #
 def Validation_3061_5V_Logic(pin, e, a):
     input("Press the <ENTER> to begin Test 3.06.1")
     model.bigfoot.set_vout(0)
@@ -395,28 +395,6 @@ def Validation_3061_5V_Logic(pin, e, a):
     print("DAC set to 5 V")
     DAC_Test(pin, e, a, 0x09, 0x05)
     pause()
-
-
-# ###### Validation Test 3.07.1 for 5V Logic ################# #
-def Validation_3071_5V_Logic(pin, e, a):
-    input("Press the <ENTER> to begin Test 3.07.1")
-    model.bigfoot.set_vout(5)
-    print("DAC set to 5 V")
-    DAC_Test(pin, e, a, 0x0F, 0x06)
-    pause()
-    model.bigfoot.set_vout(3.3)
-    print("DAC set to 3.3 V")
-    DAC_Test(pin, e, a, 0x0A, 0x06)
-    pause()
-    model.bigfoot.set_vout(1.5)
-    print("DAC set to 1.5 V")
-    DAC_Test(pin, e, a, 0x05, 0x06)
-    pause()
-    model.bigfoot.set_vout(0)
-    print("DAC set to 0 V")
-    DAC_Test(pin, e, a, 0x00, 0x06)
-    input("Press the <ENTER> to Exit")
-    Reset_Pins()
 
 
 # ###### Validation Test 3.07.1 for 3.3 Logic ################# #

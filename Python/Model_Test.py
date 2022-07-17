@@ -28,15 +28,16 @@ class BoardTests(unittest.TestCase):
 
         s = bytearray(3)
         s[0] = 23
-        s[1] = 0x80  # FACADE
+        s[1] = 0x81  # FACADE
         s[2] = 0x01
         ser = model.open_serial()
         time.sleep(2)
         model.subject_write(str_write=s, ser=ser)
         test_bytes = model.subject_read(ser_=ser)
         model.close_serial(ser)
-        print(model.crc_decode(test_bytes, 0))
-        print(test_bytes)
+        print(model.crc_decode(test_bytes, 0))      # type (Write / Read)
+        print((model.crc_decode(test_bytes, 1)))    # pin #
+        print((model.crc_decode(test_bytes, 2)))    # setting
         int_val = int.from_bytes(test_bytes, "big")
         print(int_val)
 

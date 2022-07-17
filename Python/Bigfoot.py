@@ -15,11 +15,7 @@
 import sys
 import signal
 import time
-import RPi.GPIO as GPIO
 
-
-
-GPIO.setwarnings(False)
 
 
 # ********************************** SET BIGFOOT ADC *****************************************
@@ -42,76 +38,10 @@ def set_vout(vout):
 # @parameter enable
 # @parameter add
 def set_mux_add(state, enable, add):
-	GPIO.setmode(GPIO.BCM)
-	
-	# Reset mux GPIO's to off state
-	GPIO.setup(20, GPIO.OUT)
-	GPIO.output(20, GPIO.LOW)
-	
-	GPIO.setup(16, GPIO.OUT)
-	GPIO.output(16, GPIO.LOW)
-	
-	GPIO.setup(26, GPIO.OUT)
-	GPIO.output(26, GPIO.LOW)
-	
-	GPIO.setup(13, GPIO.OUT)
-	GPIO.output(13, GPIO.LOW)	
-	
-	GPIO.setup(19, GPIO.OUT)
-	GPIO.output(19, GPIO.LOW)
-	
-	GPIO.setup(12, GPIO.OUT)
-	GPIO.output(12, GPIO.LOW)
-	
-	GPIO.setup(5, GPIO.OUT)
-	GPIO.output(5, GPIO.LOW)
-	
-	GPIO.setup(0, GPIO.OUT)
-	GPIO.output(0, GPIO.LOW)
-
-	GPIO.setup(1, GPIO.OUT)
-	GPIO.output(1, GPIO.LOW)	
-	
-	GPIO.setup(7, GPIO.OUT)
-	GPIO.output(7, GPIO.LOW)
-	
-	GPIO.setup(8, GPIO.OUT)
-	GPIO.output(8, GPIO.LOW)
 		
 	# Conditional for state [on or off]
-	if state==1:
-		# convert add to binary
-		# conditional for each add bit
-		if (add & 1) == 1:
-			GPIO.output(16, GPIO.HIGH)
-			#print("bit0")
-		if (add & 2) == 2:
-			GPIO.output(26, GPIO.HIGH)
-			#print("bit1")
-		if (add & 4) == 4:
-			GPIO.output(20, GPIO.HIGH)
-			#print("bit2")
-	
-		# Conditional for enable
-		if enable==1:
-			GPIO.output(8, GPIO.HIGH)
-		elif enable==2:
-			GPIO.output(7, GPIO.HIGH)
-		elif enable==3:
-			GPIO.output(1, GPIO.HIGH)
-		elif enable==4:
-			GPIO.output(0, GPIO.HIGH)
-		elif enable==5:
-			GPIO.output(5, GPIO.HIGH)
-		elif enable==6:
-			GPIO.output(12, GPIO.HIGH)
-		elif enable==7:
-			GPIO.output(19, GPIO.HIGH)
-		elif enable==8:
-			GPIO.output(13, GPIO.HIGH)
-			
-	else:
-		print("gpios off")
+
+	print("gpios off")
 	
 
 # I2C Communication Config
