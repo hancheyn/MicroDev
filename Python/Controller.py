@@ -478,8 +478,11 @@ if __name__ == '__main__':
             while save_wait and not redo:
                 state_buttons = model.bigfoot.get_button_state()
                 # Add condition to save test results to usb
-                print(model.usb_list())
-                save_wait = False
+                if state_buttons & 2 == 2:
+                    model.bigfoot.b2_disable()
+                    model.bigfoot.b2_enable()
+                    save_wait = False
+                    print(model.usb_list())
 
         # Remove Board State
         view.setRemovalScreen()
