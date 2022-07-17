@@ -194,10 +194,9 @@ def rpi_i2c_ina219(shunt):
 		# Res. 0.04
 		print("high current")
 		# Current = (shunt voltage / 0.04) * 1000 mV
-		# Account for Pi Filter =>
-
-		# Without Pi Filter =>
+		# Account for Inaccurate Voltage Drop Over Resisters=>
 		current = (sensor.shunt_voltage) / 0.00004
+		current = current - (0.2186 * current - 3.7476)
 		
 	elif shunt == 0:
 		# Res. 40.24
@@ -397,7 +396,7 @@ def b3_enable():
 # Returns : Changes button state global
 def b3_disable():
 	global button_state
-	button_state &= ~2
+	button_state &= ~4
 	GPIO.setup(B3_GPIO, GPIO.OUT)
 	GPIO.output(B3_GPIO, GPIO.LOW)
 	print("b3 disable")
