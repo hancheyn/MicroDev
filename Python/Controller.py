@@ -492,7 +492,7 @@ if __name__ == '__main__':
         print(detailed_array)
         print(pass_array)
         time_i = 0
-        while model.check_5V() < 4.0 and time_i < 10:
+        while model.check_5V() > 4.0 and time_i < 10:
             sleep(1)
 
 
