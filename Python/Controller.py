@@ -311,6 +311,14 @@ if __name__ == '__main__':
                     test6_pass = True
                     test7_pass = True
                     test8_pass = True
+                    test1_occured = False
+                    test2_occured = False
+                    test3_occured = False
+                    test4_occured = False
+                    test5_occured = False
+                    test6_occured = False
+                    test7_occured = False
+                    test8_occured = False
             
 
                     while loop_count < test_count:
@@ -328,41 +336,49 @@ if __name__ == '__main__':
                         
                         if test_num == 1:
                             # print(res[loop_count - 1])
+                            test1_occured = True
                             if test1_pass == True and res[loop_count - 1] == True:
                                 test1_pass = res[loop_count - 1]
                             else:
                                 test1_pass = False
                         elif test_num == 2:
+                            test2_occured = True
                             if test2_pass == True and res[loop_count - 1] == True:
                                 test2_pass = res[loop_count - 1]
                             else:
                                 test2_pass = False
                         elif test_num == 3:
+                            test3_occured = True
                             if test3_pass == True and res[loop_count - 1] == True:
                                 test3_pass = res[loop_count - 1]
                             else:
                                 test3_pass = False
                         elif test_num == 4:
+                            test4_occured = True
                             if test4_pass == True and res[loop_count - 1] == True:
                                 test4_pass = res[loop_count - 1]
                             else:
                                 test4_pass = False
                         elif test_num == 5:
+                            test5_occured = True
                             if test5_pass == True and res[loop_count - 1] == True:
                                 test5_pass = res[loop_count - 1]
                             else:
                                 test5_pass = False
                         elif test_num == 6:
+                            test6_occured = True
                             if test6_pass == True and res[loop_count - 1] == True:
                                 test6_pass = res[loop_count - 1]
                             else:
                                 test6_pass = False
                         elif test_num == 7:
+                            test7_occured = True
                             if test7_pass == True and res[loop_count - 1] == True:
                                 test7_pass = res[loop_count - 1]
                             else:
                                 test7_pass = False
                         elif test_num == 8:
+                            test8_occured = True
                             if test8_pass == True and res[loop_count - 1] == True:
                                 test8_pass = res[loop_count - 1]
                             else:
@@ -375,22 +391,30 @@ if __name__ == '__main__':
                     model.close_serial(ser)
                     
                     # Write Basic Test Results
-                    mess_test = "Test #1 Result: " + str(test1_pass)
-                    pass_array.append(mess_test)
-                    mess_test = "Test #2 Result: " + str(test2_pass)
-                    pass_array.append(mess_test)
-                    mess_test = "Test #3 Result: " + str(test3_pass)
-                    pass_array.append(mess_test)
-                    mess_test = "Test #4 Result: " + str(test4_pass)
-                    pass_array.append(mess_test)
-                    mess_test = "Test #5 Result: " + str(test5_pass)
-                    pass_array.append(mess_test)
-                    mess_test = "Test #6 Result: " + str(test6_pass)
-                    pass_array.append(mess_test)
-                    mess_test = "Test #7 Result: " + str(test7_pass)
-                    pass_array.append(mess_test)
-                    mess_test = "Test #8 Result: " + str(test8_pass)
-                    pass_array.append(mess_test)
+                    if test1_occured:
+                        mess_test = "Test #1 Result: " + str(test1_pass)
+                        pass_array.append(mess_test)
+                    if test2_occured:
+                        mess_test = "Test #2 Result: " + str(test2_pass)
+                        pass_array.append(mess_test)
+                    if test3_occured:
+                        mess_test = "Test #3 Result: " + str(test3_pass)
+                        pass_array.append(mess_test)
+                    if test4_occured:
+                        mess_test = "Test #4 Result: " + str(test4_pass)
+                        pass_array.append(mess_test)
+                    if test5_occured:
+                        mess_test = "Test #5 Result: " + str(test5_pass)
+                        pass_array.append(mess_test)
+                    if test6_occured:
+                        mess_test = "Test #6 Result: " + str(test6_pass)
+                        pass_array.append(mess_test)
+                    if test7_occured:
+                        mess_test = "Test #7 Result: " + str(test7_pass)
+                        pass_array.append(mess_test)
+                    if test8_occured:
+                        mess_test = "Test #8 Result: " + str(test8_pass)
+                        pass_array.append(mess_test)
 
                     
         except Exception:
