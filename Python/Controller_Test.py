@@ -16,7 +16,7 @@ def Reset_Pins():
 
 
 def DAC_Set(volt):
-    model.bigfoot.dac_enable(0)
+    model.bigfoot.dac_enable(1)
     Vout = volt * 788
     v1 = (int(Vout) & 0x0F00) >> 8
     v2 = (int(Vout) & 0x00FF)
@@ -102,7 +102,29 @@ def PullUp_Test3(pin, enable, address, instruction):
     test_bytes = model.subject_read(ser_=ser)
     model.close_serial(ser)
     output = model.crc_decode(test_bytes, 2)
+    time.sleep(0.01)
+    adc = model.bigfoot.rpi_i2c_adc()
+    print(adc)
+    
 
+# ###### Test # 3 | Pull-Up Input - No Load ################# #
+def PullUp_Test3_NoLoad(pin, enable, address, instruction):
+    # Configure Bigfoot w/
+    model.bigfoot.high_current(0)
+    model.bigfoot.low_current(0)
+    model.bigfoot.adc_enable(1)
+    model.bigfoot.adc_load(0)
+    model.bigfoot.set_mux_add(1, enable, address)
+
+    # .encode([test], [pin], [instruction])
+    s = model.crc_encode(0x03, pin, instruction)
+    ser = model.open_serial()
+    time.sleep(2)
+    model.subject_write(str_write=s, ser=ser)
+    test_bytes = model.subject_read(ser_=ser)
+    model.close_serial(ser)
+    output = model.crc_decode(test_bytes, 2)
+    time.sleep(0.1)
     adc = model.bigfoot.rpi_i2c_adc()
     print(adc)
 
@@ -116,7 +138,6 @@ def PullDown_Test4(pin, enable, address, instruction):
     model.bigfoot.set_mux_add(1, enable, address)
 
     # FIX: Configure DAC
-    model.bigfoot.dac_enable(1)
     model.bigfoot.rpi_i2c_dac()
 
     # .encode([test], [pin], [instruction])
@@ -127,10 +148,33 @@ def PullDown_Test4(pin, enable, address, instruction):
     test_bytes = model.subject_read(ser_=ser)
     model.close_serial(ser)
     output = model.crc_decode(test_bytes, 2)
-
+    time.sleep(0.1)
     adc = model.bigfoot.rpi_i2c_adc()
     print(adc)
 
+
+# ###### Test # 4 | Pull-Down Input-NoLoad ################# #
+def PullDown_Test4_NoLoad(pin, enable, address, instruction):
+    # Configure Bigfoot w/
+    model.bigfoot.adc_enable(1)
+    model.bigfoot.adc_load(0)
+    model.bigfoot.dac_enable(1)
+    model.bigfoot.set_mux_add(1, enable, address)
+
+    # FIX: Configure DAC
+    model.bigfoot.rpi_i2c_dac()
+
+    # .encode([test], [pin], [instruction])
+    s = model.crc_encode(0x04, pin, instruction)
+    ser = model.open_serial()
+    time.sleep(2)
+    model.subject_write(str_write=s, ser=ser)
+    test_bytes = model.subject_read(ser_=ser)
+    model.close_serial(ser)
+    output = model.crc_decode(test_bytes, 2)
+    time.sleep(0.01)
+    adc = model.bigfoot.rpi_i2c_adc()
+    print(adc)
 
 # ###### Test # 5 & 6  | DAC Output ################# #
 def DAC_Test(pin, enable, address, instruction, test):
@@ -178,7 +222,7 @@ def PowerMode_Test7(pin, instruction):
     ser = model.open_serial()
     time.sleep(2)
     model.subject_write(str_write=s, ser=ser)
-    # test_bytes = subject_read(ser_=ser)
+    #test_bytes = subject_read(ser_=ser)
     model.close_serial(ser)
 
     # Read Bigfoot Low Current Sensor
@@ -269,24 +313,27 @@ def Validation_3021(pin, e, a):
     Reset_Pins()
 
 
-# ###### Validation Test 3.03.1    Load     ################# #
+# ###### Validation Test 3.02.1    Load     ################# #
+#def Validation_3031(pin, e, a):
+#    input("Press the <ENTER> to begin Test 3.03.1")
+#    OutputLoad_Test2(pin, e, a, 0x0A)
+#    input("Press the <ENTER> to Exit")
+#    Reset_Pins()
+
+# ###### Validation Test 3.03.1    Pull-Up     ################# #
 def Validation_3031(pin, e, a):
-    input("Press the <ENTER> to begin Test 3.03.1")
-    OutputLoad_Test2(pin, e, a, 0x0A)
-    input("Press the <ENTER> to Exit")
-    Reset_Pins()
-
-
-# ###### Validation Test 3.04.1    Pull-Up  ################# #
-def Validation_3041(pin, e, a):
     input("Press the <ENTER> to begin Test 3.04.1")
     PullUp_Test3(pin, e, a, 0x00)
     input("Press the <ENTER> to Exit")
     Reset_Pins()
 
+# ###### Validation Test 3.03.2    Pull-Up  ################# #
+#def Validation_3041(pin, e, a):
+    
 
-# ###### Validation Test 3.05.1    Pull-Down ################# #
-def Validation_3051(pin, e, a):
+
+# ###### Validation Test 3.06.1    Pull-Down ################# #
+def Validation_3032(pin, e, a):
     input("Press the <ENTER> to begin Test 3.05.1")
     model.bigfoot.set_vout(3.3)
     PullDown_Test4(pin, e, a, 0)
@@ -431,29 +478,40 @@ def Littlefoot_Test():
 # ###### Arduino Power Modes Test                     ################# #
 def ArduinoSleep_Test():
     input("Press the <ENTER> to begin Test on Arduino Sleep Modes")
+    model.bigfoot.set_vout(0)
+    Validation_2062() 
     Validation_3081(2, 1)
     Validation_3091(61, 8, 6)  # Test 8 Wake up + (INA)
+    Validation_2062() 
     Validation_3081(2, 2)
     Validation_3091(61, 8, 6)  # Test 8 Wake up + (INA)
+    Validation_2062() 
     Validation_3081(2, 3)
     Validation_3091(61, 8, 6)  # Test 8 Wake up + (INA)
+    Validation_2062() 
     Validation_3081(2, 4)
     Validation_3091(61, 8, 6)  # Test 8 Wake up + (INA)
+    Validation_2062() 
     Validation_3081(2, 5)
     Validation_3091(61, 8, 6)  # Test 8 Wake up + (INA)
+    Validation_2062() 
     Validation_3081(2, 6)
     Validation_3091(61, 8, 6)  # Test 8 Wake up + (INA)
     print("End of Sleep Mode Test")
 
-# ###### Arduino Power Modes Test                     ################# #
+# ##################### STM Power Modes Test    ################# #
 def STM32Sleep_Test():
+    Validation_2062() 
     input("Press the <ENTER> to begin Test on Arduino Sleep Modes")
+    model.bigfoot.set_vout(3.3)
     Validation_3081(2, 1)
-    Validation_3091(61, 8, 6)  # Test 8 Wake up + (INA)
+    Validation_3091(34, 5, 1)  # Test 8 Wake up + (INA)
+    Validation_2062() 
     Validation_3081(2, 2)
-    Validation_3091(61, 8, 6)  # Test 8 Wake up + (INA)
+    Validation_3091(34, 5, 1)  # Test 8 Wake up + (INA)
+    Validation_2062() 
     Validation_3081(2, 3)
-    Validation_3091(61, 8, 6)  # Test 8 Wake up + (INA)
+    Validation_3091(34, 5, 1)  # Test 8 Wake up + (INA)
     print("End of Sleep Mode Test")
 
 if __name__ == '__main__':
@@ -463,24 +521,33 @@ if __name__ == '__main__':
     # Littlefoot_Test()
 
     # No Subject Board
-    Validation_2051()                     # ADC Check
-    Validation_2061()                     # LOW CURRENT
-    Validation_2062()                     # HIGH CURRENT
+    #Validation_2051()                     # ADC Check
+    #Validation_2061()                     # LOW CURRENT
+    #Validation_2062()                     # HIGH CURRENT
 
     # Arduino Uno Subject Board Connected
-    Validation_3021(23, 3, 6)             # Test 1 Output Logic (ADC)
-    Validation_3031(23, 3, 6)             # Test 2 Output + Load (ADC)
-    Validation_3041(23, 3, 6)             # Test 3 Pull Up (ADC Test)
-    Validation_3061_5V_Logic(23, 3, 6)   # Test 5 Logic Levels (DAC Test)
-    Validation_3071_5V_Logic(34, 5, 1)    # Test 6 Subject ADC (DAC Test)
-    Validation_3081(2, 1)                 # Test 7 Sleep Mode #2 + (INA)
-    Validation_3091(61, 8, 6)             # Test 8 Wake up + (INA)
+    #Validation_3021(23, 3, 6)             # Test 1 Output Logic (ADC)
+    #Validation_3031(23, 3, 6)             # Test 3 Pull Up (ADC Test)
+    #Validation_3031(23, 3, 6)             # Test 3 Pull Up (ADC Test)
+    #Validation_3031(21, 3, 4)             # Test 3 Pull Up (ADC Test)
+    #Validation_3031(32, 4, 7)             # Test 3 Pull Up (ADC Test)
+    #Validation_3061_5V_Logic(23, 3, 6)   # Test 5 Logic Levels (DAC Test)
+    #Validation_3071_5V_Logic(34, 5, 1)    # Test 6 Subject ADC (DAC Test)
+    #Validation_3081(2, 1)                 # Test 7 Sleep Mode #2 + (INA)
+    #Validation_3091(61, 8, 6)             # Test 8 Wake up + (INA)
 
     # STM32 Nucleo Subject Board
-    # Validation_3051(23, 3, 6)            # Test 4 Pull Down (ADC Test)
-
-
+    #Validation_3032(21, 3, 4)            # Test 4 Pull Down (ADC Test)
+    #Validation_3032(23, 3, 6)
     
+    # PullUp_Test3_NoLoad(32, 4, 7, 0)
+    #PullDown_Test4_NoLoad(32, 4, 7, 0)
+    
+
+    #STM32Sleep_Test()
+    #ArduinoSleep_Test()
+    #model.bigfoot.set_mux_add(1, 7, 6)
+    Littlefoot_Test()
 
     
     

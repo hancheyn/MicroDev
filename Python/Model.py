@@ -217,6 +217,7 @@ def serial_setup():
     close_serial(ser)
 
     # print(len(test_bytes))
+    print(test_bytes)
     if len(test_bytes) == 3:
         if test_bytes[0] == s[0] and test_bytes[1] == s[1] and test_bytes[2] == s[2]:
             val = 1
@@ -724,17 +725,29 @@ def usb_list():
     user = subprocess.getstatusoutput(f'whoami')
     mess = "ls /media/" + str(user[1])
     res_usb = subprocess.getstatusoutput(mess)
+    print(res_usb)
 
     # Find USB Drives (Not STM Board)
     for i in res_usb:
         if i != 0:
             if "NOD" not in i:
                 print(i)
-                return "/media" + str(user[1]) + "/" + i
+                return "/media/" + str(user[1]) + "/" + i
 
     print("usb lists")
     return "None"
 
 
 def shutdown():
-    subprocess.getstatusoutput(f'sudo shutdown -n now')
+    subprocess.getstatusoutput(f'sudo shutdown now')
+
+
+def check_5V():
+    bigfoot.dac_enable(0)
+    bigfoot.adc_load(0)
+    bigfoot.adc_enable(1)
+    bigfoot.set_mux_add(1, 4, 3)
+    time.sleep(0.01)
+    v = bigfoot.rpi_i2c_adc()
+    return v
+    
