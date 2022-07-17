@@ -707,6 +707,11 @@ def board_wait():
     cont = 1
     while cont == 1:
         _board_type = board_list()
+        state_buttons = bigfoot.get_button_state()
+        if state_buttons & 2 == 2:
+            bigfoot.b2_disable()
+            shutdown()
+
         if _board_type == "No Boards Detected" or _board_type == "Overflow":
             cont = 1
         else:

@@ -109,7 +109,7 @@ def setRunningScreen(pass_array):
         standbyMsg = Label(frame, text=pass_array, font=("Helvetica", 14))
         
         leftButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
-        middleButton = Label(frame, text="Stop", background='green', font=("Helvetica", 14))
+        middleButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
         rightButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
 
         # Controls placement of labels that display info to user
@@ -133,9 +133,9 @@ def setResultsScreen(pass_array):
         # Initializes labels to display info to user
         standbyMsg = Label(frame, text=pass_array, font=("Helvetica", 14))
         
-        leftButton = Label(frame, text="Back", background='green', font=("Helvetica", 14))
-        middleButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
-        rightButton = Label(frame, text="Detailed Results", background='green', font=("Helvetica", 14))
+        leftButton = Label(frame, text="Save", background='green', font=("Helvetica", 14))
+        middleButton = Label(frame, text="Detailed Report", background='grey', font=("Helvetica", 14))
+        rightButton = Label(frame, text="New Test", background='green', font=("Helvetica", 14))
 
         # Controls placement of labels that display info to user
         standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
@@ -217,6 +217,28 @@ def setShutdownScreen():
         # Updates main window
         root.update()
 
+#
+def setRemovalScreen():
+        # Clears main window's subframe
+        for widget in frame.winfo_children():
+                if widget.winfo_exists():
+                        widget.destroy()
+        frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
+
+        # Initializes labels to display info to user
+        standbyMsg = Label(frame, text="Please remove your DevBoard", font=("Helvetica", 14))
+        leftButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
+        middleButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
+        rightButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
+
+        # Controls placement of labels that display info to user
+        standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
+        leftButton.place(relx=0.1, rely=0.7, relheight=0.2, relwidth=0.2)
+        middleButton.place(relx=0.4, rely=0.7, relheight=0.2, relwidth=0.2)
+        rightButton.place(relx=0.7, rely=0.7, relheight=0.2, relwidth=0.2)
+
+        # Updates main window
+        root.update()
 
 # Used to run the View module independently for testing purposes
 if __name__ == '__main__':

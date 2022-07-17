@@ -260,16 +260,16 @@ if __name__ == '__main__':
         redo = False
         while start is False:
             state_buttons = model.bigfoot.get_button_state()
-            if state_buttons & 1 == 1:
+            if state_buttons & 2 == 2:
                 view.setFlashScreen()
                 _board_type = model.board_list()
                 if model.check_5V() < 4.0 or _board_type != board_type:
                     redo = True
                 start = True
-                model.bigfoot.b1_disable()
-            #if button 2 then shutdown
-            elif state_buttons & 2 == 2:
                 model.bigfoot.b2_disable()
+            #if button 2 then shutdown
+            elif state_buttons & 1 == 1:
+                model.bigfoot.b1_disable()
                 model.shutdown()
             
 
@@ -426,57 +426,73 @@ if __name__ == '__main__':
 
         # End of Test Menu
         view.setResultsScreen(pass_array)
+        results_menu = True
         screen_wait = True
         details_wait = False
         save_wait = False
-        
+
+
+
         # End of Test Screen
-        while screen_wait and not redo:
-            state_buttons = model.bigfoot.get_button_state()
-            
-            if state_buttons & 1 == 1:
-                model.bigfoot.b1_disable()
-                screen_wait = False
-                
-            elif state_buttons & 2 == 2:
-                model.bigfoot.b2_disable()
-                
-            elif state_buttons & 4 == 4:
-                model.bigfoot.b3_disable()
-                model.bigfoot.b3_enable()
-                view.setDetailTestScreen(detailed_array)
-                details_wait = True
-                screen_wait = False
-                
-        # Detailed Results State
-        while details_wait and not redo:
-            state_buttons = model.bigfoot.get_button_state()
-            
-            if state_buttons & 4 == 4:
-                model.bigfoot.b3_disable()
-                details_wait = False
-            elif state_buttons & 1 == 1:
-                view.setSaveScreen()
-                save_wait = True
-                model.bigfoot.b1_disable()
-                model.bigfoot.b1_enable()
-                details_wait = False
-        
-        # Save Condition States
-        while save_wait and not redo:
-            state_buttons = model.bigfoot.get_button_state()
-            # Add condition to save test results to usb
-            print(model.usb_list())
-            save_wait = False
+        while results_menu and not redo:
+            while screen_wait and not redo:
+                state_buttons = model.bigfoot.get_button_state()
+
+                if state_buttons & 1 == 1:
+                    view.setSaveScreen()
+                    save_wait = True
+                    screen_wait = False
+                    model.bigfoot.b1_disable()
+                    model.bigfoot.b1_enable()
+
+                elif state_buttons & 2 == 2:
+                    model.bigfoot.b2_disable()
+                    model.bigfoot.b2_enable()
+                    view.setDetailTestScreen(detailed_array)
+                    details_wait = True
+                    screen_wait = False
+
+                elif state_buttons & 4 == 4:
+                    model.bigfoot.b3_disable()
+                    model.bigfoot.b3_enable()
+                    screen_wait = False
+                    results_menu = False
+
+            # Detailed Results State
+            while details_wait and not redo:
+                state_buttons = model.bigfoot.get_button_state()
+
+                if state_buttons & 4 == 4:
+                    model.bigfoot.b3_disable()
+                    details_wait = False
+                    results_menu = False
+                # FIX : NO SAVE IN DETAILS
+                elif state_buttons & 1 == 1:
+                    view.setSaveScreen()
+                    save_wait = True
+                    model.bigfoot.b1_disable()
+                    model.bigfoot.b1_enable()
+                    details_wait = False
+
+            # Save Condition States
+            while save_wait and not redo:
+                state_buttons = model.bigfoot.get_button_state()
+                # Add condition to save test results to usb
+                print(model.usb_list())
+                save_wait = False
 
         # Remove Board State
-        
+        view.setRemovalScreen()
 
         # Loop
         print("Flash")
         print(detailed_array)
         print(pass_array)
-        sleep(1)
+        time_i = 0
+        while model.check_5V() < 4.0 and time_i < 10:
+            sleep(1)
+
+
 
         # NEW LOOP
         # Assign -> View General Results Screen with 3 button inputs
