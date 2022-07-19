@@ -29,8 +29,8 @@ void init_pins(struct pin pins[]);
 
 /* Facade Function Prototypes */
 void facade_pinMode(uint8_t pin, uint8_t setting);
-void facade_digitalWrite(uint8_t pin, uint8_t locig);
-void facade_analogWrite(uint8_t pin, uint8_t logic);
+void facade_digitalWrite(uint8_t pin, uint8_t logic);
+void facade_analogWrite(uint8_t pin, int logic);
 int facade_digitalRead(unsigned char pin);
 int facade_analogRead(unsigned char pin);
 
@@ -53,6 +53,7 @@ struct pin {
 /* Global Variables */
 unsigned char RMSG[3];
 unsigned int test_result;
+unsigned int pin_num;
 struct pin PINS_[64];
 
 /* Runs once upon startup of the program */
@@ -65,11 +66,11 @@ void setup() {
 
     //FACADE POINTER EXAMPLES (setup)
     //test = &digitalWrite;
-    p_digitalWrite = &digitalWrite;
-    p_digitalRead = &digitalRead;
-    p_pinMode = &pinMode;
-    p_analogRead = &analogRead;
-    p_analogWrite = &analogWrite;
+   // p_digitalWrite = &digitalWrite;
+   // p_digitalRead = &digitalRead;
+   // p_pinMode = &pinMode;
+   // p_analogRead = &analogRead;
+   // p_analogWrite = &analogWrite;
     //+Sleep Modes
 
     init_pins(PINS_);
@@ -90,20 +91,8 @@ void loop() {
             //RMSG[0] = pin under test, RMSG[1] = Special Instructions, RMSG[2] = Test Identification
             unsigned int pin_val = PINS_[RMSG[0]].pin;
 
-            if(RMSG[1] < 63) {
-              p_digitalWrite = &digitalWrite;
-              p_digitalRead = &digitalRead;
-              p_pinMode = &pinMode;
-              p_analogRead = &analogRead;
-            } 
-            else {
-              //Adjust Pin Control Functions when in Facade Mode
-              p_digitalWrite = &facade_digitalWrite;
-              p_digitalRead = &facade_digitalRead;
-              p_pinMode = &facade_pinMode;
-              p_analogRead = &facade_analogRead;
-            }
-
+            //Adjust Pin Control Functions when in Facade Mode
+            //Make Conditional for Facade
               
             switch (RMSG[2]) { // Test Identification #
                 case 1: 
@@ -236,12 +225,12 @@ int crc_decode(unsigned char data[]) {
  * Returns: void
  */
 void configure_output(unsigned int pin, unsigned int logic) {
-    p_pinMode(pin, OUTPUT);
+    pinMode(pin, OUTPUT);
     if(logic) {
-      p_digitalWrite(pin, HIGH);
+      digitalWrite(pin, HIGH);
     }
     else {
-      p_digitalWrite(pin, LOW);
+      digitalWrite(pin, LOW);
     }
     return;
 }
@@ -253,7 +242,7 @@ void configure_output(unsigned int pin, unsigned int logic) {
  * Returns: int - 0 or 1 depending on input voltage of the pin (LOGIC LOW OR HIGH)
  */
 int configure_input(unsigned int pin) {
-    p_pinMode(pin, INPUT);
+    pinMode(pin, INPUT);
     return p_digitalRead(pin);
 }
 
@@ -264,7 +253,7 @@ int configure_input(unsigned int pin) {
  * Returns: void
  */
 void configure_input_pullup(unsigned int pin) {
-    p_pinMode(pin,INPUT_PULLUP);
+    pinMode(pin,INPUT_PULLUP);
     return;
 }
 
@@ -276,8 +265,8 @@ void configure_input_pullup(unsigned int pin) {
  * Returns: int - 0 to 1023, depending on the voltage reading of the ADC. (0 = GND, 1023 = 5V)
  */
 int configure_analog_input(unsigned int analogPin) {
-  p_pinMode(analogPin, INPUT);
-   return (p_analogRead(analogPin) >> 2); //returns a value 0-1023 (0=GND, 1023 = 5V)
+   pinMode(analogPin, INPUT);
+   return (analogRead(analogPin) >> 2); //returns a value 0-1023 (0=GND, 1023 = 5V)
 }
 
 /*
@@ -344,32 +333,39 @@ void facade_pinMode(uint8_t pin, uint8_t setting) {
   unsigned int pin_val = PINS_[RMSG[0]].pin;
 
   RMSG[0] = pin_val;
-  RMSG[1] = setting;
-  RMSG[2] = 1;
+  RMSG[1] = 1;
+  
+  
+  delay(10);
   
 }
 void facade_digitalWrite(uint8_t pin, uint8_t logic) {
   unsigned int pin_val = PINS_[RMSG[0]].pin;
 
   RMSG[0] = pin_val;
-  RMSG[1] = logic;
-  RMSG[2] = 2;
+  RMSG[1] = 2;
+  digitalWrite(12, HIGH);
+
+  delay(10);
   
 }
 void facade_analogWrite(uint8_t pin, uint8_t volt) {
   unsigned int pin_val = PINS_[RMSG[0]].pin;
 
   RMSG[0] = pin_val;
-  RMSG[1] = volt;
-  RMSG[2] = 3;
+  RMSG[1] = 3;
+
+  delay(10);
   
 }
 int facade_digitalRead(unsigned char pin) {
   unsigned int pin_val = PINS_[RMSG[0]].pin;
 
   RMSG[0] = pin_val;
-  RMSG[1] = 0;
-  RMSG[2] = 3;
+  RMSG[1] = 4;
+
+
+  delay(10);
 
   return 0;
 }
@@ -377,8 +373,10 @@ int facade_analogRead(unsigned char pin) {
   unsigned int pin_val = PINS_[RMSG[0]].pin;
 
   RMSG[0] = pin_val;
-  RMSG[1] = 0;
+  RMSG[1] = 3;
   RMSG[2] = 3;
+
+  delay(10);
 
   return 0;
 }

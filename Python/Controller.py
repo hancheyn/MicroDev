@@ -431,8 +431,6 @@ if __name__ == '__main__':
         details_wait = False
         save_wait = False
 
-
-
         # End of Test Screen
         while results_menu and not redo:
             while screen_wait and not redo:
@@ -443,38 +441,38 @@ if __name__ == '__main__':
                     save_wait = True
                     screen_wait = False
                     model.bigfoot.b1_disable()
-                    model.bigfoot.b1_enable()
 
                 elif state_buttons & 2 == 2:
                     model.bigfoot.b2_disable()
-                    model.bigfoot.b2_enable()
                     view.setDetailTestScreen(detailed_array)
                     details_wait = True
                     screen_wait = False
 
                 elif state_buttons & 4 == 4:
                     model.bigfoot.b3_disable()
-                    model.bigfoot.b3_enable()
                     screen_wait = False
                     results_menu = False
 
             # Detailed Results State
+            if details_wait:
+                model.bigfoot.b2_enable()
             while details_wait and not redo:
                 state_buttons = model.bigfoot.get_button_state()
 
                 if state_buttons & 4 == 4:
                     model.bigfoot.b3_disable()
+                    #model.bigfoot.b3_enable()
                     details_wait = False
                     results_menu = False
-                # FIX : NO SAVE IN DETAILS
                 elif state_buttons & 1 == 1:
                     view.setSaveScreen()
                     save_wait = True
                     model.bigfoot.b1_disable()
-                    model.bigfoot.b1_enable()
                     details_wait = False
 
             # Save Condition States
+            if save_wait:
+                model.bigfoot.b1_enable()
             while save_wait and not redo:
                 state_buttons = model.bigfoot.get_button_state()
                 # Add condition to save test results to usb
@@ -482,20 +480,26 @@ if __name__ == '__main__':
                     model.bigfoot.b2_disable()
                     model.bigfoot.b2_enable()
                     save_wait = False
-                    print(model.usb_list())
+                    usb_filepath = model.usb_list()
+
+                    if usb_filepath is not "None":
+                        usb_file = usb_filepath + "/MicroDevTest.txt"
+                        usbf = open(usb_file, "w")
+                        for i in detailed_array:
+                            usbf.write(detailed_array[i])
+                        usbf.close()
+                    print(usb_filepath)
 
         # Remove Board State
         view.setRemovalScreen()
 
         # Loop
-        print("Flash")
-        print(detailed_array)
-        print(pass_array)
+        # print("Flash")
+        # print(detailed_array)
+        # print(pass_array)
         time_i = 0
         while model.check_5V() > 4.0 and time_i < 10:
             sleep(1)
-
-
 
         # NEW LOOP
         # Assign -> View General Results Screen with 3 button inputs

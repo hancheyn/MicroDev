@@ -75,6 +75,7 @@ def setStartScreen():
         # Updates main window
         root.update()
 
+
 def setFlashScreen():
         # Clears main window's subframe
         for widget in frame.winfo_children():
@@ -122,7 +123,8 @@ def setRunningScreen(pass_array):
         
         # Updates main window
         root.update()
-  
+
+
 def setResultsScreen(pass_array):
         # Clears main window's subframe
         for widget in frame.winfo_children():
@@ -134,8 +136,8 @@ def setResultsScreen(pass_array):
         standbyMsg = Label(frame, text=pass_array, font=("Helvetica", 14))
         
         leftButton = Label(frame, text="Save", background='green', font=("Helvetica", 14))
-        middleButton = Label(frame, text="Detailed Report", background='grey', font=("Helvetica", 14))
-        rightButton = Label(frame, text="New Test", background='green', font=("Helvetica", 14))
+        middleButton = Label(frame, text="Detailed Report", background='red', font=("Helvetica", 14))
+        rightButton = Label(frame, text="New Test", background='blue', font=("Helvetica", 14))
 
         # Controls placement of labels that display info to user
         standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
@@ -145,7 +147,8 @@ def setResultsScreen(pass_array):
         
         # Updates main window
         root.update()
-        
+
+
 def setDetailTestScreen(detailed_array):
         # Clears main window's subframe
         for widget in frame.winfo_children():

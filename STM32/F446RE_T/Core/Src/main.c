@@ -41,8 +41,8 @@ int configure_input(unsigned int pin);
 void configure_input_pullup(unsigned int pin);
 int configure_analog_input(unsigned int pin);
 void configure_input_pulldown(unsigned int pin);
-//void configure_sleep_mode(unsigned int sleepmode, unsigned int interruptPin);
-//void wakeUp();
+void configure_sleep_mode(unsigned int sleepmode, unsigned int interruptPin);
+void wakeUp();
 
 //IO SIGNALS
 struct pin PINS_[64];
@@ -115,11 +115,9 @@ int main(void) {
   				run_tests(RMSG);
 
   				//Send Back Results
-  				//command_write(RMSG[0], RMSG[1], RMSG[2]);
-  			}
-  			else {
   				command_write(RMSG[0], RMSG[1], RMSG[2]);
   			}
+
   	  }
     }
 
@@ -173,13 +171,13 @@ void run_tests(unsigned char data[]) {
 	}
 	else if(data[2] == 7) {
 		if(instruction == 1) {
-			sleepmode(1);
+			configure_sleep_mode(1, pin);
 		}
 		else if(instruction == 2) {
-			sleepmode(2);
+			configure_sleep_mode(2, pin);
 		}
 		else if(instruction == 3) {
-			sleepmode(4);
+			configure_sleep_mode(4, pin);
 		}
 
 	}
@@ -259,53 +257,94 @@ int configure_analog_input(unsigned int analogPin) {
 /********************************************************/
 
 //
-int sleepmode(int mode) {
+void configure_sleep_mode(unsigned int mode, unsigned int interruptPin) {
 
 	// SLEEP == 1
-	// Wake Up = A0 or PA0
+	// Wake Up = ?PA0 | D13
 	if(mode == 1) {
 		HAL_SuspendTick();
 		//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 0);
 		//HAL_PWR_EnableSleepOnExit();
+		wakeUp(interruptPin);
 		HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN1);
+		__HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
 		HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);
 		//HAL_ResumeTick();
 	}
 	// STOP == 2
-	// Wake Up = A0
+	// Wake Up = Reset
 	else if(mode == 2) {
 		HAL_SuspendTick();
 		//HAL_PWR_EnableSleepOnExit();
+		wakeUp(interruptPin);
+		__HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
 		HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN1);
 		HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_SLEEPENTRY_WFI);
 		//HAL_ResumeTick();
 	}
 	// STANDBY == 4
-	// Wake up Pin =
+	// Wake up Pin1 = PA0 | Pin2 = PC13
 	else if(mode == 4) {
-		//__HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
-		//__HAL_RTC_WAKEUPTIMER_CLEAR_FLAG(&hrtc, RTC_FLAG_WUTF);
-		HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN1);
+		__HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
+		if(interruptPin == 1) {
+			HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN1);
+		}
+		else if (interruptPin == 2) {
+			HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN2);
+		}
+		else {
+			HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN1);
+		}
 		HAL_PWR_EnterSTANDBYMode();
 	}
 
-	return 0;
 }
 
 //FIX : TEST if this is needed
-//Ref. https://controllerstech.com/low-power-modes-in-stm32/
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
-  if(GPIO_Pin == GPIO_PIN_13)
-  {
-	  SystemClock_Config ();
-	  HAL_ResumeTick();
-	  char *str = "WAKEUP FROM EXTII\n\n";
-	  //HAL_UART_Transmit(&huart2, (uint8_t *) str, strlen (str), HAL_MAX_DELAY);
-	  HAL_PWR_DisableSleepOnExit();
-  }
+// EXTI Interrupt Function
+void wakeUp(int pin) {
+	__disable_irq();
+
+	if(pin == 2) {
+		RCC->AHB1ENR |= 4;
+		GPIOC->MODER &= ~0x0C000000;
+		GPIOC->PUPDR &= ~0x0C000000;
+		GPIOC->PUPDR |= 0x04000000;
+
+		SYSCFG->EXTICR[3] &= ~0x00F0;
+		SYSCFG->EXTICR[3] |= 0x0020;
+		EXTI->IMR |= 0x2000;
+		EXTI->FTSR |= 0x2000;
+
+		NVIC_EnableIRQ(EXTI15_10_IRQn);
+		__enable_irq();
+	}
+	else {
+		RCC->AHB1ENR |= 1;
+		GPIOC->MODER &= ~0x00000003;
+		GPIOC->PUPDR &= ~0x00000003;
+		GPIOC->PUPDR |= 0x00000001;
+
+		SYSCFG->EXTICR[0] &= ~0x000F;
+		SYSCFG->EXTICR[0] |= 0x0002;
+		EXTI->IMR |= 0x0001;
+		EXTI->FTSR |= 0x0001;
+
+		NVIC_EnableIRQ(EXTI15_10_IRQn);
+		__enable_irq();
+	}
 }
 
+void EXTI15_10_IRQHandler(void) {
+	if(EXTI->PR == 0x2000) {
+		HAL_ResumeTick();
+		EXTI->PR = 0x2000;
+	}
+	else if(EXTI->PR == 0x0001) {
+		HAL_ResumeTick();
+		EXTI->PR = 0x0001;
+	}
+}
 
 /********************************************************/
 // Read & Write Functions
