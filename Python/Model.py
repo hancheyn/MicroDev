@@ -360,7 +360,7 @@ def run_gpio_input_pull_up_test(pin, enable, address, instruction, ser):
 
     # Configure Bigfoot w/
     bigfoot.adc_enable(1)
-    bigfoot.adc_load(1)
+    bigfoot.adc_load(instruction)
     bigfoot.set_mux_add(1, enable, address)
 
     # FIX: Configure DAC
@@ -411,12 +411,12 @@ def run_gpio_input_pull_down_test(pin, enable, address, instruction, ser):
     # Configure Bigfoot w/
     bigfoot.adc_enable(1)
     bigfoot.adc_load(0)
-    bigfoot.dac_enable(1)
     bigfoot.set_mux_add(1, enable, address)
 
     # FIX: Configure DAC
-    bigfoot.dac_enable(1)
-    bigfoot.rpi_i2c_dac()
+    if instruction != 0:
+        bigfoot.dac_enable(1)
+        bigfoot.rpi_i2c_dac()
 
     # Communication to Subject Serial
     # Configure input pull-downs
@@ -471,7 +471,7 @@ def run_gpio_input_logic_level_test(pin, enable, address, instruction, ser):
 
     # Configure Bigfoot to high logic
     bigfoot.rpi_i2c_dac()
-    time.sleep(0.02)
+    time.sleep(0.01)
 
     # Communication to Subject Serial
     # .encode([test], [pin], [instruction])
@@ -600,9 +600,16 @@ def run_wakeup_test(pin, enable, address, instruction):
 
     # return pass or fail of test
     bigfoot.set_mux_add(0, 0, 0)
+    bigfoot.dac_enable(0)
     # print("test 8")
     return current
 
+
+def current_read():
+    bigfoot.high_current(0)
+    bigfoot.low_current(1)
+    current = bigfoot.rpi_i2c_ina219(1)
+    return current
 
 # ******************************** Command Line Interface ************************************
 # Description: Flashes the Subject Board

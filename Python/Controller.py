@@ -17,6 +17,7 @@ import View
 view = View
 model = Model
 
+
 ###################################################################################
 
 # Description: For looping through serial check if communication works
@@ -46,15 +47,13 @@ def test_config_file(_board_type):
     return file
 
 
-# Description: Preforms Test Comparisons
-# Parameters: Test ID Int | Pin ID Int | Address Int | Enable Int | Board type String
+# Description: Preforms Test on Supply Pins 3V3 and 5V
+# Parameters:
 # Returns: Boolean Pass or Fail
-def subject_test(t, p, a, e, board, _ser):
-
-    # Logic Level Config
-    logic = 0
-
+def supply_pin_voltages(board):
     # Gather Config Data from Config file of board type
+
+    # FIX MOVE TO THRESHOLD FUNCTION
     if board == "Arduino Uno Detected":
         file2 = open('unoThreshold.config', 'r')
         logic = 5
@@ -64,6 +63,32 @@ def subject_test(t, p, a, e, board, _ser):
     else:
         return False
 
+    lines2 = file2.readlines()
+    compare = lines2[9].split(",")
+
+    if model.check_5V() < float(compare[1]) and model.check_3V3() < float(compare[2]):
+        return True
+    return False
+
+
+# Description: Preforms Test Comparisons
+# Parameters: Test ID Int | Pin ID Int | Address Int | Enable Int | Board type String
+# Returns: Boolean Pass or Fail
+def subject_test(t, p, a, e, board, _ser):
+    # Logic Level Config
+    logic = 0
+
+    # Gather Config Data from Config file of board type
+
+    # FIX MOVE TO THRESHOLD FUNCTION
+    if board == "Arduino Uno Detected":
+        file2 = open('unoThreshold.config', 'r')
+        logic = 5
+    elif board == "STM32F411 Detected" or board == "STM32F446 Detected":
+        file2 = open('stm32f4Threshold.config', 'r')
+        logic = 3.3
+    else:
+        return False
     lines2 = file2.readlines()
 
     # Run tests and compare based on test configured values
@@ -104,19 +129,23 @@ def subject_test(t, p, a, e, board, _ser):
     elif t == 3:
         print("Test 3: Pull-Up Input")
         compare = lines2[t].split(",")
-        adc3 = 0
+        adc2 = 0
 
         # Read adc value at threshold voltage Pull Up Test
         # Instruction depends on logic level (controls dac)
+        adc1 = model.run_subject_test(p, e, a, t, 0x00, _ser)
+
         if logic == 5:
-            adc3 = model.run_subject_test(p, e, a, t, 0x00, _ser)
+            adc2 = model.run_subject_test(p, e, a, t, 0x01, _ser)
+            Rpu = (((390 * 5) / adc2) - 390)
         else:
-            adc3 = model.run_subject_test(p, e, a, t, 0x00, _ser)
+            adc2 = model.run_subject_test(p, e, a, t, 0x01, _ser)
+            Rpu = (((390 * 3.3) / adc2) - 390)
 
         # calculation with adc to pull down resistance value
-        print("Test adc val: " + str(adc3))
-        Rpu = (((390 * 5) / adc3) - 390)
-        if Rpu > float(compare[1]) and Rpu < float(compare[2]):
+        print("Test adc val: " + str(adc2))
+        Rpu = (((390 * 5) / adc2) - 390)
+        if Rpu > float(compare[1]) and Rpu < float(compare[2]) and adc1 > float(compare[3]):
             return True
         return False
 
@@ -126,6 +155,8 @@ def subject_test(t, p, a, e, board, _ser):
         adc4 = 0
 
         # Read adc value at threshold voltage
+        adc1 = model.run_subject_test(p, e, a, t, 0x00, _ser)
+
         if logic == 5:
             model.bigfoot.set_vout(5)
             adc4 = model.run_subject_test(p, e, a, t, 0x0F, _ser)
@@ -136,7 +167,7 @@ def subject_test(t, p, a, e, board, _ser):
         # calculation with adc to pull down resistance value
         print("Test adc val: " + str(adc4))
         Rpd = (2000 * adc4) / (3.3 - adc4)
-        if Rpd > float(compare[1]) and Rpd < float(compare[2]):
+        if Rpd > float(compare[1]) and Rpd < float(compare[2]) and adc1 < float(compare[3]):
             return True
         return False
 
@@ -178,7 +209,7 @@ def subject_test(t, p, a, e, board, _ser):
             print("ADC Return Value: " + str(test_num) + ": " + str(subject_adc_high))
             # convert instruction to voltage
             # compare subject voltage to dac voltage
-            if subject_adc_high > instruct - 0.1 and condition_success == True:
+            if subject_adc_high > instruct - 0.1 and condition_success:
                 condition_success = True
             else:
                 condition_success = False
@@ -190,6 +221,8 @@ def subject_test(t, p, a, e, board, _ser):
 
     elif t == 7:
         print("Test 7: Set Power Mode")
+        # Reads current 0
+        current_0 = model.current_read()
 
         # Reads current
         # Instruction is in config
@@ -198,22 +231,24 @@ def subject_test(t, p, a, e, board, _ser):
         current = model.run_subject_test(p, e, a, t, 0, _ser)
         print("Current Val: " + str(current))
         # compare subject current to threshold
-        
-        if float(compare[1]) > current:
+
+        if float(compare[1]) < (current_0-current):
             return True
         return False
 
     elif t == 8:
         print("Test 8: Wakeup From Sleep")
-        # Reads current
+        # Reads current 0
+        current_0 = model.current_read()
+
         compare = lines2[t].split(",")
         # Instruction is in config
         model.bigfoot.set_vout(0)
-    
+
         current = model.run_subject_test(p, e, a, t, 0, _ser)
         print("Current Val: " + str(current))
         # compare subject current to threshold
-        if float(compare[1]) < current:
+        if float(compare[1]) < (current-current_0):
             return True
         return False
 
@@ -227,11 +262,10 @@ if __name__ == '__main__':
     # Facade Macro
     Facade = 0
 
-    # Initialize
+    # Initializemodel.check_5V() < 4.0 and model.check_3V3() < 2.5
     # Fork | Pipe View
     pass_array = ["Basic Test Results"]
     detailed_array = ["Detailed Test Results"]
-
 
     # New test
     while True:
@@ -240,12 +274,12 @@ if __name__ == '__main__':
         model.bigfoot.b1_enable()
         model.bigfoot.b2_enable()
         model.bigfoot.b3_enable()
-        
+
         detailed_array.clear()
         pass_array.clear()
-        
+
         detailed_array.append("Detailed Test Results")
-        
+
         # Assign -> View Standby Screen
         view.setStandbyScreen()
 
@@ -265,19 +299,18 @@ if __name__ == '__main__':
             state_buttons = model.bigfoot.get_button_state()
             if state_buttons & 2 == 2:
                 view.setFlashScreen()
-                #_board_type = model.board_list()
-                if (model.check_5V() < 4.0 and model.check_3V3() < 2.5):
+                # _board_type = model.board_list()
+                if (supply_pin_voltages(board_type)):
                     redo = True
                 start = True
                 model.bigfoot.b2_disable()
-            #if button 2 then shutdown
+            # if button 2 then shutdown
             elif state_buttons & 1 == 1:
                 model.bigfoot.b1_disable()
                 model.shutdown()
-            
 
         # Assign -> View Testing Screen
-        
+
         # Start Test Condition
         # Loop Through Config File
         # Test Conditions In Loop
@@ -304,7 +337,7 @@ if __name__ == '__main__':
                     # Try Except Thing / Exception
                     ser = model.open_serial()
                     sleep(2)
-                    
+
                     # Test Booleans
                     test1_pass = True
                     test2_pass = True
@@ -322,21 +355,22 @@ if __name__ == '__main__':
                     test6_occured = False
                     test7_occured = False
                     test8_occured = False
-            
 
                     while loop_count < test_count:
                         test = Lines[loop_count].split(",")
-                        res[loop_count - 1] = subject_test(int(test[0]), int(test[1]), int(test[2]), int(test[3]), board_type,
+                        res[loop_count - 1] = subject_test(int(test[0]), int(test[1]), int(test[2]), int(test[3]),
+                                                           board_type,
                                                            ser)
                         # print(res[loop_count-1])
                         print("Test#,PinID,Address,Enable: " + str(Lines[loop_count]))
                         test_num = int(test[0])
-                        current_test = "Test #" + str(Lines[loop_count][0])  + " Pin #" + str(test[1]) + " Result: " + str(res[loop_count - 1])
+                        current_test = "Test #" + str(Lines[loop_count][0]) + " Pin #" + str(
+                            test[1]) + " Result: " + str(res[loop_count - 1])
                         detailed_array.append(current_test)
-                        
+
                         # Show Progress of Tests
                         view.setRunningScreen(detailed_array[loop_count - 1])
-                        
+
                         if test_num == 1:
                             # print(res[loop_count - 1])
                             test1_occured = True
@@ -386,13 +420,13 @@ if __name__ == '__main__':
                                 test8_pass = res[loop_count - 1]
                             else:
                                 test8_pass = False
-                        
+
                         loop_count = loop_count + 1
                         sleep(0.01)
 
                     # Close Serial Port
                     model.close_serial(ser)
-                    
+
                     # Write Basic Test Results
                     if test1_occured:
                         mess_test = "Test #1 Result: " + str(test1_pass)
@@ -419,7 +453,7 @@ if __name__ == '__main__':
                         mess_test = "Test #8 Result: " + str(test8_pass)
                         pass_array.append(mess_test)
 
-                    
+
         except Exception:
             pass_array.append("Testing has Failed to Finish")
             pass
@@ -466,7 +500,7 @@ if __name__ == '__main__':
 
                 if state_buttons & 4 == 4:
                     model.bigfoot.b3_disable()
-                    #model.bigfoot.b3_enable()
+                    # model.bigfoot.b3_enable()
                     details_wait = False
                     results_menu = False
                 elif state_buttons & 1 == 1:
@@ -483,7 +517,7 @@ if __name__ == '__main__':
                 # Add condition to save test results to usb
                 if state_buttons & 4 == 4:
                     model.bigfoot.b3_disable()
-                    
+
                     save_wait = False
                     screen_wait = True
                     usb_filepath = model.usb_list()
@@ -495,7 +529,7 @@ if __name__ == '__main__':
                             usbf.write(i + "\n")
                         usbf.close()
                         h = subprocess.getstatusoutput("cp MicroDevTest_Results.txt " + usb_file)
-                        
+
                     print(usb_filepath)
                     view.setResultsScreen(pass_array)
                     model.bigfoot.b1_enable()
@@ -515,7 +549,3 @@ if __name__ == '__main__':
 
         # NEW LOOP
         # Assign -> View General Results Screen with 3 button inputs
-
-
-
-
