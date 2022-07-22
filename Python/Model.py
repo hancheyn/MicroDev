@@ -756,3 +756,12 @@ def check_5V():
     v = bigfoot.rpi_i2c_adc()
     return v
     
+def check_3V3():
+    bigfoot.dac_enable(0)
+    bigfoot.adc_load(0)
+    bigfoot.adc_enable(1)
+    bigfoot.set_mux_add(1, 3, 1)
+    time.sleep(0.01)
+    v = bigfoot.rpi_i2c_adc()
+    return v
+    

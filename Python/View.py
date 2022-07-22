@@ -38,13 +38,15 @@ def setStandbyScreen():
     frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
 
     # Initializes labels to display info to user
-    standbyMsg = Label(frame, text="Place dev board onto header interface and connect cable", font=("Helvetica", 14))
-    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
-    middleButton = Label(frame, text="Shutdown", background='blue', font=("Helvetica", 14))
-    rightButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
+    standbyMsg = Label(frame, text="Place dev board onto header", font=("Helvetica", 40))
+    standbyMsg2 = Label(frame, text="interface and connect cable", font=("Helvetica", 40))
+    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    middleButton = Label(frame, text="Shutdown", background='red', font=("Helvetica", 40))
+    rightButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
 
     # Controls placement of labels that display info to user
-    standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
+    standbyMsg.place(relx=0.1, rely=0.3, relheight=0.1, relwidth=0.8)
+    standbyMsg2.place(relx=0.1, rely=0.4, relheight=0.1, relwidth=0.8)
     leftButton.place(relx=0.1, rely=0.7, relheight=0.2, relwidth=0.2)
     middleButton.place(relx=0.4, rely=0.7, relheight=0.2, relwidth=0.2)
     rightButton.place(relx=0.7, rely=0.7, relheight=0.2, relwidth=0.2)
@@ -61,10 +63,10 @@ def setStartScreen():
     frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
 
     # Initializes labels to display info to user
-    standbyMsg = Label(frame, text="Your dev board has been detected", font=("Helvetica", 14))
-    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
-    middleButton = Label(frame, text="Start Test", background='green', font=("Helvetica", 14))
-    rightButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
+    standbyMsg = Label(frame, text="Your dev board has been detected", font=("Helvetica", 40))
+    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    middleButton = Label(frame, text="Start Test", background='green', font=("Helvetica", 40))
+    rightButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
 
     # Controls placement of labels that display info to user
     standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
@@ -84,10 +86,10 @@ def setFlashScreen():
     frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
 
     # Initializes labels to display info to user
-    standbyMsg = Label(frame, text="Flashing Software to Subject Board", font=("Helvetica", 14))
-    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
-    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
-    rightButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
+    standbyMsg = Label(frame, text="Flashing Software to Subject Board", font=("Helvetica", 40))
+    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    rightButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
 
     # Controls placement of labels that display info to user
     standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
@@ -107,11 +109,11 @@ def setRunningScreen(pass_array):
     frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
 
     # Initializes labels to display info to user
-    standbyMsg = Label(frame, text=pass_array, font=("Helvetica", 14))
+    standbyMsg = Label(frame, text=pass_array, font=("Helvetica", 40))
 
-    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
-    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
-    rightButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
+    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    rightButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
 
     # Controls placement of labels that display info to user
     standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
@@ -131,18 +133,14 @@ def setResultsScreen(pass_array):
     frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
 
     # Initializes labels to display info to user
-    size_a = len(pass_array)
-    nex = 0.1
-    for i in pass_array:
-        standbyMsg = Label(frame, text=i, font=("Helvetica", 14))
-        standbyMsg.place(relx=0.1, rely=nex, relheight=0.1, relwidth=0.8)
-        nex = 0.05 + nex
 
-    leftButton = Label(frame, text="Save", background='green', font=("Helvetica", 14))
-    middleButton = Label(frame, text="Detailed Report", background='red', font=("Helvetica", 14))
-    rightButton = Label(frame, text="New Test", background='blue', font=("Helvetica", 14))
+    standbyMsg = Label(frame, text=pass_array, font=("Helvetica", 14))
+    leftButton = Label(frame, text="Save", background='green', font=("Helvetica", 40))
+    middleButton = Label(frame, text="Details", background='red', font=("Helvetica", 40))
+    rightButton = Label(frame, text="New Test", background='blue', font=("Helvetica", 40))
 
     # Controls placement of labels that display info to user
+    standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
     leftButton.place(relx=0.1, rely=0.7, relheight=0.2, relwidth=0.2)
     middleButton.place(relx=0.4, rely=0.7, relheight=0.2, relwidth=0.2)
     rightButton.place(relx=0.7, rely=0.7, relheight=0.2, relwidth=0.2)
@@ -159,11 +157,11 @@ def setDetailTestScreen(detailed_array):
     frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
 
     # Initializes labels to display info to user
-    standbyMsg = Label(frame, text=detailed_array, font=("Helvetica", 14))
+    standbyMsg = Label(frame, text=detailed_array, font=("Helvetica", 40))
 
-    leftButton = Label(frame, text="Save", background='green', font=("Helvetica", 14))
-    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
-    rightButton = Label(frame, text="Back", background='red', font=("Helvetica", 14))
+    leftButton = Label(frame, text="Save", background='green', font=("Helvetica", 40))
+    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    rightButton = Label(frame, text="Back", background='red', font=("Helvetica", 40))
 
     # Controls placement of labels that display info to user
     standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
@@ -183,11 +181,11 @@ def setSaveScreen():
     frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
 
     # Initializes labels to display info to user
-    standbyMsg = Label(frame, text="Saving Test Results to USB", font=("Helvetica", 14))
+    standbyMsg = Label(frame, text="Saved Test Results to USB", font=("Helvetica", 40))
 
-    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
-    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
-    rightButton = Label(frame, text="Back", background='green', font=("Helvetica", 14))
+    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    rightButton = Label(frame, text="Back", background='green', font=("Helvetica", 40))
 
     # Controls placement of labels that display info to user
     standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
@@ -208,10 +206,10 @@ def setShutdownScreen():
     frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
 
     # Initializes labels to display info to user
-    standbyMsg = Label(frame, text="Shutdown in Progress", font=("Helvetica", 14))
-    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
-    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
-    rightButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
+    standbyMsg = Label(frame, text="Shutdown in Progress", font=("Helvetica", 40))
+    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    rightButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
 
     # Controls placement of labels that display info to user
     standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
@@ -232,10 +230,10 @@ def setRemovalScreen():
     frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
 
     # Initializes labels to display info to user
-    standbyMsg = Label(frame, text="Please remove your DevBoard", font=("Helvetica", 14))
-    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
-    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
-    rightButton = Label(frame, text="", background='grey', font=("Helvetica", 14))
+    standbyMsg = Label(frame, text="Please remove your DevBoard", font=("Helvetica", 40))
+    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    rightButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
 
     # Controls placement of labels that display info to user
     standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)

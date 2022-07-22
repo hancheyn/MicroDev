@@ -10,6 +10,7 @@
 # #################################################
 
 from time import sleep
+import subprocess
 import Model
 import View
 
@@ -242,7 +243,9 @@ if __name__ == '__main__':
         
         detailed_array.clear()
         pass_array.clear()
-
+        
+        detailed_array.append("Detailed Test Results")
+        
         # Assign -> View Standby Screen
         view.setStandbyScreen()
 
@@ -262,8 +265,8 @@ if __name__ == '__main__':
             state_buttons = model.bigfoot.get_button_state()
             if state_buttons & 2 == 2:
                 view.setFlashScreen()
-                _board_type = model.board_list()
-                if model.check_5V() < 4.0 or _board_type != board_type:
+                #_board_type = model.board_list()
+                if (model.check_5V() < 4.0 and model.check_3V3() < 2.5):
                     redo = True
                 start = True
                 model.bigfoot.b2_disable()
@@ -332,7 +335,7 @@ if __name__ == '__main__':
                         detailed_array.append(current_test)
                         
                         # Show Progress of Tests
-                        view.setRunningScreen(detailed_array)
+                        view.setRunningScreen(detailed_array[loop_count - 1])
                         
                         if test_num == 1:
                             # print(res[loop_count - 1])
@@ -418,11 +421,13 @@ if __name__ == '__main__':
 
                     
         except Exception:
+            pass_array.append("Testing has Failed to Finish")
             pass
         finally:
             print("Complete Test Cycle")
 
             model.bigfoot.b1_enable()
+            model.bigfoot.b2_enable()
 
         # End of Test Menu
         view.setResultsScreen(pass_array)
@@ -472,23 +477,30 @@ if __name__ == '__main__':
 
             # Save Condition States
             if save_wait:
-                model.bigfoot.b1_enable()
+                model.bigfoot.b3_enable()
             while save_wait and not redo:
                 state_buttons = model.bigfoot.get_button_state()
                 # Add condition to save test results to usb
-                if state_buttons & 2 == 2:
-                    model.bigfoot.b2_disable()
-                    model.bigfoot.b2_enable()
+                if state_buttons & 4 == 4:
+                    model.bigfoot.b3_disable()
+                    
                     save_wait = False
+                    screen_wait = True
                     usb_filepath = model.usb_list()
 
-                    if usb_filepath is not "None":
-                        usb_file = usb_filepath + "/MicroDevTest.txt"
-                        usbf = open(usb_file, "w")
+                    if usb_filepath != "None":
+                        usb_file = usb_filepath
+                        usbf = open("MicroDevTest_Results.txt", "w")
                         for i in detailed_array:
-                            usbf.write(detailed_array[i])
+                            usbf.write(i + "\n")
                         usbf.close()
+                        h = subprocess.getstatusoutput("cp MicroDevTest_Results.txt " + usb_file)
+                        
                     print(usb_filepath)
+                    view.setResultsScreen(pass_array)
+                    model.bigfoot.b1_enable()
+                    model.bigfoot.b2_enable()
+                    model.bigfoot.b3_enable()
 
         # Remove Board State
         view.setRemovalScreen()
