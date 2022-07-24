@@ -106,7 +106,6 @@ void loop() {
                     if(facade_test) {
                         RMSG[0] = (unsigned char)pin_val;
                         RMSG[1] = (unsigned char)0;
-                        delay(50);
                     }
                     else {
                         configure_output(pin_val, RMSG[1]);                    
