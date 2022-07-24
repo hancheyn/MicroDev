@@ -227,11 +227,11 @@ def subject_test(t, p, a, e, board, _ser):
         # Reads current
         # Instruction is in config
         compare = lines2[t].split(",")
-
         current = model.run_subject_test(p, e, a, t, 0, _ser)
+
+        print("Current Val Null: " + str(current_0))
         print("Current Val: " + str(current))
         # compare subject current to threshold
-
         if float(compare[1]) < (current_0-current):
             return True
         return False
@@ -244,8 +244,9 @@ def subject_test(t, p, a, e, board, _ser):
         compare = lines2[t].split(",")
         # Instruction is in config
         model.bigfoot.set_vout(0)
-
         current = model.run_subject_test(p, e, a, t, 0, _ser)
+
+        print("Current Val Null: " + str(current_0))
         print("Current Val: " + str(current))
         # compare subject current to threshold
         if float(compare[1]) < (current-current_0):
