@@ -26,15 +26,16 @@ class BoardTests(unittest.TestCase):
     # 1.2 Facade Tests Subject Board Functionality for Test #2
     def test_run_gpio_output_loading(self):
 
-        s = bytearray(3)
-        s[0] = 23
-        s[1] = 0x81  # FACADE
-        s[2] = 0x01
+        # .encode([test], [pin], [instruction])
+        s = model.crc_encode(0x01, 0x17, 0x81)
+
         ser = model.open_serial()
         time.sleep(2)
         model.subject_write(str_write=s, ser=ser)
+        #time.sleep(2)
         test_bytes = model.subject_read(ser_=ser)
         model.close_serial(ser)
+        print(test_bytes)
         print(model.crc_decode(test_bytes, 0))      # type (Write / Read)
         print((model.crc_decode(test_bytes, 1)))    # pin #
         print((model.crc_decode(test_bytes, 2)))    # setting

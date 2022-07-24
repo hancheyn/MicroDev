@@ -103,15 +103,34 @@ void loop() {
               
             switch (RMSG[2]) { // Test Identification #
                 case 1: 
-                    configure_output(pin_val, RMSG[1]);
+                    if(facade_test) {
+                        RMSG[0] = (unsigned char)pin_val;
+                        RMSG[1] = (unsigned char)0;
+                        delay(50);
+                    }
+                    else {
+                        configure_output(pin_val, RMSG[1]);                    
+                    }
                     command_write(RMSG[0], RMSG[1], RMSG[2]);
                     break;
                 case 2:
-                    configure_output(pin_val, RMSG[1]);
+                    if(facade_test) {
+                        RMSG[0] = pin_val;
+                        RMSG[1] = 2;
+                    }
+                    else {
+                        configure_output(pin_val, RMSG[1]);
+                    }
                     command_write(RMSG[0], RMSG[1], RMSG[2]);
                     break;
                 case 3:
-                    configure_input_pullup(pin_val);
+                    if(facade_test) {
+                        RMSG[0] = pin_val;
+                        RMSG[1] = 3;
+                    }
+                    else {
+                      configure_input_pullup(pin_val);
+                    }
                     command_write(RMSG[0], RMSG[1], RMSG[2]);
                     break;
                 case 4:
@@ -119,17 +138,39 @@ void loop() {
                     command_write(RMSG[0], RMSG[1], RMSG[2]);
                     break;
                 case 5:
-                    test_result = configure_input(pin_val);
-                    command_write(RMSG[0], test_result, RMSG[2]);
+                    if(facade_test) {
+                        RMSG[0] = pin_val;
+                        RMSG[1] = 5;
+                        command_write(RMSG[0], RMSG[1], RMSG[2]);
+                    }
+                    else {
+                      test_result = configure_input(pin_val);
+                      command_write(RMSG[0], test_result, RMSG[2]);
+                    }
+                    
                     break;
                 case 6:
-                    test_result = configure_analog_input(pin_val);
-                    command_write(RMSG[0], test_result, RMSG[2]);
+                    if(facade_test) {
+                        RMSG[0] = pin_val;
+                        RMSG[1] = 6;
+                        command_write(RMSG[0], RMSG[1], RMSG[2]);
+                    }
+                    else {
+                      test_result = configure_analog_input(pin_val);
+                      command_write(RMSG[0], test_result, RMSG[2]);
+                    }
                     break;
                 case 7:
-                    configure_sleep_mode(RMSG[1], RMSG[0]); //send sleepmode & pin#
-                    //command_write(RMSG[0], RMSG[1], RMSG[2]);
+                    if(facade_test) {
+                        RMSG[0] = pin_val;
+                        RMSG[1] = 7;
+                    }
+                    else {
+                      configure_sleep_mode(RMSG[1], RMSG[0]); //send sleepmode & pin#
+                      //command_write(RMSG[0], RMSG[1], RMSG[2]);
+                    }
                     break;
+                    
                 default:
                     command_write(RMSG[0], RMSG[1], RMSG[2]);
                     break;
@@ -137,7 +178,7 @@ void loop() {
 
         }
         else {
-          command_write(RMSG[0], RMSG[1], RMSG[2]);
+          //command_write(RMSG[0], RMSG[1], RMSG[2]);
         }
     }
 
@@ -232,19 +273,12 @@ int crc_decode(unsigned char data[]) {
  * Returns: void
  */
 void configure_output(unsigned int pin, unsigned int logic) {  
-  
-  if(facade_test) {
-    RMSG[0] = pin;
-    RMSG[1] = logic;
+  pinMode(pin, OUTPUT);
+  if(logic) {
+    digitalWrite(pin, HIGH);
   }
-  else { 
-    pinMode(pin, OUTPUT);
-    if(logic) {
-      digitalWrite(pin, HIGH);
-    }
-    else {
-      digitalWrite(pin, LOW);
-    }
+  else {
+    digitalWrite(pin, LOW);
   }
   return;
 }
@@ -256,15 +290,9 @@ void configure_output(unsigned int pin, unsigned int logic) {
  * Returns: int - 0 or 1 depending on input voltage of the pin (LOGIC LOW OR HIGH)
  */
 int configure_input(unsigned int pin) {
-  if(facade_test) {
-    RMSG[0] = pin;
-    RMSG[1] = 2;
-    return 0;
-  }
-  else {
+
     pinMode(pin, INPUT);
-  }
-    return p_digitalRead(pin);
+    return digitalRead(pin);
 }
 
 /*
@@ -274,13 +302,8 @@ int configure_input(unsigned int pin) {
  * Returns: void
  */
 void configure_input_pullup(unsigned int pin) {
-  if(facade_test) {
-    RMSG[0] = pin;
-    RMSG[1] = 3;
-  }
-  else {
+
     pinMode(pin,INPUT_PULLUP);
-  }
     return;
 }
 
@@ -292,14 +315,8 @@ void configure_input_pullup(unsigned int pin) {
  * Returns: int - 0 to 1023, depending on the voltage reading of the ADC. (0 = GND, 1023 = 5V)
  */
 int configure_analog_input(unsigned int analogPin) {
-  if(facade_test) {
-    RMSG[0] = analogPin;
-    RMSG[1] = 5;
-    return 0;
-  }
-  else {
-   pinMode(analogPin, INPUT);
-  }
+
+  pinMode(analogPin, INPUT);
   return (analogRead(analogPin) >> 2); //returns a value 0-1023 (0=GND, 1023 = 5V)
 }
 
@@ -312,11 +329,6 @@ int configure_analog_input(unsigned int analogPin) {
  */
 void configure_sleep_mode(unsigned int sleepmode, unsigned int interruptPin) { 
   
-  if(facade_test) {
-    RMSG[0] = sleepmode;
-    RMSG[1] = 6;
-  }
-  else {  
     sleep_enable(); //Enables sleep mode
     pinMode(interruptPin, INPUT_PULLUP); //Assign pin 2 or 3 as input pullup
     attachInterrupt(digitalPinToInterrupt(interruptPin), wakeUp, LOW); //set pin 2 or 3 as an interrupt that jumps to wakeUp() when triggered LOW
@@ -347,8 +359,8 @@ void configure_sleep_mode(unsigned int sleepmode, unsigned int interruptPin) {
     sleep_cpu(); //activates the set sleep mode
     //Serial.println("Just woke up!");
     bitSet(TIMSK0, 0); //starts the millis() timer back up
-  }
     return;
+    
 }
 
 /*
