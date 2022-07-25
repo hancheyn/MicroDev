@@ -1,11 +1,26 @@
 import unittest
+import View
+import time
 
 
-# ###### Debugging Test Example ######### #
-class MyTestCase(unittest.TestCase):
-    def test_something(self):
-        self.assertEqual(True, False)  # add assertion here
+view = View
+pass_array = ["h", "e", "l", "l", "o"]
+detailed_array = ["Hello World"]
 
-
-if __name__ == '__main__':
-    unittest.main()
+view.setStandbyScreen()
+time.sleep(1)
+view.setStartScreen()
+time.sleep(1)
+view.setFlashScreen()
+time.sleep(1)
+view.setRunningScreen(pass_array)
+time.sleep(1)
+view.setResultsScreen(pass_array)
+time.sleep(1)
+view.setDetailTestScreen(detailed_array)
+time.sleep(1)
+view.setSaveScreen()
+time.sleep(1)
+view.setShutdownScreen()
+time.sleep(1)
+view.setRemovalScreen()

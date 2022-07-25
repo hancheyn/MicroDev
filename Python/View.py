@@ -22,14 +22,6 @@ root.attributes('-fullscreen', True)
 frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
 
 
-def __init__():
-    # Creates main GUI window and its subframe for data to be displayed
-    root = Tk()
-    root.wm_title("MicroDev Tester")
-    frame = Frame(root)
-    frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
-
-
 def setStandbyScreen():
     # Clears main window's subframe
     for widget in frame.winfo_children():
@@ -245,8 +237,17 @@ def setRemovalScreen():
     root.update()
 
 
-# Used to run the View module independently for testing purposes
-if __name__ == '__main__':
-    os.fork()
-    while True:
-        continue
+# def setDetailTestScreen(detailed_report):
+#     # Clears main window's subframe
+#     for widget in frame.winfo_children():
+#         if widget.winfo_exists():
+#             widget.destroy()
+#     frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
+
+#     subframe = Frame(frame)
+#     subframe.place(relx=0.125, rely=0.125, relwidth=1.0, relheight=0.75)
+
+#     # Updates main window
+#     root.update()
+
+
