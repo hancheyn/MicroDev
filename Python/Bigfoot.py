@@ -217,15 +217,8 @@ def b2_disable():
 # Button 3 Interrupt Enable
 # Returns : Changes button state global
 def b3_enable():
-	global B3_GPIO
-	GPIO.setup(B3_GPIO, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	try:
-		GPIO.add_event_detect(B3_GPIO, GPIO.RISING, callback=b3_release, bouncetime=200)
-	except Exception:
-			pass
-	finally:
-		signal.signal(signal.SIGINT, signal_handler)
-		print("b3 enable")
+
+	print("b3 enable")
 
 
 # Button 3 Interrupt Disable
