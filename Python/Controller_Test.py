@@ -99,9 +99,13 @@ def PullUp_Test3(pin, enable, address, instruction):
     ser = model.open_serial()
     time.sleep(2)
     model.subject_write(str_write=s, ser=ser)
+    time.sleep(0.02)
     test_bytes = model.subject_read(ser_=ser)
     model.close_serial(ser)
+    print(test_bytes)
+
     output = model.crc_decode(test_bytes, 2)
+    print(output)
     time.sleep(0.01)
     adc = model.bigfoot.rpi_i2c_adc()
     print(adc)
@@ -145,6 +149,7 @@ def PullDown_Test4(pin, enable, address, instruction):
     ser = model.open_serial()
     time.sleep(2)
     model.subject_write(str_write=s, ser=ser)
+    time.sleep(0.01)
     test_bytes = model.subject_read(ser_=ser)
     model.close_serial(ser)
     output = model.crc_decode(test_bytes, 2)
@@ -169,6 +174,7 @@ def PullDown_Test4_NoLoad(pin, enable, address, instruction):
     ser = model.open_serial()
     time.sleep(2)
     model.subject_write(str_write=s, ser=ser)
+    time.sleep(0.01)
     test_bytes = model.subject_read(ser_=ser)
     model.close_serial(ser)
     output = model.crc_decode(test_bytes, 2)
@@ -189,6 +195,7 @@ def DAC_Test(pin, enable, address, instruction, test):
     ser = model.open_serial()
     time.sleep(2)
     model.subject_write(str_write=s, ser=ser)
+    time.sleep(0.05)
     test_bytes = model.subject_read(ser_=ser)
     
     output = model.crc_decode(test_bytes, 3)
@@ -202,6 +209,7 @@ def DAC_Test(pin, enable, address, instruction, test):
     # .encode([test], [pin], [instruction])
     s = model.crc_encode(test, pin, instruction)
     model.subject_write(str_write=s, ser=ser)
+    time.sleep(0.01)
     test_bytes = model.subject_read(ser_=ser)
     output = model.crc_decode(test_bytes, 3)
     model.close_serial(ser)
@@ -520,12 +528,14 @@ if __name__ == '__main__':
     
     # PullUp_Test3_NoLoad(32, 4, 7, 0)
     #PullDown_Test4_NoLoad(32, 4, 7, 0)
-    
+    # PullUp_Test3(23, 3, 6, 0x00)
+    #PullDown_Test4(23, 3, 6, 0x00)
+    Validation_3071_3V3_Logic(34, 5, 1)
 
     #STM32Sleep_Test()
     #ArduinoSleep_Test()
     #model.bigfoot.set_mux_add(1, 7, 6)
-    Littlefoot_Test()
+    #Littlefoot_Test()
 
     
     

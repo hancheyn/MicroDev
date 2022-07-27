@@ -27,7 +27,7 @@ class BoardTests(unittest.TestCase):
     def test_run_gpio_output_loading(self):
 
         # .encode([test], [pin], [instruction])
-        s = model.crc_encode(0x01, 0x17, 0x81)
+        s = model.crc_encode(0x03, 0x17, 0x81)
 
         ser = model.open_serial()
         time.sleep(2)
