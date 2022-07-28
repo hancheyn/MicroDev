@@ -453,4 +453,3 @@ def get_button_state():
 
 
 print("End of Bigfoot Init")
-
