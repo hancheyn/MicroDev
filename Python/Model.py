@@ -29,37 +29,6 @@ view = None
 model = None
 driver = None
 
-"""
-def __init__(self):
-    print("controller")
-
-
-# Description:
-# Accepts:
-# Returns:
-def controller_init(self, model1, view1, driver1):
-    # print(string)
-    self.view = view1
-    self.model = model1
-    self.driver = driver1
-
-    # Grab Data from Pin Config Files
-    f = open("subject.config", "r")
-    lines = f.readlines()
-
-    # FIX CONFIGURATIONS
-    # Enable Current to Subject Board
-    bigfoot.high_current(1)
-    bigfoot.low_current(1)
-    # Reset GPIO Pins
-    bigfoot.set_mux_add(0, 0, 0)
-
-    # Will the
-    # GPIO Pin Amount
-    # Analog Pin Amount
-    # Sleep Modes Amount
-    return "Something"
-"""
 
 # ******************************** Subject Board I/O ************************************
 """
