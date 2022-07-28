@@ -27,9 +27,11 @@ GPIO.setwarnings(False)
 
 
 # ********************************** SET BIGFOOT ADC *****************************************
+# ----------------------------------------------------------------------
 # Description: SET ADC value
 # Accepts: Voltage for DAC Output
 # Returns: NA
+# ----------------------------------------------------------------------
 VOUT = 3.3
 
 
@@ -39,12 +41,14 @@ def set_vout(vout):
 
 
 # ******************************** Set for Subject Board Mux  ************************************
+# ----------------------------------------------------------------------
 # set_mux_add
 # Enable Mux  state = 1
 # Disable Mux state = 0
 # @parameter state
 # @parameter enable
 # @parameter add
+# ----------------------------------------------------------------------
 def set_mux_add(state, enable, add):
 	GPIO.setmode(GPIO.BCM)
 	
@@ -118,9 +122,11 @@ def set_mux_add(state, enable, add):
 		print("gpios off")
 	
 
+# ----------------------------------------------------------------------
 # I2C Communication Config
 # Parameters: NA
 # Returns: NA
+# ----------------------------------------------------------------------
 def rpi_i2c_config():
 	# GPIO reset
 	set_mux_add(0, 1, 7)
@@ -142,9 +148,11 @@ def rpi_i2c_config():
 	# print("i2c config complete")
 
 
+# ----------------------------------------------------------------------
 # ADC Capture
 # Parameters: NA
 # Returns: adc value (volts)
+# ----------------------------------------------------------------------
 def rpi_i2c_adc():
 	# 0x4D ADDRESS? 0x48
 	# Read 1st byte
@@ -162,9 +170,11 @@ def rpi_i2c_adc():
 	return read
 
 
+# ----------------------------------------------------------------------
 # DAC Set
 # Parameters: DAC value to set (4 bit value)
 # Returns: NA
+# ----------------------------------------------------------------------
 def rpi_i2c_dac():
 	# 0x0D ADDRESS
 	global VOUT
@@ -175,10 +185,12 @@ def rpi_i2c_dac():
 	# print("dac set")
 
 
+# ----------------------------------------------------------------------
 # REF: rototron.info/raspberry-pi-ina219-tutorial/
 # INA219 Capture
 # Parameters: shunt type ( 0 = high current | 1 = low current )
 # Returns: current value in amps
+# ----------------------------------------------------------------------
 def rpi_i2c_ina219(shunt):
 	
 	i2c = busio.I2C(board.SCL, board.SDA)
@@ -214,10 +226,12 @@ def rpi_i2c_ina219(shunt):
 
 # ******************************** Peripheral Enables ************************************
 
+# ----------------------------------------------------------------------
 # High Current
 # GPIO 17
 # Enable: state = 1
 # Disable: state = 0
+# ----------------------------------------------------------------------
 def high_current(state):	
 	GPIO.setmode(GPIO.BCM)
 	GPIO.setup(17, GPIO.OUT)
@@ -229,10 +243,12 @@ def high_current(state):
 	# print("high current test")
 
 
+# ----------------------------------------------------------------------
 # Low Current
 # GPIO 27
 # Enable: state = 1
 # Disable: state = 0
+# ----------------------------------------------------------------------
 def low_current(state):	
 	GPIO.setmode(GPIO.BCM)
 	GPIO.setup(27, GPIO.OUT)
@@ -244,10 +260,12 @@ def low_current(state):
 		GPIO.output(27, GPIO.LOW)
 
 
+# ----------------------------------------------------------------------
 # DAC Enable
 # GPIO 22
 # Enable: state = 1
 # Disable: state = 0
+# ----------------------------------------------------------------------
 def dac_enable(state):
 	
 	GPIO.setmode(GPIO.BCM)
@@ -259,10 +277,12 @@ def dac_enable(state):
 		GPIO.output(22, GPIO.LOW)
 
 
+# ----------------------------------------------------------------------
 # ADC with LOAD
 # GPIO 10
 # Enable: state = 1
 # Disable: state = 0
+# ----------------------------------------------------------------------
 def adc_load(state):
 	
 	GPIO.setmode(GPIO.BCM)
@@ -274,10 +294,12 @@ def adc_load(state):
 		GPIO.output(10, GPIO.LOW)
 
 
+# ----------------------------------------------------------------------
 # ADC without LOAD
 # GPIO 9
 # Enable: state = 1
 # Disable: state = 0
+# ----------------------------------------------------------------------
 def adc_enable(state):
 	
 	GPIO.setmode(GPIO.BCM)
@@ -302,8 +324,10 @@ B3_GPIO = 18
 button_state = 0
 
 
+# ----------------------------------------------------------------------
 # Button 1 Interrupt Handler
 # Returns : Changes button state global
+# ----------------------------------------------------------------------
 def b1_release(channel):
 	# Extra Comment
 	global button_state, B1_GPIO
@@ -312,8 +336,10 @@ def b1_release(channel):
 	print("B1 Pressed")
 
 
+# ----------------------------------------------------------------------
 # Button 2 Interrupt Handler
 # Returns : Changes button state global
+# ----------------------------------------------------------------------
 def b2_release(channel):
 	global button_state, B2_GPIO
 	button_state |= 2
@@ -321,8 +347,10 @@ def b2_release(channel):
 	print("B2 Pressed")
 
 
+# ----------------------------------------------------------------------
 # Button 3 Interrupt Handler
 # Returns : Changes button state global
+# ----------------------------------------------------------------------
 def b3_release(channel):
 	global button_state, B3_GPIO
 	button_state |= 4
@@ -330,8 +358,10 @@ def b3_release(channel):
 	print("B3 Pressed")
 
 
+# ----------------------------------------------------------------------
 # Button 1 Interrupt Enable
 # Returns : Changes button state global
+# ----------------------------------------------------------------------
 def b1_enable():
 	global B1_GPIO
 	GPIO.setup(B1_GPIO, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -344,8 +374,10 @@ def b1_enable():
 		print("b1 enable")
 
 
+# ----------------------------------------------------------------------
 # Button 1 Interrupt Disable
 # Returns : Changes button state global
+# ----------------------------------------------------------------------
 def b1_disable():
 	global button_state
 	button_state &= ~1
@@ -354,8 +386,10 @@ def b1_disable():
 	print("b1 disable")
 
 
+# ----------------------------------------------------------------------
 # Button 2 Interrupt Enable
 # Returns : Changes button state global
+# ----------------------------------------------------------------------
 def b2_enable():
 	global B2_GPIO
 	GPIO.setup(B2_GPIO, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -368,8 +402,10 @@ def b2_enable():
 		print("b2 enable")
 
 
+# ----------------------------------------------------------------------
 # Button 2 Interrupt Disable
 # Returns : Changes button state global
+# ----------------------------------------------------------------------
 def b2_disable():
 	global button_state
 	button_state &= ~2
@@ -378,8 +414,10 @@ def b2_disable():
 	print("b2 disable")
 
 
+# ----------------------------------------------------------------------
 # Button 3 Interrupt Enable
 # Returns : Changes button state global
+# ----------------------------------------------------------------------
 def b3_enable():
 	global B3_GPIO
 	GPIO.setup(B3_GPIO, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -392,8 +430,10 @@ def b3_enable():
 		print("b3 enable")
 
 
+# ----------------------------------------------------------------------
 # Button 3 Interrupt Disable
 # Returns : Changes button state global
+# ----------------------------------------------------------------------
 def b3_disable():
 	global button_state
 	button_state &= ~4
@@ -402,9 +442,11 @@ def b3_disable():
 	print("b3 disable")
 
 
+# ----------------------------------------------------------------------
 # Get Function for Buttons State
 # Returns: State of Buttons
 # (BIT0 = Button 1 | BIT1 = Button 2 |BIT2 = Button 3 )
+# ----------------------------------------------------------------------
 def get_button_state():
 	global button_state
 	return button_state
