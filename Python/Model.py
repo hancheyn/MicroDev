@@ -1,21 +1,21 @@
-# #################################################
-# MicroDev Project: Model
+# ----------------------------------------------------------------------
+# MicroDev Project: Controller
 # Date: May 2, 2022
-# Description: Model Class
+# Description: Model
+# This module contains calls to the Raspbian OS CLI as well as the 
+# subject testing process
 # Authors:
 # Nathan Hanchey
-# Dylan
-# Connor
-# Corey
-# #################################################
-
-
-# Adjusting Globals:
-# https://www.geeksforgeeks.org/python-globals-function/#:~:text=Syntax%3A%20globals%20%28%29%20Parameters%3A%20No%20parameters%20required.%20Code,%3D%20c%20%2B%20a%20globals%28%29%20%5B%27a%27%5D%20%3D%20d
-# Low Power:
+# Dylan Vetter
+# Connor Inglet
+# Corey Noura
+# 
+# Sources & References:
+# www.geeksforgeeks.org
+# https://medium.com
 # https://controllerstech.com/low-power-modes-in-stm32/
-# GPIO Interrupts
-# https://medium.com/@rxseger/interrupt-driven-i-o-on-raspberry-pi-3-with-leds-and-pushbuttons-rising-falling-edge-detection-36c14e640fef#:~:text=Sounds%20complicated%2C%20fortunately%20the%20RPi.GPIO%20Python%20module%20included,%28%29%2C%20add%20a%20callback%20function%20using%20GPIO.add_event_detect%20%28%29.
+# ----------------------------------------------------------------------
+
 import time
 import serial
 import subprocess
@@ -29,7 +29,7 @@ view = None
 model = None
 driver = None
 
-
+"""
 def __init__(self):
     print("controller")
 
@@ -59,13 +59,18 @@ def controller_init(self, model1, view1, driver1):
     # Analog Pin Amount
     # Sleep Modes Amount
     return "Something"
-
+"""
 
 # ******************************** Subject Board I/O ************************************
-#
+"""
+Subject Board I/O
+
+"""
+# ----------------------------------------------------------------------
 # Description: This will open a serial port
 # Accepts: NA
 # Returns: serial port
+# ----------------------------------------------------------------------
 def open_serial():
     ser = serial.Serial('/dev/ttyACM0', 115200)
     ser.flushInput()
@@ -73,71 +78,65 @@ def open_serial():
     return ser
 
 
+# ----------------------------------------------------------------------
 # Description: Closes Serial Port
 # Accepts: serial port
 # Returns: NA
+# ----------------------------------------------------------------------
 def close_serial(ser):
     ser.close()
 
 
+# ----------------------------------------------------------------------
 # Description: Writes Serial 3 byte array to Subject Board
 # Accepts: 3 byte array | open serial port
 # Returns: NA
+# ----------------------------------------------------------------------
 def subject_write(str_write, ser):
     try:
-        # ser = serial.Serial('/dev/ttyACM0', 115200)
-        # Writes byte array
-        # print(str_write)
         ser.write(str_write)  # write a string
-        # read acknowledge byte to continue
-        # ser.close()
     except serial.SerialException as e:
         if e.errno == 13:
             raise e
+        print("New Eeror")
         pass
     except OSError:
+        print("New Eeror2")
         pass
-    # finally:
-    #    print("")
 
 
+# ----------------------------------------------------------------------
 # Description:
 # Accepts:
 # Returns: data packet of 3 byte array
+# ----------------------------------------------------------------------
 def subject_read(ser_):
     try:
-        # ser_ = serial.Serial('/dev/ttyACM0', 115200)
-        # print(ser_.portstr)  # check which port was really used
-
         # Read Byte array
         data = bytearray(3)
         # Set Timeout
-        ser_.timeout = 2
-
+        ser_.timeout = 0.5
         # READ SERIAL
         data = ser_.read(3)
 
-        # Debugging
-        # print(data)
-
-       # parse info for correct start and stop characters then send Acknowledge
-       # ser_.close()
     except serial.SerialException as e:
         if e.errno == 13:
             raise e
+        print("Error in Serial")
         pass
     except OSError:
+        print("Error in Serial")
         pass
-    # finally:
-    #     print("")
 
     return data
 
 
+# ----------------------------------------------------------------------
 # CRC Decoding
 # Description: CRC Fail
 # Accepts: 3 byte array | which value to decode
 # Returns: integer value of byte array
+# ----------------------------------------------------------------------
 def crc_decode(value, out_type):
 
     out = 0
@@ -159,7 +158,6 @@ def crc_decode(value, out_type):
         elif out_type == 3:
             out = int(value[1])
             # print("results")
-
     else:
         print("CRC Fail")
 
@@ -167,10 +165,12 @@ def crc_decode(value, out_type):
     return out
 
 
+# ----------------------------------------------------------------------
 # CRC Encoding
 # Description: Encodes the Value with CRC encoding
 # Accepts: Test ID # | Pin ID # | Instruction
 # Returns: 3 byte array value
+# ----------------------------------------------------------------------
 def crc_encode(test, pin, instruction):
 
     # CRC KEY => 0101 = 5
@@ -196,13 +196,14 @@ def crc_encode(test, pin, instruction):
     packet[2] = crc_byte
 
     # return byte array
-    # print("encode")
     return packet
 
 
+# ----------------------------------------------------------------------
 # Serial Setup
 # Opens and Closes Serial to Double-Check Com.
 # Return: (int) 1 == Connection Success | 0 == Failed Connection
+# ----------------------------------------------------------------------
 def serial_setup():
 
     s = bytearray(3)
@@ -231,10 +232,16 @@ def serial_setup():
 
 
 # ******************************** Subject Tests ************************************
+"""
+Subject Test Processes
+
+"""
+# ----------------------------------------------------------------------
 # GENERIC TEST FUNCTION
 # Description: Runs test based on test and pin IDs
 # Accepts: pin ID # | enable # | address # | enable ID # | instruction
 # Returns: Test Results (voltage, logic, etc.)
+# ----------------------------------------------------------------------
 def run_subject_test(pin, enable, address, test, instruction, ser):
 
     # Conditional for Facade Test
@@ -261,11 +268,13 @@ def run_subject_test(pin, enable, address, test, instruction, ser):
         val = run_power_mode_test(pin, enable, ser)
     elif test == 8:
         val = run_wakeup_test(pin, enable, address, instruction)
+       
 
     # return results for specified pin
     return val
 
 
+# ----------------------------------------------------------------------
 # Description: Test ID #1 | GPIO Output Test
 # Send Logic Voltage as Parameter (sets logic based on BIT0 of instruction)
 # HIGH = 1 | LOW = 0
@@ -273,6 +282,7 @@ def run_subject_test(pin, enable, address, test, instruction, ser):
 # Spec: 3.00 Output Logic
 # Accepts: pin ID # | enable # | address # | enable ID # | instruction
 # Returns: Bigfoot adc voltage
+# ----------------------------------------------------------------------
 def run_gpio_output_test(pin, enable, address, instruction, ser):
 
     # Configure Bigfoot without load to adc
@@ -285,29 +295,24 @@ def run_gpio_output_test(pin, enable, address, instruction, ser):
     # Configures output low on subject board
     # .encode([test], [pin], [instruction])
     s = crc_encode(0x01, pin, instruction)
-    # ser = open_serial()
-
     subject_write(str_write=s, ser=ser)
     test_bytes = subject_read(ser_=ser)
-    # close_serial(ser)
     output = crc_decode(test_bytes, 2)
-    # print(output)
 
     # Read Bigfoot ADC
-    # adc = bigfoot.rpi_i2c_adc()
     time.sleep(0.02)
     if crc_decode(test_bytes, 0) == 0:
         adc = -1
     else:
         adc = bigfoot.rpi_i2c_adc()
 
-    # reset & return pass or fail of test
+    # default pin configurations
     bigfoot.adc_enable(0)
     bigfoot.set_mux_add(0, 0, 0)
-    # print("test 1")
     return adc
 
 
+# ----------------------------------------------------------------------
 # Description: Test ID #2 | GPIO Output Test /w Load
 # Send Logic Voltage as Parameter (sets voltage based on BIT3-BIT0 of instruction)
 # (Approximate Values) 0.311 = 0x01 | 0.619	= 0x02 | ... | 3.08	= 0x0A | ... | 4.59	= 0x0F
@@ -315,6 +320,7 @@ def run_gpio_output_test(pin, enable, address, instruction, ser):
 # Spec: 3.02 Voltage Under Load
 # Accepts: pin ID # | enable # | address # | enable ID # | instruction
 # Returns: Bigfoot adc
+# ----------------------------------------------------------------------
 def run_gpio_output_loading_test(pin, enable, address, instruction, ser):
     # Configure Bigfoot with load
     bigfoot.adc_enable(1)
@@ -327,40 +333,40 @@ def run_gpio_output_loading_test(pin, enable, address, instruction, ser):
     # Configures output low on subject board
     # .encode([test], [pin], [instruction])
     s = crc_encode(0x02, pin, instruction)
-    # ser = open_serial()
     subject_write(str_write=s, ser=ser)
     test_bytes = subject_read(ser_=ser)
-    # close_serial(ser)
     output = crc_decode(test_bytes, 2)
-    # print(output)
 
     # Read Bigfoot ADC
-    # adc = bigfoot.rpi_i2c_adc()
     time.sleep(0.02)
     if crc_decode(test_bytes, 0) == 0:
         adc = -1
     else:
         adc = bigfoot.rpi_i2c_adc()
 
-    # return pass or fail of test
+    # default pin configurations
     bigfoot.adc_enable(0)
     bigfoot.adc_load(0)
     bigfoot.set_mux_add(0, 0, 0)
-    # print("test 2")
     return adc
 
 
+# ----------------------------------------------------------------------
 # Description: Test ID #3 | Input Pull Up Resister Test
 # instruction BIT7 controls facade test
 # Spec: 3.03 Input Resistance Value & 3.04 Pull Up Test
 # ADC Load Resistor
 # Accepts: pin ID # | enable # | address # | enable ID # | instruction
 # Returns: Bigfoot adc
+# ----------------------------------------------------------------------
 def run_gpio_input_pull_up_test(pin, enable, address, instruction, ser):
 
     # Configure Bigfoot w/
     bigfoot.adc_enable(1)
-    bigfoot.adc_load(instruction)
+    bigfoot.adc_load(0)
+    if instruction != 0x00:
+        bigfoot.adc_load(1)
+
     bigfoot.set_mux_add(1, enable, address)
 
     # FIX: Configure DAC
@@ -371,34 +377,31 @@ def run_gpio_input_pull_up_test(pin, enable, address, instruction, ser):
     # Configure input pull-ups
     # Returns Subject Input Read
     # .encode([test], [pin], [instruction])
+    instruction = 0x00
     s = crc_encode(0x03, pin, instruction)
-    # ser = open_serial()
     subject_write(str_write=s, ser=ser)
-    time.sleep(0.02)
     test_bytes = subject_read(ser_=ser)
-    # close_serial(ser)
     output = crc_decode(test_bytes, 2)
     print(output)
 
     # Configure Bigfoot w/
     bigfoot.adc_enable(1)
     # Read Bigfoot ADC Voltage
-    # adc = bigfoot.rpi_i2c_adc()
     time.sleep(0.02)
     if crc_decode(test_bytes, 0) == 0:
         adc = -1
     else:
         adc = bigfoot.rpi_i2c_adc()
 
-    # return pass or fail of test
+    # default pin configurations
     bigfoot.adc_enable(0)
     bigfoot.dac_enable(0)
     bigfoot.adc_load(0)
     bigfoot.set_mux_add(0, 0, 0)
-    # print("test 3")
     return adc
 
 
+# ----------------------------------------------------------------------
 # Description: Test ID #4 | Input Pull Down Test
 # Send Voltage as Parameter (sets voltage based on BIT3-BIT0 of instruction)
 # (Approximate Values) 0.311 = 0x01 | 0.619	= 0x02 | ... | 3.08	= 0x0A | ... | 4.59	= 0x0F
@@ -407,6 +410,7 @@ def run_gpio_input_pull_up_test(pin, enable, address, instruction, ser):
 # Configure DAC to Supply Voltage (To Test Internal Resistance)
 # Accepts: pin ID # | enable # | address # | enable ID # | instruction
 # Returns: Bigfoot adc
+# ----------------------------------------------------------------------
 def run_gpio_input_pull_down_test(pin, enable, address, instruction, ser):
 
     # Configure Bigfoot w/
@@ -424,30 +428,26 @@ def run_gpio_input_pull_down_test(pin, enable, address, instruction, ser):
     # Returns Subject Input Read
     # .encode([test], [pin], [instruction])
     s = crc_encode(0x04, pin, instruction)
-    # ser = open_serial()
     subject_write(str_write=s, ser=ser)
-    time.sleep(0.02)
+    time.sleep(0.01)
     test_bytes = subject_read(ser_=ser)
-    # close_serial(ser)
     output = crc_decode(test_bytes, 2)
-    print(output)
 
     # Read Bigfoot ADC Voltage
-    # adc = bigfoot.rpi_i2c_adc()
     time.sleep(0.02)
     if crc_decode(test_bytes, 0) == 0:
         adc = -1
     else:
         adc = bigfoot.rpi_i2c_adc()
 
-    # return pass or fail of test
+    # default pin configurations
     bigfoot.adc_enable(0)
     bigfoot.dac_enable(0)
     bigfoot.set_mux_add(0, 0, 0)
-    # print("test 4")
     return adc
 
 
+# ----------------------------------------------------------------------
 # Description: Test ID #5 | Input Logic Level Test
 # Send Voltage as Parameter (sets voltage based on BIT3-BIT0 of instruction)
 # (Approximate Values) 0.311 = 0x01 | 0.619	= 0x02 | ... | 3.08	= 0x0A | ... | 4.59	= 0x0F
@@ -455,6 +455,7 @@ def run_gpio_input_pull_down_test(pin, enable, address, instruction, ser):
 # Spec: 3.06 Input Logic Test
 # Accepts: pin ID # | enable # | address # | enable ID # | instruction
 # Returns: Bigfoot adc
+# ----------------------------------------------------------------------
 def run_gpio_input_logic_level_test(pin, enable, address, instruction, ser):
 
     # Reset/Configure Bigfoot to Low Logic
@@ -466,7 +467,7 @@ def run_gpio_input_logic_level_test(pin, enable, address, instruction, ser):
     # .encode([test], [pin], [instruction])
     s = crc_encode(0x05, pin, instruction)
     subject_write(str_write=s, ser=ser)
-    time.sleep(0.02)
+    time.sleep(0.01)
     test_bytes = subject_read(ser_=ser)
     output = crc_decode(test_bytes, 2)
 
@@ -480,6 +481,7 @@ def run_gpio_input_logic_level_test(pin, enable, address, instruction, ser):
     # .encode([test], [pin], [instruction])
     s = crc_encode(0x05, pin, instruction)
     subject_write(str_write=s, ser=ser)
+    time.sleep(0.01)
     test_bytes = subject_read(ser_=ser)
     output = crc_decode(test_bytes, 3)
     print("Logic: " + str(output))
@@ -491,12 +493,13 @@ def run_gpio_input_logic_level_test(pin, enable, address, instruction, ser):
     else:
         adc = int(test_bytes[1])
 
-    # return pass or fail of test
+    # default pin configurations
     bigfoot.dac_enable(0)
     bigfoot.set_mux_add(0, 0, 0)
     return adc
 
 
+# ----------------------------------------------------------------------
 # Description: Test ID #6 | ADC Test
 # Send Voltage as Parameter (sets voltage based on BIT3-BIT0 of instruction)
 # (Approximate Values) 0.311 = 0x01 | 0.619	= 0x02 | ... | 3.08	= 0x0A | ... | 4.59	= 0x0F
@@ -505,6 +508,7 @@ def run_gpio_input_logic_level_test(pin, enable, address, instruction, ser):
 # Pass in the voltage to use also
 # Accepts: pin ID # | enable # | address # | enable ID # | instruction
 # Returns: Subject adc
+# ----------------------------------------------------------------------
 def run_adc_test(pin, enable, address, instruction, ser):
 
     # Communication to Subject Serial to configure
@@ -522,29 +526,26 @@ def run_adc_test(pin, enable, address, instruction, ser):
     # Set DAC to first configuration instruction
     # .encode([test], [pin], [instruction])
     s = crc_encode(0x06, pin, instruction)
-    # ser = open_serial()
     subject_write(str_write=s, ser=ser)
-    time.sleep(0.02)
+    time.sleep(0.01)
     test_bytes = subject_read(ser_=ser)
-    # close_serial(ser)
     output = crc_decode(test_bytes, 3)
     print("ADC val: " + str(output))
 
     # Communication to Subject Serial to read ADC
-    # ADC
     time.sleep(0.02)
     if crc_decode(test_bytes, 0) == 0:
         adc = -1
     else:
         adc = ((int(output) << 2) * 5.2) / 1024
 
-    # return pass or  fail of test
+    # default pin configurations
     bigfoot.dac_enable(0)
     bigfoot.set_mux_add(0, 0, 0)
-    # print("test 6")
     return adc
 
 
+# ----------------------------------------------------------------------
 # Description: Test ID #7 | Power Mode Test
 # Sleep Mode sent as 'instruction' to serial com.
 # instruction BIT7 controls facade test
@@ -552,6 +553,7 @@ def run_adc_test(pin, enable, address, instruction, ser):
 # Spec: 3.08 Power Modes
 # Accepts: pin ID # | instruction (sleep_mode)
 # Returns: Bigfoot current
+# ----------------------------------------------------------------------
 def run_power_mode_test(pin, instruction, ser):
 
     # Configure Bigfoot
@@ -563,10 +565,8 @@ def run_power_mode_test(pin, instruction, ser):
     # Communication to Subject Serial
     # .encode([test], [pin], [instruction])
     s = crc_encode(0x07, pin, instruction)
-    # ser = open_serial()
     subject_write(str_write=s, ser=ser)
     # test_bytes = subject_read(ser_=ser)
-    # close_serial(ser)
     # output = crc_decode(test_bytes, 2)
     # print(output)
 
@@ -575,17 +575,18 @@ def run_power_mode_test(pin, instruction, ser):
     time.sleep(0.2)
     current = bigfoot.rpi_i2c_ina219(1)
 
-    # return pass or fail of test
+    # default pin configurations
     bigfoot.dac_enable(0)
     bigfoot.set_mux_add(0, 0, 0)
-    # print("test 7")
     return current
 
 
+# ----------------------------------------------------------------------
 # Description: Test ID #8 | Runs wake up test
 # Accepts: pin ID # | enable # | address # | enable ID # | instruction
 # Spec: 3.08 Wakeup
 # Returns: Bigfoot current
+# ----------------------------------------------------------------------
 def run_wakeup_test(pin, enable, address, instruction):
     # Configure Bigfoot
     # Set Wakeup pin
@@ -602,10 +603,9 @@ def run_wakeup_test(pin, enable, address, instruction):
     time.sleep(0.1)
     current = bigfoot.rpi_i2c_ina219(1)
 
-    # return pass or fail of test
+    # default pin configurations
     bigfoot.set_mux_add(0, 0, 0)
     bigfoot.dac_enable(0)
-    # print("test 8")
     return current
 
 
@@ -616,9 +616,15 @@ def current_read():
     return current
 
 # ******************************** Command Line Interface ************************************
+"""
+Command Line Interface 
+
+"""
+# ----------------------------------------------------------------------
 # Description: Flashes the Subject Board
 # Accepts: board detected string (from board_list function)
 # Returns: NA
+# ----------------------------------------------------------------------
 def subject_flash(board):
 
     # ARDUINO UNO FLASH
@@ -636,15 +642,28 @@ def subject_flash(board):
 
     # STM32F446 FLASH
     elif board == "STM32F446 Detected":
-        res = subprocess.getstatusoutput(
-            f'st-flash write Flash/stmf446.bin 0x08000000')
+        reflash = True
+        while reflash:
+            res = subprocess.getstatusoutput(
+                f'st-flash write Flash/stmf446.bin 0x08000000')
+            s = len(res[1])
+            if s < 870:
+                reflash = False
+        print(s)
 
+    """
+    Add new subject board flash conditional...
+    
+    """
+    
     print(res)
 
 
+# ----------------------------------------------------------------------
 # Description: Uses CLI to read for subject board connections
 # Accepts: NA
 # Returns: [string] board type
+# ----------------------------------------------------------------------
 def board_list():
 
     # 1) ARDUINO DETECTION
@@ -676,14 +695,17 @@ def board_list():
     else:
         return "Overflow"
 
+    
     # 2) STM DETECTION
     res_stm = subprocess.getstatusoutput(f'st-info --probe')
     # PARSE DATA FOR STM'S
     # print(res_stm[1])
-
-    STM = res_stm[1].split("\n")
-    boards1 = len(STM)
-
+    if len(res_stm) > 1:
+        STM = res_stm[1].split("\n")
+        boards1 = len(STM)
+    else:
+        boards1 = 0
+        
     # STM UNIQUE IDs
     # 0x0433: STM32F401xD/E
     # 0x0431: STM32F411xC/E
@@ -707,13 +729,21 @@ def board_list():
         elif Family == "F446" and Chip_ID[1] == "0x0421":
             return "STM32F446 Detected"
 
+    #  3) ADD NEW SUBJECT BOARD HERE
+    """
+    The Process for adding a new subject board in software...
+    
+    """
+
     # Use class globals for board file path and id info
     return "No Boards Detected"
 
 
+# ----------------------------------------------------------------------
 # Description: Loops board_list function until subject board is detected
 # Accepts: NA
-# Returns: NA
+# Returns: (string) type of board
+# ----------------------------------------------------------------------
 def board_wait():
     cont = 1
     while cont == 1:
@@ -732,9 +762,11 @@ def board_wait():
     return _board_type
 
 
+# ----------------------------------------------------------------------
 # Description: Uses CLI to read for subject board connections
 # Accepts: NA
 # Returns: [string] usb file path or "None"
+# ----------------------------------------------------------------------
 def usb_list():
 
     # CLI call
@@ -754,10 +786,37 @@ def usb_list():
     return "None"
 
 
+# ----------------------------------------------------------------------
+# Description: Uses CLI to Write File to usb
+# Accepts: detailed_array
+# Returns: N/A
+# ----------------------------------------------------------------------
+def usb_save(detailed_array):
+    usb_filepath = usb_list()
+    if usb_filepath != "None":
+        usb_file = usb_filepath
+        usbf = open("MicroDevTest_Results.txt", "w")
+        for i in detailed_array:
+            usbf.write(i + "\n")
+        usbf.close()
+        h = subprocess.getstatusoutput("cp MicroDevTest_Results.txt " + usb_file)
+    
+
+
+# ----------------------------------------------------------------------
+# Description: Shutdown Instruction
+# Accepts: N/A
+# Returns: N/A
+# ----------------------------------------------------------------------
 def shutdown():
     subprocess.getstatusoutput(f'sudo shutdown now')
 
 
+# ----------------------------------------------------------------------
+# Description: 5V Pin ADC Check
+# Accepts: N/A
+# Returns: Pin Voltage Output
+# ----------------------------------------------------------------------
 def check_5V():
     bigfoot.dac_enable(0)
     bigfoot.adc_load(0)
@@ -767,6 +826,12 @@ def check_5V():
     v = bigfoot.rpi_i2c_adc()
     return v
     
+
+# ----------------------------------------------------------------------
+# Description: 3V3 Pin ADC Check
+# Accepts: N/A
+# Returns: Pin Voltage Output
+# ----------------------------------------------------------------------
 def check_3V3():
     bigfoot.dac_enable(0)
     bigfoot.adc_load(0)

@@ -1,13 +1,15 @@
-# #################################################
+# ----------------------------------------------------------------------
 # MicroDev Project: Controller
 # Date: May 2, 2022
 # Description: Controller Class
+# This module contains opens and utilizes configuration files as well as
+# compares configuration thresholds to tests to pass to the View GUI
 # Authors:
 # Nathan Hanchey
-# Dylan
-# Connor
-# Corey
-# #################################################
+# Dylan Vetter
+# Connor Inglet
+# Corey Noura
+# ----------------------------------------------------------------------
 
 from time import sleep
 import subprocess
@@ -18,10 +20,15 @@ view = View
 model = Model
 
 
-###################################################################################
-
+"""
+Configuration Getters:
+The following functions grab important configuration data for 
+the test cycle of the subject board.
+"""
+# ----------------------------------------------------------------------
 # Description: For looping through serial check if communication works
 # Returns: True only if serial communication is established
+# ----------------------------------------------------------------------
 def serial_check():
     # While Loop Confirms Serial Connection
     val = model.serial_setup()
@@ -34,36 +41,84 @@ def serial_check():
     return False
 
 
+# ----------------------------------------------------------------------
 # Description: Opens Test Sequence File
 # Returns: Test File
+# ----------------------------------------------------------------------
 def test_config_file(_board_type):
+    """
+    New Subject Config
+    """
     if _board_type == "Arduino Uno Detected":
         file = open('unoTest.config', 'r')
     elif _board_type == "STM32F411 Detected" or _board_type == "STM32F446 Detected":
         file = open('stm32f4Test.config', 'r')
     else:
         file = open('unoTest.config', 'r')
+    
+    Lines = file.readlines()
 
-    return file
+    return Lines
 
 
+# ----------------------------------------------------------------------
+# Description: Opens Test Threshold File
+# Returns: Threshold File in array of lines
+# ----------------------------------------------------------------------
+def threshold_config_file(_board_type):
+    """
+    New Subject Config
+    """
+    if _board_type == "Arduino Uno Detected":
+        file2 = open('unoThreshold.config', 'r')
+    elif _board_type == "STM32F411 Detected" or _board_type == "STM32F446 Detected":
+        file2 = open('stm32f4Threshold.config', 'r')
+    else:
+        file2 = open('unoThreshold.config', 'r')
+    
+    lines2 = file2.readlines()
+    return lines2
+   
+    
+# ----------------------------------------------------------------------
+# Description: Finds Subject Logic Level
+# Returns: Logic Level
+# ----------------------------------------------------------------------
+def subject_logic(_board_type):
+    """
+    New Subject Config
+    """
+    if _board_type == "Arduino Uno Detected":
+        logic = 5
+    elif _board_type == "STM32F411 Detected" or _board_type == "STM32F446 Detected":
+        logic = 3.3
+    else:
+        logic = 5
+    return logic
+    
+
+# ----------------------------------------------------------------------
 # Description: Preforms Test on Supply Pins 3V3 and 5V
-# Parameters:
+# Parameters: board - [type of subject board]
 # Returns: Boolean Pass or Fail
+# ----------------------------------------------------------------------
 def supply_pin_voltages(board):
     # Gather Config Data from Config file of board type
 
     # FIX MOVE TO THRESHOLD FUNCTION
-    if board == "Arduino Uno Detected":
-        file2 = open('unoThreshold.config', 'r')
-        logic = 5
-    elif board == "STM32F411 Detected" or board == "STM32F446 Detected":
-        file2 = open('stm32f4Threshold.config', 'r')
-        logic = 3.3
-    else:
-        return False
-
-    lines2 = file2.readlines()
+    #if board == "Arduino Uno Detected":
+    #    file2 = open('unoThreshold.config', 'r')
+    #    logic = 5
+    #elif board == "STM32F411 Detected" or board == "STM32F446 Detected":
+    #    file2 = open('stm32f4Threshold.config', 'r')
+    #    logic = 3.3
+    #else:
+    #    return False
+    
+    lines2 = threshold_config_file(board)
+    logic = subject_logic(board)
+    
+    #lines2 = file2.readlines()
     compare = lines2[9].split(",")
 
     if model.check_5V() < float(compare[1]) and model.check_3V3() < float(compare[2]):
@@ -71,9 +126,16 @@ def supply_pin_voltages(board):
     return False
 
 
+"""
+Individual Pin Tests:
+The following function runs a test on a given pin. To do this it must 
+access configurations and return a pass fail boolean value.
+"""
+# ----------------------------------------------------------------------
 # Description: Preforms Test Comparisons
 # Parameters: Test ID Int | Pin ID Int | Address Int | Enable Int | Board type String
 # Returns: Boolean Pass or Fail
+# ----------------------------------------------------------------------
 def subject_test(t, p, a, e, board, _ser):
     # Logic Level Config
     logic = 0
@@ -81,15 +143,18 @@ def subject_test(t, p, a, e, board, _ser):
     # Gather Config Data from Config file of board type
 
     # FIX MOVE TO THRESHOLD FUNCTION
-    if board == "Arduino Uno Detected":
-        file2 = open('unoThreshold.config', 'r')
-        logic = 5
-    elif board == "STM32F411 Detected" or board == "STM32F446 Detected":
-        file2 = open('stm32f4Threshold.config', 'r')
-        logic = 3.3
-    else:
-        return False
-    lines2 = file2.readlines()
+    #if board == "Arduino Uno Detected":
+    #    file2 = open('unoThreshold.config', 'r')
+    #    logic = 5
+    #elif board == "STM32F411 Detected" or board == "STM32F446 Detected":
+    #    file2 = open('stm32f4Threshold.config', 'r')
+    #    logic = 3.3
+    #else:
+    #    return False
+        
+    lines2 = threshold_config_file(board)
+    logic = subject_logic(board)
+    #lines2 = file2.readlines()
 
     # Run tests and compare based on test configured values
     if t == 1:
@@ -129,7 +194,8 @@ def subject_test(t, p, a, e, board, _ser):
     elif t == 3:
         print("Test 3: Pull-Up Input")
         compare = lines2[t].split(",")
-        adc2 = 0
+        adc2 = 0.0
+        Rpu = 0.0
 
         # Read adc value at threshold voltage Pull Up Test
         # Instruction depends on logic level (controls dac)
@@ -137,14 +203,16 @@ def subject_test(t, p, a, e, board, _ser):
 
         if logic == 5:
             adc2 = model.run_subject_test(p, e, a, t, 0x01, _ser)
-            Rpu = (((390 * 5) / adc2) - 390)
+            if adc2 > 0:
+                Rpu = (((390 * 5) / float(adc2)) - 390)
         else:
             adc2 = model.run_subject_test(p, e, a, t, 0x01, _ser)
-            Rpu = (((390 * 3.3) / adc2) - 390)
+            if adc2 > 0:
+                Rpu = (((390 * 3.3) / float(adc2)) - 390)
 
         # calculation with adc to pull down resistance value
         print("Test adc val: " + str(adc2))
-        Rpu = (((390 * 5) / adc2) - 390)
+        #Rpu = (((390 * 5) / adc2) - 390)
         if Rpu > float(compare[1]) and Rpu < float(compare[2]) and adc1 > float(compare[3]):
             return True
         return False
@@ -153,6 +221,7 @@ def subject_test(t, p, a, e, board, _ser):
         print("Test 4: Pull-Down Input")
         compare = lines2[t].split(",")
         adc4 = 0
+        Rpd = 0.0
 
         # Read adc value at threshold voltage
         adc1 = model.run_subject_test(p, e, a, t, 0x00, _ser)
@@ -160,13 +229,17 @@ def subject_test(t, p, a, e, board, _ser):
         if logic == 5:
             model.bigfoot.set_vout(5)
             adc4 = model.run_subject_test(p, e, a, t, 0x0F, _ser)
+            if adc4 != 5:
+                Rpd = (2000 * adc4) / (5 - adc4)
         else:
             model.bigfoot.set_vout(3.3)
             adc4 = model.run_subject_test(p, e, a, t, 0x0A, _ser)
+            if adc4 != 3.3:
+                Rpd = (2000 * adc4) / (3.3 - adc4)
 
         # calculation with adc to pull down resistance value
         print("Test adc val: " + str(adc4))
-        Rpd = (2000 * adc4) / (3.3 - adc4)
+        
         if Rpd > float(compare[1]) and Rpd < float(compare[2]) and adc1 < float(compare[3]):
             return True
         return False
@@ -181,6 +254,7 @@ def subject_test(t, p, a, e, board, _ser):
         else:
             model.bigfoot.set_vout(3.3)
             subject_input_high = model.run_subject_test(p, e, a, t, 0x0A, _ser)
+            
 
         # Read Digital Pin Low
         model.bigfoot.set_vout(0)
@@ -227,7 +301,7 @@ def subject_test(t, p, a, e, board, _ser):
         # Reads current
         # Instruction is in config
         compare = lines2[t].split(",")
-        current = model.run_subject_test(p, e, a, t, 0, _ser)
+        current = model.run_subject_test(p, e, a, t, p, _ser)
 
         print("Current Val Null: " + str(current_0))
         print("Current Val: " + str(current))
@@ -256,9 +330,9 @@ def subject_test(t, p, a, e, board, _ser):
     return False
 
 
-# ###############################################################################
+# ######################################################################
 # MAIN LOOP
-# ###############################################################################
+# ######################################################################
 if __name__ == '__main__':
     # Facade Macro
     Facade = 0
@@ -301,8 +375,8 @@ if __name__ == '__main__':
             if state_buttons & 2 == 2:
                 view.setFlashScreen()
                 # _board_type = model.board_list()
-                if (supply_pin_voltages(board_type)):
-                    redo = True
+                #if (supply_pin_voltages(board_type)):
+                #    redo = True
                 start = True
                 model.bigfoot.b2_disable()
             # if button 2 then shutdown
@@ -323,8 +397,8 @@ if __name__ == '__main__':
                 # While Loop Confirms Serial Connection
                 if serial_check():
                     # Read Config | Loop Through Tests
-                    file1 = test_config_file(board_type)
-                    Lines = file1.readlines()
+                    Lines = test_config_file(board_type)
+                    #Lines = file1.readlines()
                     test_count = len(Lines)
                     loop_count = 1
 
@@ -358,20 +432,33 @@ if __name__ == '__main__':
                     test8_occured = False
 
                     while loop_count < test_count:
-                        test = Lines[loop_count].split(",")
-                        res[loop_count - 1] = subject_test(int(test[0]), int(test[1]), int(test[2]), int(test[3]),
-                                                           board_type,
-                                                           ser)
-                        # print(res[loop_count-1])
-                        print("Test#,PinID,Address,Enable: " + str(Lines[loop_count]))
-                        test_num = int(test[0])
-                        current_test = "Test #" + str(Lines[loop_count][0]) + " Pin #" + str(
-                            test[1]) + " Result: " + str(res[loop_count - 1])
-                        detailed_array.append(current_test)
+                        
+                        # Test Loop
+                        test_loop = True 
+                        while test_loop:
+                        # Run Test
+                            try:
+                                test = Lines[loop_count].split(",")
+                                res[loop_count - 1] = subject_test(int(test[0]), int(test[1]), int(test[2]), int(test[3]),
+                                                                   board_type,
+                                                                   ser)
+                                # print(res[loop_count-1])
+                                print("Test#,PinID,Address,Enable: " + str(Lines[loop_count]))
+                                test_num = int(test[0])
+                                current_test = "Test #" + str(Lines[loop_count][0]) + " Pin #" + str(
+                                    test[1]) + " Result: " + str(res[loop_count - 1])
+                                detailed_array.append(current_test)
+                                test_loop = False
+                            except Exception:
+                                print("!!Test has Failed!!")
+                                n = model.board_wait()
+                                model.subject_flash(n)
+                                pass                                   
+                        
 
                         # Show Progress of Tests
-                        view.setRunningScreen(detailed_array[loop_count - 1])
-
+                        #view.setRunningScreen(detailed_array[loop_count - 1])
+                        
                         if test_num == 1:
                             # print(res[loop_count - 1])
                             test1_occured = True
@@ -521,17 +608,19 @@ if __name__ == '__main__':
 
                     save_wait = False
                     screen_wait = True
-                    usb_filepath = model.usb_list()
+                    
+                    #usb_filepath = model.usb_list()
+                    #if usb_filepath != "None":
+                    #    usb_file = usb_filepath
+                    #    usbf = open("MicroDevTest_Results.txt", "w")
+                    #    for i in detailed_array:
+                    #        usbf.write(i + "\n")
+                    #    usbf.close()
+                    #    h = subprocess.getstatusoutput("cp MicroDevTest_Results.txt " + usb_file)
+                    
+                    model.usb_save(detailed_array)
 
-                    if usb_filepath != "None":
-                        usb_file = usb_filepath
-                        usbf = open("MicroDevTest_Results.txt", "w")
-                        for i in detailed_array:
-                            usbf.write(i + "\n")
-                        usbf.close()
-                        h = subprocess.getstatusoutput("cp MicroDevTest_Results.txt " + usb_file)
-
-                    print(usb_filepath)
+                    #print(usb_filepath)
                     view.setResultsScreen(pass_array)
                     model.bigfoot.b1_enable()
                     model.bigfoot.b2_enable()
