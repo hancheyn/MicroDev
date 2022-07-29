@@ -13,10 +13,7 @@ import os
 import threading
 import time
 from tkinter import *
-
-############## NEW STUFF #########################
 import RPi.GPIO as GPIO
-############## NEW STUFF #########################
 
 # Creates main GUI window and its subframe for data to be displayed
 root = Tk()
@@ -147,102 +144,6 @@ def setResultsScreen(pass_array):
     root.update()
 
 
-#def setDetailTestScreen(detailed_array):
-#    # Clears main window's subframe
-#    for widget in frame.winfo_children():
-#        if widget.winfo_exists():
-#            widget.destroy()
-#    frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
-
-#    # Initializes labels to display info to user
-#    standbyMsg = Label(frame, text=detailed_array, font=("Helvetica", 40))
-
-#    leftButton = Label(frame, text="Save", background='green', font=("Helvetica", 40))
-#    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
-#    rightButton = Label(frame, text="Back", background='red', font=("Helvetica", 40))
-
-#    # Controls placement of labels that display info to user
-#    standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
-#    leftButton.place(relx=0.1, rely=0.7, relheight=0.2, relwidth=0.2)
-#    middleButton.place(relx=0.4, rely=0.7, relheight=0.2, relwidth=0.2)
-#    rightButton.place(relx=0.7, rely=0.7, relheight=0.2, relwidth=0.2)
-
-#    # Updates main window
-#    root.update()
-
-
-def setSaveScreen():
-    # Clears main window's subframe
-    for widget in frame.winfo_children():
-        if widget.winfo_exists():
-            widget.destroy()
-    frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
-
-    # Initializes labels to display info to user
-    standbyMsg = Label(frame, text="Saved Test Results to USB", font=("Helvetica", 40))
-
-    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
-    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
-    rightButton = Label(frame, text="Back", background='green', font=("Helvetica", 40))
-
-    # Controls placement of labels that display info to user
-    standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
-    leftButton.place(relx=0.1, rely=0.7, relheight=0.2, relwidth=0.2)
-    middleButton.place(relx=0.4, rely=0.7, relheight=0.2, relwidth=0.2)
-    rightButton.place(relx=0.7, rely=0.7, relheight=0.2, relwidth=0.2)
-
-    # Updates main window
-    root.update()
-
-
-#
-def setShutdownScreen():
-    # Clears main window's subframe
-    for widget in frame.winfo_children():
-        if widget.winfo_exists():
-            widget.destroy()
-    frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
-
-    # Initializes labels to display info to user
-    standbyMsg = Label(frame, text="Shutdown in Progress", font=("Helvetica", 40))
-    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
-    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
-    rightButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
-
-    # Controls placement of labels that display info to user
-    standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
-    leftButton.place(relx=0.1, rely=0.7, relheight=0.2, relwidth=0.2)
-    middleButton.place(relx=0.4, rely=0.7, relheight=0.2, relwidth=0.2)
-    rightButton.place(relx=0.7, rely=0.7, relheight=0.2, relwidth=0.2)
-
-    # Updates main window
-    root.update()
-
-
-#
-def setRemovalScreen():
-    # Clears main window's subframe
-    for widget in frame.winfo_children():
-        if widget.winfo_exists():
-            widget.destroy()
-    frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
-
-    # Initializes labels to display info to user
-    standbyMsg = Label(frame, text="Please remove your DevBoard", font=("Helvetica", 40))
-    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
-    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
-    rightButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
-
-    # Controls placement of labels that display info to user
-    standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
-    leftButton.place(relx=0.1, rely=0.7, relheight=0.2, relwidth=0.2)
-    middleButton.place(relx=0.4, rely=0.7, relheight=0.2, relwidth=0.2)
-    rightButton.place(relx=0.7, rely=0.7, relheight=0.2, relwidth=0.2)
-
-    # Updates main window
-    root.update()
-
-############# NEW STUFF ##########################
 def setDetailTestScreen(detailed_report):
     # Clears main window's subframe
     for widget in frame.winfo_children():
@@ -321,6 +222,79 @@ def setDetailTestScreen(detailed_report):
          # Updates main window
         root.update()
 
+
+def setSaveScreen():
+    # Clears main window's subframe
+    for widget in frame.winfo_children():
+        if widget.winfo_exists():
+            widget.destroy()
+    frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
+
+    # Initializes labels to display info to user
+    standbyMsg = Label(frame, text="Saved Test Results to USB", font=("Helvetica", 40))
+
+    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    rightButton = Label(frame, text="Back", background='green', font=("Helvetica", 40))
+
+    # Controls placement of labels that display info to user
+    standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
+    leftButton.place(relx=0.1, rely=0.7, relheight=0.2, relwidth=0.2)
+    middleButton.place(relx=0.4, rely=0.7, relheight=0.2, relwidth=0.2)
+    rightButton.place(relx=0.7, rely=0.7, relheight=0.2, relwidth=0.2)
+
+    # Updates main window
+    root.update()
+
+
+#
+def setShutdownScreen():
+    # Clears main window's subframe
+    for widget in frame.winfo_children():
+        if widget.winfo_exists():
+            widget.destroy()
+    frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
+
+    # Initializes labels to display info to user
+    standbyMsg = Label(frame, text="Shutdown in Progress", font=("Helvetica", 40))
+    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    rightButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+
+    # Controls placement of labels that display info to user
+    standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
+    leftButton.place(relx=0.1, rely=0.7, relheight=0.2, relwidth=0.2)
+    middleButton.place(relx=0.4, rely=0.7, relheight=0.2, relwidth=0.2)
+    rightButton.place(relx=0.7, rely=0.7, relheight=0.2, relwidth=0.2)
+
+    # Updates main window
+    root.update()
+
+
+#
+def setRemovalScreen():
+    # Clears main window's subframe
+    for widget in frame.winfo_children():
+        if widget.winfo_exists():
+            widget.destroy()
+    frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
+
+    # Initializes labels to display info to user
+    standbyMsg = Label(frame, text="Please remove your DevBoard", font=("Helvetica", 40))
+    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    rightButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+
+    # Controls placement of labels that display info to user
+    standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
+    leftButton.place(relx=0.1, rely=0.7, relheight=0.2, relwidth=0.2)
+    middleButton.place(relx=0.4, rely=0.7, relheight=0.2, relwidth=0.2)
+    rightButton.place(relx=0.7, rely=0.7, relheight=0.2, relwidth=0.2)
+
+    # Updates main window
+    root.update()
+
+
 def pollButtons():
     
     # Initializes GPIO button for polling
@@ -350,4 +324,3 @@ def pollButtons():
         return "right"
     else:    
         return None
-############# NEW STUFF #########################
