@@ -346,10 +346,16 @@ if __name__ == '__main__':
     while True:
 
         # Button Interrupts
+        model.bigfoot.b1_disable()
+        model.bigfoot.b2_disable()
+        model.bigfoot.b3_disable()
+        print(model.bigfoot.get_button_state())
+                
         model.bigfoot.b1_enable()
         model.bigfoot.b2_enable()
         model.bigfoot.b3_enable()
-
+        print(model.bigfoot.get_button_state())
+        
         detailed_array.clear()
         pass_array.clear()
 
@@ -379,10 +385,7 @@ if __name__ == '__main__':
                 #    redo = True
                 start = True
                 model.bigfoot.b2_disable()
-            # if button 2 then shutdown
-            elif state_buttons & 1 == 1:
-                model.bigfoot.b1_disable()
-                model.shutdown()
+
 
         # Assign -> View Testing Screen
 
@@ -570,7 +573,9 @@ if __name__ == '__main__':
                     model.bigfoot.b1_disable()
 
                 elif state_buttons & 2 == 2:
+                    model.bigfoot.b1_disable()
                     model.bigfoot.b2_disable()
+                    model.bigfoot.b3_disable()
                     view.setDetailTestScreen(detailed_array)
                     details_wait = True
                     screen_wait = False
@@ -582,7 +587,12 @@ if __name__ == '__main__':
 
             # Detailed Results State
             if details_wait:
+                details_wait = False
+                results_menu = False
+                model.bigfoot.b1_enable()
+                model.bigfoot.b2_disable()
                 model.bigfoot.b2_enable()
+                model.bigfoot.b3_enable()
             while details_wait and not redo:
                 state_buttons = model.bigfoot.get_button_state()
 
@@ -622,9 +632,7 @@ if __name__ == '__main__':
 
                     #print(usb_filepath)
                     view.setResultsScreen(pass_array)
-                    model.bigfoot.b1_enable()
-                    model.bigfoot.b2_enable()
-                    model.bigfoot.b3_enable()
+
 
         # Remove Board State
         view.setRemovalScreen()
@@ -636,6 +644,8 @@ if __name__ == '__main__':
         time_i = 0
         while model.check_5V() > 4.0 and time_i < 10:
             sleep(1)
-
+            state_buttons = model.bigfoot.get_button_state()
+            print(state_buttons)
+        
         # NEW LOOP
         # Assign -> View General Results Screen with 3 button inputs

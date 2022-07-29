@@ -718,6 +718,7 @@ def board_wait():
     while cont == 1:
         _board_type = board_list()
         state_buttons = bigfoot.get_button_state()
+        print("Button State: " + str(state_buttons))
         if state_buttons & 2 == 2:
             bigfoot.b2_disable()
             shutdown()
@@ -778,7 +779,8 @@ def usb_save(detailed_array):
 # Returns: N/A
 # ----------------------------------------------------------------------
 def shutdown():
-    subprocess.getstatusoutput(f'sudo shutdown now')
+    #subprocess.getstatusoutput(f'sudo shutdown now')
+    print("shutdown attempt")
 
 
 # ----------------------------------------------------------------------

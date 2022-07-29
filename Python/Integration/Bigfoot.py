@@ -363,7 +363,7 @@ def b3_release(channel):
 # Returns : Changes button state global
 # ----------------------------------------------------------------------
 def b1_enable():
-	global B1_GPIO
+	global B1_GPIO, button_state
 	GPIO.setup(B1_GPIO, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 	try:
 		GPIO.add_event_detect(B1_GPIO, GPIO.RISING, callback=b1_release, bouncetime=200)
@@ -371,6 +371,7 @@ def b1_enable():
 			pass
 	finally:
 		signal.signal(signal.SIGINT, signal_handler)
+		button_state &= ~1
 		print("b1 enable")
 
 
@@ -381,8 +382,8 @@ def b1_enable():
 def b1_disable():
 	global button_state
 	button_state &= ~1
-	GPIO.setup(B1_GPIO, GPIO.OUT)
-	GPIO.output(B1_GPIO, GPIO.LOW)
+	#GPIO.setup(B1_GPIO, GPIO.OUT)
+	#GPIO.output(B1_GPIO, GPIO.LOW)
 	print("b1 disable")
 
 
@@ -391,7 +392,7 @@ def b1_disable():
 # Returns : Changes button state global
 # ----------------------------------------------------------------------
 def b2_enable():
-	global B2_GPIO
+	global B2_GPIO, button_state
 	GPIO.setup(B2_GPIO, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 	try:
 		GPIO.add_event_detect(B2_GPIO, GPIO.RISING, callback=b2_release, bouncetime=200)
@@ -399,6 +400,7 @@ def b2_enable():
 		pass
 	finally:
 		signal.signal(signal.SIGINT, signal_handler)
+		button_state &= ~2
 		print("b2 enable")
 
 
@@ -408,9 +410,10 @@ def b2_enable():
 # ----------------------------------------------------------------------
 def b2_disable():
 	global button_state
+	
+	#GPIO.setup(B2_GPIO, GPIO.OUT)
+	#GPIO.output(B2_GPIO, GPIO.LOW)
 	button_state &= ~2
-	GPIO.setup(B2_GPIO, GPIO.OUT)
-	GPIO.output(B2_GPIO, GPIO.LOW)
 	print("b2 disable")
 
 
@@ -419,7 +422,7 @@ def b2_disable():
 # Returns : Changes button state global
 # ----------------------------------------------------------------------
 def b3_enable():
-	global B3_GPIO
+	global B3_GPIO, button_state
 	GPIO.setup(B3_GPIO, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 	try:
 		GPIO.add_event_detect(B3_GPIO, GPIO.RISING, callback=b3_release, bouncetime=200)
@@ -427,6 +430,7 @@ def b3_enable():
 			pass
 	finally:
 		signal.signal(signal.SIGINT, signal_handler)
+		button_state &= ~4
 		print("b3 enable")
 
 
@@ -437,8 +441,8 @@ def b3_enable():
 def b3_disable():
 	global button_state
 	button_state &= ~4
-	GPIO.setup(B3_GPIO, GPIO.OUT)
-	GPIO.output(B3_GPIO, GPIO.LOW)
+	#GPIO.setup(B3_GPIO, GPIO.OUT)
+	#GPIO.output(B3_GPIO, GPIO.LOW)
 	print("b3 disable")
 
 
