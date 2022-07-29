@@ -4,9 +4,9 @@
 # Description: View Class
 # Authors:
 # Nathan Hanchey
-# Dylan
-# Connor
-# Corey
+# Dylan Vetter
+# Connor Inglet
+# Corey Noura
 # #################################################
 
 import os

@@ -1,6 +1,5 @@
 import unittest
 import time
-import os
 import Model as model
 
 

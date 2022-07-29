@@ -1,16 +1,16 @@
-# #################################################
+# ----------------------------------------------------------------------
 # MicroDev Project: Bigfoot
 # Date: May 2, 2022
 # Description: Handles GPIO's
 # Authors:
 # Nathan Hanchey
-# Dylan
-# Connor
-# Corey
+# Dylan Vetter
+# Connor Inglet
+# Corey Noura
 #
 # References:
 # raspberry-projects.com/pi/programming-in-python/i2c-programming-in-python/using-the-i2c-interface-2
-# #################################################
+# ----------------------------------------------------------------------
 
 import sys
 import signal
