@@ -331,7 +331,8 @@ void configure_sleep_mode(unsigned int sleepmode, unsigned int interruptPin) {
     sleep_enable(); //Enables sleep mode
     pinMode(2, INPUT_PULLUP); //Assign pin 2 or 3 as input pullup
     pinMode(3, INPUT_PULLUP);
-    attachInterrupt(digitalPinToInterrupt(interruptPin), wakeUp, LOW); //set pin 2 or 3 as an interrupt that jumps to wakeUp() when triggered LOW
+    attachInterrupt(digitalPinToInterrupt(3), wakeUp, LOW);
+    attachInterrupt(digitalPinToInterrupt(2), wakeUp, LOW); //set pin 2 or 3 as an interrupt that jumps to wakeUp() when triggered LOW
     switch (sleepmode) { //selects which sleep mode to enter
         case 1:
             set_sleep_mode(SLEEP_MODE_IDLE);
