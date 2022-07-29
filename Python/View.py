@@ -4,9 +4,9 @@
 # Description: View Class
 # Authors:
 # Nathan Hanchey
-# Dylan Vetter
-# Connor Inglet
-# Corey Noura
+# Dylan
+# Connor
+# Corey
 # #################################################
 
 import os
@@ -21,9 +21,11 @@ import RPi.GPIO as GPIO
 # Creates main GUI window and its subframe for data to be displayed
 root = Tk()
 root.wm_title("MicroDev Tester")
-frame = Frame(root)
 root.attributes('-fullscreen', True)
+root.configure(background="black")
+frame = Frame(root)
 frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
+frame.configure(background="black")
 
 
 def setStandbyScreen():
@@ -83,9 +85,9 @@ def setFlashScreen():
 
     # Initializes labels to display info to user
     standbyMsg = Label(frame, text="Flashing Software to Subject Board", font=("Helvetica", 40))
-    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
-    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
-    rightButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    leftButton = Label(frame, text="", background='black', font=("Helvetica", 40))
+    middleButton = Label(frame, text="", background='black', font=("Helvetica", 40))
+    rightButton = Label(frame, text="", background='black', font=("Helvetica", 40))
 
     # Controls placement of labels that display info to user
     standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
@@ -250,9 +252,13 @@ def setDetailTestScreen(detailed_report):
     
     # Creates scrolling subframe and button icons
     subframe = Frame(frame)
-    leftButton = Label(frame, text="", background='blue', font=("Helvetica", 40))
-    middleButton = Label(frame, text="", background='green', font=("Helvetica", 40))
-    rightButton = Label(frame, text="", background='blue', font=("Helvetica", 40))
+    subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
+    leftButton = Label(frame, text="Page Down", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    leftButton.config(highlightbackground="white", highlightcolor="white")
+    middleButton = Label(frame, text="Next", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    middleButton.config(highlightbackground="white", highlightcolor="white")
+    rightButton = Label(frame, text="Page Up", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    rightButton.config(highlightbackground="white", highlightcolor="white")
     
     subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
     leftButton.place(relx=0.025, rely=0.775, relheight=0.2, relwidth=0.3)
@@ -268,7 +274,7 @@ def setDetailTestScreen(detailed_report):
         num_pages -= 1
         
      # Displays first page worth of entries
-    report = Text(subframe, width=100, height=100, wrap=NONE)
+    report = Text(subframe, width=100, height=100, wrap=NONE, background='black', font=("Helvetica", 40), fg="green", padx=10, pady=10)
     for i in range(len(detailed_report)):
         if i < current_page * page_size:
             continue
@@ -302,7 +308,7 @@ def setDetailTestScreen(detailed_report):
         subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
         
          # Creates new entries to go in subframe that acts like scrolling to next page
-        report = Text(subframe, width=100, height=100, wrap=NONE)
+        report = Text(subframe, width=100, height=100, wrap=NONE, font=("Helvetica", 40), background='black', fg="green", padx=10, pady=10)
         for i in range(len(detailed_report)):
             if i < current_page * page_size:
                 continue
@@ -345,4 +351,3 @@ def pollButtons():
     else:    
         return None
 ############# NEW STUFF #########################
-
