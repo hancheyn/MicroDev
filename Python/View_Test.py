@@ -9,4 +9,4 @@ detailed_array = []
 for i in range(0, 23):
 	detailed_array.append("Test entry: " + str(i) + "\n")
 	
-view.setDetailTestScreen(detailed_array)
+view.setStandbyScreen()

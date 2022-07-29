@@ -31,20 +31,26 @@ def setStandbyScreen():
         if widget.winfo_exists():
             widget.destroy()
     frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
+    
+    subframe = Frame(frame)
+    subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
+    report = Text(subframe, width=100, height=100, wrap=NONE, background='black', font=("Helvetica", 40), fg="green", padx=10, pady=10)
+    report.insert(END, "Place dev board onto header\n")
+    report.insert(END, "interface and connect cable\n")
 
-    # Initializes labels to display info to user
-    standbyMsg = Label(frame, text="Place dev board onto header", font=("Helvetica", 40))
-    standbyMsg2 = Label(frame, text="interface and connect cable", font=("Helvetica", 40))
-    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
-    middleButton = Label(frame, text="Shutdown", background='red', font=("Helvetica", 40))
-    rightButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    leftButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    leftButton.config(highlightbackground="white", highlightcolor="white")
+    middleButton = Label(frame, text="Shutdown", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    middleButton.config(highlightbackground="white", highlightcolor="white")
+    rightButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    rightButton.config(highlightbackground="white", highlightcolor="white")
+    
+    subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
+    report.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=1.0)
 
-    # Controls placement of labels that display info to user
-    standbyMsg.place(relx=0.1, rely=0.3, relheight=0.1, relwidth=0.8)
-    standbyMsg2.place(relx=0.1, rely=0.4, relheight=0.1, relwidth=0.8)
-    leftButton.place(relx=0.1, rely=0.7, relheight=0.2, relwidth=0.2)
-    middleButton.place(relx=0.4, rely=0.7, relheight=0.2, relwidth=0.2)
-    rightButton.place(relx=0.7, rely=0.7, relheight=0.2, relwidth=0.2)
+    leftButton.place(relx=0.025, rely=0.775, relheight=0.2, relwidth=0.3)
+    middleButton.place(relx=0.35, rely=0.775, relheight=0.2, relwidth=0.3)
+    rightButton.place(relx=0.675, rely=0.775, relheight=0.2, relwidth=0.3)
 
     # Updates main window
     root.update()
