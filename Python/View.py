@@ -34,9 +34,7 @@ def setStandbyScreen():
     
     subframe = Frame(frame)
     subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
-    report = Text(subframe, width=100, height=100, wrap=NONE, background='black', font=("Helvetica", 40), fg="green", padx=10, pady=10)
-    report.insert(END, "Place dev board onto header\n")
-    report.insert(END, "interface and connect cable\n")
+    report = Label(subframe, text="Place dev board onto header\ninterface and connect cable", background='black', font=("Helvetica", 40), fg="green")
 
     leftButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
     leftButton.config(highlightbackground="white", highlightcolor="white")
@@ -46,7 +44,7 @@ def setStandbyScreen():
     rightButton.config(highlightbackground="white", highlightcolor="white")
     
     subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
-    report.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=1.0)
+    report.place(relx=0.5, rely=0.5, relwidth=1.0, relheight=1.0, anchor="center")
 
     leftButton.place(relx=0.025, rely=0.775, relheight=0.2, relwidth=0.3)
     middleButton.place(relx=0.35, rely=0.775, relheight=0.2, relwidth=0.3)
@@ -62,21 +60,27 @@ def setStartScreen():
         if widget.winfo_exists():
             widget.destroy()
     frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
+    
+    subframe = Frame(frame)
+    subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
+    report = Label(subframe, text="Your dev board has been detected", background='black', font=("Helvetica", 40), fg="green")
 
-    # Initializes labels to display info to user
-    standbyMsg = Label(frame, text="Your dev board has been detected", font=("Helvetica", 40))
-    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
-    middleButton = Label(frame, text="Start Test", background='green', font=("Helvetica", 40))
-    rightButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    leftButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    leftButton.config(highlightbackground="white", highlightcolor="white")
+    middleButton = Label(frame, text="Start Test", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    middleButton.config(highlightbackground="white", highlightcolor="white")
+    rightButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    rightButton.config(highlightbackground="white", highlightcolor="white")
+    
+    subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
+    report.place(relx=0.5, rely=0.5, relwidth=1.0, relheight=1.0, anchor="center")
 
-    # Controls placement of labels that display info to user
-    standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
-    leftButton.place(relx=0.1, rely=0.7, relheight=0.2, relwidth=0.2)
-    middleButton.place(relx=0.4, rely=0.7, relheight=0.2, relwidth=0.2)
-    rightButton.place(relx=0.7, rely=0.7, relheight=0.2, relwidth=0.2)
+    leftButton.place(relx=0.025, rely=0.775, relheight=0.2, relwidth=0.3)
+    middleButton.place(relx=0.35, rely=0.775, relheight=0.2, relwidth=0.3)
+    rightButton.place(relx=0.675, rely=0.775, relheight=0.2, relwidth=0.3)
 
     # Updates main window
-    root.update()
+    root.update()    
 
 
 def setFlashScreen():
@@ -85,21 +89,27 @@ def setFlashScreen():
         if widget.winfo_exists():
             widget.destroy()
     frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
+    
+    subframe = Frame(frame)
+    subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
+    report = Label(subframe, text="Flashing Software to Subject Board", background='black', font=("Helvetica", 40), fg="green")
 
-    # Initializes labels to display info to user
-    standbyMsg = Label(frame, text="Flashing Software to Subject Board", font=("Helvetica", 40))
-    leftButton = Label(frame, text="", background='black', font=("Helvetica", 40))
-    middleButton = Label(frame, text="", background='black', font=("Helvetica", 40))
-    rightButton = Label(frame, text="", background='black', font=("Helvetica", 40))
+    leftButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    leftButton.config(highlightbackground="white", highlightcolor="white")
+    middleButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    middleButton.config(highlightbackground="white", highlightcolor="white")
+    rightButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    rightButton.config(highlightbackground="white", highlightcolor="white")
+    
+    subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
+    report.place(relx=0.5, rely=0.5, relwidth=1.0, relheight=1.0, anchor="center")
 
-    # Controls placement of labels that display info to user
-    standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
-    leftButton.place(relx=0.1, rely=0.7, relheight=0.2, relwidth=0.2)
-    middleButton.place(relx=0.4, rely=0.7, relheight=0.2, relwidth=0.2)
-    rightButton.place(relx=0.7, rely=0.7, relheight=0.2, relwidth=0.2)
+    leftButton.place(relx=0.025, rely=0.775, relheight=0.2, relwidth=0.3)
+    middleButton.place(relx=0.35, rely=0.775, relheight=0.2, relwidth=0.3)
+    rightButton.place(relx=0.675, rely=0.775, relheight=0.2, relwidth=0.3)
 
     # Updates main window
-    root.update()
+    root.update()      
 
 
 def setRunningScreen(pass_array):
@@ -108,19 +118,24 @@ def setRunningScreen(pass_array):
         if widget.winfo_exists():
             widget.destroy()
     frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
+    
+    subframe = Frame(frame)
+    subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
+    report = Label(subframe, text="Running Tests...", background='black', font=("Helvetica", 40), fg="green")
 
-    # Initializes labels to display info to user
-    standbyMsg = Label(frame, text=pass_array, font=("Helvetica", 40))
+    leftButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    leftButton.config(highlightbackground="white", highlightcolor="white")
+    middleButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    middleButton.config(highlightbackground="white", highlightcolor="white")
+    rightButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    rightButton.config(highlightbackground="white", highlightcolor="white")
+    
+    subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
+    report.place(relx=0.5, rely=0.5, relwidth=1.0, relheight=1.0, anchor="center")
 
-    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
-    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
-    rightButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
-
-    # Controls placement of labels that display info to user
-    standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
-    leftButton.place(relx=0.1, rely=0.7, relheight=0.2, relwidth=0.2)
-    middleButton.place(relx=0.4, rely=0.7, relheight=0.2, relwidth=0.2)
-    rightButton.place(relx=0.7, rely=0.7, relheight=0.2, relwidth=0.2)
+    leftButton.place(relx=0.025, rely=0.775, relheight=0.2, relwidth=0.3)
+    middleButton.place(relx=0.35, rely=0.775, relheight=0.2, relwidth=0.3)
+    rightButton.place(relx=0.675, rely=0.775, relheight=0.2, relwidth=0.3)
 
     # Updates main window
     root.update()
@@ -132,20 +147,28 @@ def setResultsScreen(pass_array):
         if widget.winfo_exists():
             widget.destroy()
     frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
-
-    # Initializes labels to display info to user
-
-    standbyMsg = Label(frame, text=pass_array, font=("Helvetica", 14))
-    leftButton = Label(frame, text="Save", background='green', font=("Helvetica", 40))
-    middleButton = Label(frame, text="Details", background='red', font=("Helvetica", 40))
-    rightButton = Label(frame, text="New Test", background='blue', font=("Helvetica", 40))
-
-    # Controls placement of labels that display info to user
-    standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
-    leftButton.place(relx=0.1, rely=0.7, relheight=0.2, relwidth=0.2)
-    middleButton.place(relx=0.4, rely=0.7, relheight=0.2, relwidth=0.2)
-    rightButton.place(relx=0.7, rely=0.7, relheight=0.2, relwidth=0.2)
-
+    
+    # Creates scrolling subframe and button icons
+    subframe = Frame(frame)
+    subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
+    leftButton = Label(frame, text="Save", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    leftButton.config(highlightbackground="white", highlightcolor="white")
+    middleButton = Label(frame, text="Details", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    middleButton.config(highlightbackground="white", highlightcolor="white")
+    rightButton = Label(frame, text="New Test", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    rightButton.config(highlightbackground="white", highlightcolor="white")
+    
+    subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
+    leftButton.place(relx=0.025, rely=0.775, relheight=0.2, relwidth=0.3)
+    middleButton.place(relx=0.35, rely=0.775, relheight=0.2, relwidth=0.3)
+    rightButton.place(relx=0.675, rely=0.775, relheight=0.2, relwidth=0.3)
+        
+     # Displays first page worth of entries
+    report = Text(subframe, width=100, height=100, wrap=NONE, background='black', font=("Helvetica", 40), fg="green", padx=10, pady=10)
+    for i in range(len(pass_array)):
+        report.insert(END, str(pass_array[i]) + "\n")
+    report.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=1.0)
+    
     # Updates main window
     root.update()
 
@@ -188,7 +211,7 @@ def setDetailTestScreen(detailed_report):
         elif i > ((current_page * page_size) + page_size) - 1:
             continue
         else:
-            report.insert(END, str(detailed_report[i]))
+            report.insert(END, str(detailed_report[i]) + "\n")
     report.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=1.0)
     
     # Updates main window
@@ -222,7 +245,7 @@ def setDetailTestScreen(detailed_report):
             elif i > ((current_page * page_size) + page_size) - 1:
                 continue
             else:
-                report.insert(END, detailed_report[i])
+                report.insert(END, detailed_report[i] + "\n")
         report.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=1.0)
         
          # Updates main window
@@ -235,22 +258,27 @@ def setSaveScreen():
         if widget.winfo_exists():
             widget.destroy()
     frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
+    
+    subframe = Frame(frame)
+    subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
+    report = Label(subframe, text="Saved Test Results to USB", background='black', font=("Helvetica", 40), fg="green")
 
-    # Initializes labels to display info to user
-    standbyMsg = Label(frame, text="Saved Test Results to USB", font=("Helvetica", 40))
+    leftButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    leftButton.config(highlightbackground="white", highlightcolor="white")
+    middleButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    middleButton.config(highlightbackground="white", highlightcolor="white")
+    rightButton = Label(frame, text="Back", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    rightButton.config(highlightbackground="white", highlightcolor="white")
+    
+    subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
+    report.place(relx=0.5, rely=0.5, relwidth=1.0, relheight=1.0, anchor="center")
 
-    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
-    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
-    rightButton = Label(frame, text="Back", background='green', font=("Helvetica", 40))
-
-    # Controls placement of labels that display info to user
-    standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
-    leftButton.place(relx=0.1, rely=0.7, relheight=0.2, relwidth=0.2)
-    middleButton.place(relx=0.4, rely=0.7, relheight=0.2, relwidth=0.2)
-    rightButton.place(relx=0.7, rely=0.7, relheight=0.2, relwidth=0.2)
+    leftButton.place(relx=0.025, rely=0.775, relheight=0.2, relwidth=0.3)
+    middleButton.place(relx=0.35, rely=0.775, relheight=0.2, relwidth=0.3)
+    rightButton.place(relx=0.675, rely=0.775, relheight=0.2, relwidth=0.3)
 
     # Updates main window
-    root.update()
+    root.update()      
 
 
 #
@@ -260,21 +288,27 @@ def setShutdownScreen():
         if widget.winfo_exists():
             widget.destroy()
     frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
+    
+    subframe = Frame(frame)
+    subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
+    report = Label(subframe, text="Shutdown in Progress", background='black', font=("Helvetica", 40), fg="green")
 
-    # Initializes labels to display info to user
-    standbyMsg = Label(frame, text="Shutdown in Progress", font=("Helvetica", 40))
-    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
-    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
-    rightButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    leftButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    leftButton.config(highlightbackground="white", highlightcolor="white")
+    middleButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    middleButton.config(highlightbackground="white", highlightcolor="white")
+    rightButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    rightButton.config(highlightbackground="white", highlightcolor="white")
+    
+    subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
+    report.place(relx=0.5, rely=0.5, relwidth=1.0, relheight=1.0, anchor="center")
 
-    # Controls placement of labels that display info to user
-    standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
-    leftButton.place(relx=0.1, rely=0.7, relheight=0.2, relwidth=0.2)
-    middleButton.place(relx=0.4, rely=0.7, relheight=0.2, relwidth=0.2)
-    rightButton.place(relx=0.7, rely=0.7, relheight=0.2, relwidth=0.2)
+    leftButton.place(relx=0.025, rely=0.775, relheight=0.2, relwidth=0.3)
+    middleButton.place(relx=0.35, rely=0.775, relheight=0.2, relwidth=0.3)
+    rightButton.place(relx=0.675, rely=0.775, relheight=0.2, relwidth=0.3)
 
     # Updates main window
-    root.update()
+    root.update() 
 
 
 #
@@ -284,21 +318,27 @@ def setRemovalScreen():
         if widget.winfo_exists():
             widget.destroy()
     frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
+    
+    subframe = Frame(frame)
+    subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
+    report = Label(subframe, text="Remove Dev Board From Fixture", background='black', font=("Helvetica", 40), fg="green")
 
-    # Initializes labels to display info to user
-    standbyMsg = Label(frame, text="Please remove your DevBoard", font=("Helvetica", 40))
-    leftButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
-    middleButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
-    rightButton = Label(frame, text="", background='grey', font=("Helvetica", 40))
+    leftButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    leftButton.config(highlightbackground="white", highlightcolor="white")
+    middleButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    middleButton.config(highlightbackground="white", highlightcolor="white")
+    rightButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    rightButton.config(highlightbackground="white", highlightcolor="white")
+    
+    subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
+    report.place(relx=0.5, rely=0.5, relwidth=1.0, relheight=1.0, anchor="center")
 
-    # Controls placement of labels that display info to user
-    standbyMsg.place(relx=0.1, rely=0.3, relheight=0.2, relwidth=0.8)
-    leftButton.place(relx=0.1, rely=0.7, relheight=0.2, relwidth=0.2)
-    middleButton.place(relx=0.4, rely=0.7, relheight=0.2, relwidth=0.2)
-    rightButton.place(relx=0.7, rely=0.7, relheight=0.2, relwidth=0.2)
+    leftButton.place(relx=0.025, rely=0.775, relheight=0.2, relwidth=0.3)
+    middleButton.place(relx=0.35, rely=0.775, relheight=0.2, relwidth=0.3)
+    rightButton.place(relx=0.675, rely=0.775, relheight=0.2, relwidth=0.3)
 
     # Updates main window
-    root.update()
+    root.update() 
 
 
 def pollButtons():
