@@ -745,8 +745,11 @@ def usb_list():
     res_usb = subprocess.getstatusoutput(mess)
     print(res_usb)
 
+    split_usb = res_usb.split('\n')
+    print(split_usb)
+
     # Find USB Drives (Not STM Board)
-    for i in res_usb:
+    for i in split_usb:
         if i != 0:
             if "NOD" not in i:
                 print(i)
@@ -772,15 +775,14 @@ def usb_save(detailed_array):
         h = subprocess.getstatusoutput("cp MicroDevTest_Results.txt " + usb_file)
     
 
-
 # ----------------------------------------------------------------------
 # Description: Shutdown Instruction
 # Accepts: N/A
 # Returns: N/A
 # ----------------------------------------------------------------------
 def shutdown():
-    #subprocess.getstatusoutput(f'sudo shutdown now')
-    print("shutdown attempt")
+    subprocess.getstatusoutput(f'sudo shutdown now')
+    #print("shutdown attempt")
 
 
 # ----------------------------------------------------------------------

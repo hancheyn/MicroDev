@@ -382,8 +382,6 @@ def b1_enable():
 def b1_disable():
 	global button_state
 	button_state &= ~1
-	#GPIO.setup(B1_GPIO, GPIO.OUT)
-	#GPIO.output(B1_GPIO, GPIO.LOW)
 	print("b1 disable")
 
 
@@ -410,9 +408,6 @@ def b2_enable():
 # ----------------------------------------------------------------------
 def b2_disable():
 	global button_state
-	
-	#GPIO.setup(B2_GPIO, GPIO.OUT)
-	#GPIO.output(B2_GPIO, GPIO.LOW)
 	button_state &= ~2
 	print("b2 disable")
 
@@ -441,8 +436,6 @@ def b3_enable():
 def b3_disable():
 	global button_state
 	button_state &= ~4
-	#GPIO.setup(B3_GPIO, GPIO.OUT)
-	#GPIO.output(B3_GPIO, GPIO.LOW)
 	print("b3 disable")
 
 
