@@ -62,6 +62,8 @@ def close_serial(ser):
 # Returns: NA
 # ----------------------------------------------------------------------
 def subject_write(str_write, ser):
+    #ser.flushInput()
+    #ser.flushOutput()
     try:
         ser.write(str_write)  # write a string
     except serial.SerialException as e:
