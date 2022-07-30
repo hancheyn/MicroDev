@@ -18,5 +18,5 @@ sudo pip3 install adafruit-circuitpython-ina219
 # BOOT UP to GUI
 sudo mkdir /home/microdev/.config/autostart/
 sudo cp MyApp.desktop1 /home/microdev/.config/autostart/MyApp.desktop
-cd /home/microdev/.config/autostart/
-chmod +x /home/microdev/.config/autostart/MyApp.desktop
+# cd /home/microdev/.config/autostart/
+sudo chmod +x /home/microdev/.config/autostart/MyApp.desktop
