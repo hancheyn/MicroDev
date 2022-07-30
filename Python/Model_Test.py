@@ -43,44 +43,28 @@ class BoardTests(unittest.TestCase):
 
         self.assertEqual(True, True, "Failed Test")
 
-    # 1.3 Tests Subject Board Functionality for Test #4
-    def test_gpio_input_pull_up(self):
+    # 1.3 Tests Arduino Subject Board Pin Mapping
+    def test_gpio_uno_facade(self):
+        file = open('unoTest.config', 'r')
+        lines = file.readlines()
+        file_len = len(lines)
+
+        loop_num = 1
+
+        while loop_num < file_len:
+            conf = lines[loop_num].split(',')
+            pin = conf[0]
+            print(pin)
+            res = conf[1]
+            print(res)
+            loop_num = loop_num + 1
+
+
 
         self.assertEqual(True, True, "Failed Test")
         self.assertEqual(True, True, "Failed Test")
 
-    # 1.4 Tests Subject Board Functionality for Test #5
-    def test_gpio_input_pull_down(self):
 
-        print("test")
-        self.assertEqual(True, True, "Failed Test")
-
-    # 1.5 Tests Subject Board Functionality for Test #6
-    def test_run_gpio_input_logic_level(self):
-
-        print("test")
-        self.assertEqual(True, True, "Failed Test")
-
-    # 1.6 Tests Subject Board Functionality for Test #7
-    def test_run_adc(self):
-
-        print("test")
-        self.assertEqual(True, True, "Failed Test")
-
-    # 1.7 Tests Subject Board Functionality for Test #8
-    def test_run_power_mode(self):
-        ser = model.open_serial()
-        time.sleep(2)
-        # Activates Desired Sleep Mode
-        model.run_power_mode_test(1, 3, ser)
-        model.close_serial(ser)
-        self.assertEqual(True, True, "Failed Test")
-
-    # 1.8 Tests Subject Board Functionality for Test #9
-    def test_run_wakeup(self):
-
-        print("test")
-        self.assertEqual(True, True, "Failed Test")
 
 
 # ###### (2) Debugging Test Code for Serial ######### #
