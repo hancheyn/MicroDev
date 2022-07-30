@@ -45,26 +45,69 @@ class BoardTests(unittest.TestCase):
 
     # 1.3 Tests Arduino Subject Board Pin Mapping
     def test_gpio_uno_facade(self):
-        file = open('unoTest.config', 'r')
+        file = open('uno_facadeTest.config', 'r')
         lines = file.readlines()
         file_len = len(lines)
 
         loop_num = 1
 
+        # Open Serial Comm
+        ser = model.open_serial()
+        time.sleep(2)
+
         while loop_num < file_len:
             conf = lines[loop_num].split(',')
             pin = conf[0]
             print(pin)
-            res = conf[1]
-            print(res)
+            res = conf[1].split('\n')
+            print(res[0])
+
+            # .encode([test], [pin], [instruction])
+            s = model.crc_encode(0x01, int(pin), 0x81)
+            model.subject_write(str_write=s, ser=ser)
+            time.sleep(0.01)
+            test_bytes = model.subject_read(ser_=ser)
+            output = model.crc_decode(test_bytes, 1)
+
+            self.assertEqual(True, float(res[0]) == float(output), "Failed Test | Pin Value: " + str(output))
             loop_num = loop_num + 1
+            print(res[1])
 
-
-
+        model.close_serial(ser)
         self.assertEqual(True, True, "Failed Test")
+
+    # 1. Tests STM Nucleo Subject Board Pin Mapping
+    def test_gpio_stm_facade(self):
+        file = open('stm_facadeTest.config', 'r')
+        lines = file.readlines()
+        file_len = len(lines)
+
+        loop_num = 1
+
+        # Open Serial Comm
+        ser = model.open_serial()
+        time.sleep(2)
+
+        while loop_num < file_len:
+            conf = lines[loop_num].split(',')
+            pin = conf[0]
+            print(pin)
+            res = conf[1].split('\n')
+            print(res[0])
+
+            # .encode([test], [pin], [instruction])
+            s = model.crc_encode(0x01, int(pin), 0x81)
+            model.subject_write(str_write=s, ser=ser)
+            time.sleep(0.01)
+            test_bytes = model.subject_read(ser_=ser)
+            output = model.crc_decode(test_bytes, 1)
+
+            self.assertEqual(True, float(res[0]) == float(output), "Failed Test | Pin Value: " + str(output))
+            loop_num = loop_num + 1
+            print(res[1])
+
+        model.close_serial(ser)
         self.assertEqual(True, True, "Failed Test")
-
-
 
 
 # ###### (2) Debugging Test Code for Serial ######### #
