@@ -448,8 +448,12 @@ if __name__ == '__main__':
                                 # print(res[loop_count-1])
                                 print("Test#,PinID,Address,Enable: " + str(Lines[loop_count]))
                                 test_num = int(test[0])
-                                current_test = "Test #" + str(Lines[loop_count][0]) + " Pin #" + str(
-                                    test[1]) + " Result: " + str(res[loop_count - 1])
+                                if res[loop_count - 1]:
+                                    current_test = "Test #" + str(Lines[loop_count][0]) + " Pin #" + str(
+                                        test[1]) + " Result: Passed"
+                                else:
+                                    current_test = "Test #" + str(Lines[loop_count][0]) + " Pin #" + str(
+                                        test[1]) + " Result: Failed"
                                 detailed_array.append(current_test)
                                 test_loop = False
                             except Exception:
@@ -520,28 +524,52 @@ if __name__ == '__main__':
 
                     # Write Basic Test Results
                     if test1_occured:
-                        mess_test = "Test #1 Result: " + str(test1_pass)
+                        if test1_pass:
+                            mess_test = "Test #1 Result: Passed"
+                        else:
+                            mess_test = "Test #1 Result: Failed"
                         pass_array.append(mess_test)
                     if test2_occured:
-                        mess_test = "Test #2 Result: " + str(test2_pass)
+                        if test2_pass:
+                            mess_test = "Test #2 Result: Passed"
+                        else:
+                            mess_test = "Test #2 Result: Failed"
                         pass_array.append(mess_test)
                     if test3_occured:
-                        mess_test = "Test #3 Result: " + str(test3_pass)
+                        if test3_pass:
+                            mess_test = "Test #3 Result: Passed"
+                        else:
+                            mess_test = "Test #3 Result: Failed"
                         pass_array.append(mess_test)
                     if test4_occured:
-                        mess_test = "Test #4 Result: " + str(test4_pass)
+                        if test4_pass:
+                            mess_test = "Test #4 Result: Passed"
+                        else:
+                            mess_test = "Test #4 Result: Failed"
                         pass_array.append(mess_test)
                     if test5_occured:
-                        mess_test = "Test #5 Result: " + str(test5_pass)
+                        if test5_pass:
+                            mess_test = "Test #5 Result: Passed"
+                        else:
+                            mess_test = "Test #5 Result: Failed"
                         pass_array.append(mess_test)
                     if test6_occured:
-                        mess_test = "Test #6 Result: " + str(test6_pass)
+                        if test6_pass:
+                            mess_test = "Test #6 Result: Passed"
+                        else:
+                            mess_test = "Test #6 Result: Failed"
                         pass_array.append(mess_test)
                     if test7_occured:
-                        mess_test = "Test #7 Result: " + str(test7_pass)
+                        if test7_pass:
+                            mess_test = "Test #7 Result: Passed"
+                        else:
+                            mess_test = "Test #7 Result: Failed"
                         pass_array.append(mess_test)
                     if test8_occured:
-                        mess_test = "Test #8 Result: " + str(test8_pass)
+                        if test8_pass:
+                            mess_test = "Test #8 Result: Passed"
+                        else:
+                            mess_test = "Test #8 Result: Failed"
                         pass_array.append(mess_test)
 
 

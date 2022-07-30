@@ -32,7 +32,6 @@ class BoardTests(unittest.TestCase):
         ser = model.open_serial()
         time.sleep(2)
         model.subject_write(str_write=s, ser=ser)
-        #time.sleep(2)
         test_bytes = model.subject_read(ser_=ser)
         model.close_serial(ser)
         print(test_bytes)
@@ -47,7 +46,7 @@ class BoardTests(unittest.TestCase):
     # 1.3 Tests Subject Board Functionality for Test #4
     def test_gpio_input_pull_up(self):
 
-        print("test")
+        self.assertEqual(True, True, "Failed Test")
         self.assertEqual(True, True, "Failed Test")
 
     # 1.4 Tests Subject Board Functionality for Test #5

@@ -1,6 +1,7 @@
 import unittest
 import time
 import Bigfoot as bigfoot
+import subprocess
 
 
 # ###### 1 Debugging Test Example ######### #
@@ -71,12 +72,7 @@ class GPIOTest(unittest.TestCase):
         
     # 1.2 I2C Integration test
     def test_I2C(self):
-        # rpi_i2c_adc()
-        
-        # rpi_i2c_dac(val)
-        
-        # rpi_i2c_ina219(shunt)
-        
+        subprocess.getstatusoutput("sudo i2cdetect -y 1")
         print("I2C Test")
 
 
