@@ -26,8 +26,10 @@ struct pin pin_set(uint32_t pin, uint32_t clock, GPIO_TypeDef * gpio,  uint8_t p
 	P.clock = clock;
 	P.GPIO = gpio;
 
+
 	return P;
 }
+
 
 //Initialize pin struct array
 void init_pins(struct pin pins[]) {
@@ -233,6 +235,7 @@ void init_facade() {
 
 
 }
+
 
 void init_real() {
 
