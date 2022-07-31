@@ -282,6 +282,11 @@ def subject_test(t, p, a, e, board, _ser):
             subject_adc_high = model.run_subject_test(p, e, a, t, 0, _ser)
             print("ADC Return Value: " + str(test_num) + ": " + str(subject_adc_high))
             # convert instruction to voltage
+            if logic == 5:
+                subject_adc_high = (subject_adc_high * 5.2) / 1024
+            else:
+                subject_adc_high = (subject_adc_high * 3.3) / 1024
+
             # compare subject voltage to dac voltage
             if subject_adc_high > instruct - 0.1 and condition_success:
                 condition_success = True
@@ -464,7 +469,9 @@ if __name__ == '__main__':
                         
 
                         # Show Progress of Tests
-                        #view.setRunningScreen(detailed_array[loop_count - 1])
+                        ratio_progess = (float(loop_count)/float(test_count)) * 100
+                        print("Progress: " + str(ratio_progess) + "%")
+                        view.setRunningScreen(detailed_array[loop_count - 1])
                         
                         if test_num == 1:
                             # print(res[loop_count - 1])

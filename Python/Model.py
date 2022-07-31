@@ -508,7 +508,8 @@ def run_adc_test(pin, enable, address, instruction, ser):
     if crc_decode(test_bytes, 0) == 0:
         adc = -1
     else:
-        adc = ((int(output) << 2) * 5.2) / 1024
+        adc = (int(output) << 2)
+        # * 5.2) / 1024
 
     # default pin configurations
     bigfoot.dac_enable(0)
@@ -571,7 +572,7 @@ def run_wakeup_test(pin, enable, address, instruction):
     # TIME DELAY?
 
     # Red Bigfoot Low Current Sensor
-    time.sleep(0.1)
+    time.sleep(0.2)
     current = bigfoot.rpi_i2c_ina219(1)
 
     # default pin configurations
