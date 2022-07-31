@@ -442,8 +442,9 @@ if __name__ == '__main__':
                     while loop_count < test_count:
                         
                         # Test Loop
-                        test_loop = True 
-                        while test_loop:
+                        test_loop = True
+                        loop_limit = 0
+                        while test_loop and loop_limit < 5:
                         # Run Test
                             try:
                                 test = Lines[loop_count].split(",")
@@ -465,13 +466,16 @@ if __name__ == '__main__':
                                 print("!!Test has Failed!!")
                                 n = model.board_wait()
                                 model.subject_flash(n)
+                                loop_limit = loop_limit + 1
+                                if loop_limit == 5:
+                                    detailed_array.append("Not Able to Complete Testing")
                                 pass                                   
                         
 
                         # Show Progress of Tests
                         ratio_progess = (float(loop_count)/float(test_count)) * 100
                         print("Progress: " + str(ratio_progess) + "%")
-                        view.setRunningScreen(detailed_array[loop_count - 1])
+                        #view.setRunningScreen(detailed_array[loop_count - 1])
                         
                         if test_num == 1:
                             # print(res[loop_count - 1])
