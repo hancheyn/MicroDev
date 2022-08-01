@@ -335,6 +335,7 @@ def subject_test(t, p, a, e, board, _ser):
     # Reset Pin Test
     elif t == 9:
         model.run_subject_test(p, e, a, 8, 0, _ser)
+        sleep(0.2)
         return True
 
     return False
@@ -460,8 +461,14 @@ if __name__ == '__main__':
                                 print("Test#,PinID,Address,Enable: " + str(Lines[loop_count]))
                                 test_num = int(test[0])
                                 if res[loop_count - 1]:
-                                    current_test = "Test #" + str(Lines[loop_count][0]) + " Pin #" + str(
-                                        test[1]) + " Result: Passed"
+                                    if test_num == 9:
+                                        current_test = "Board Reset"
+                                    elif test_num >= 7:
+                                        current_test = "Test #" + str(Lines[loop_count][0]) + " Sleep Mode #" + str(
+                                            test[1]) + " Result: Passed"
+                                    else:
+                                        current_test = "Test #" + str(Lines[loop_count][0]) + " Pin #" + str(
+                                            test[1]) + " Result: Passed"
                                 else:
                                     current_test = "Test #" + str(Lines[loop_count][0]) + " Pin #" + str(
                                         test[1]) + " Result: Failed"
@@ -611,10 +618,12 @@ if __name__ == '__main__':
                 state_buttons = model.bigfoot.get_button_state()
 
                 if state_buttons & 1 == 1:
-                    view.setSaveScreen()
+                    
                     save_wait = True
                     screen_wait = False
                     model.bigfoot.b1_disable()
+                    model.usb_save(detailed_array)
+                    view.setSaveScreen()
 
                 elif state_buttons & 2 == 2:
                     model.bigfoot.b1_disable()
@@ -642,7 +651,7 @@ if __name__ == '__main__':
 
                 if state_buttons & 4 == 4:
                     model.bigfoot.b3_disable()
-                    # model.bigfoot.b3_enable()
+                    model.bigfoot.b3_enable()
                     details_wait = False
                     results_menu = False
                 elif state_buttons & 1 == 1:
@@ -659,22 +668,10 @@ if __name__ == '__main__':
                 # Add condition to save test results to usb
                 if state_buttons & 4 == 4:
                     model.bigfoot.b3_disable()
-
                     save_wait = False
                     screen_wait = True
                     
-                    #usb_filepath = model.usb_list()
-                    #if usb_filepath != "None":
-                    #    usb_file = usb_filepath
-                    #    usbf = open("MicroDevTest_Results.txt", "w")
-                    #    for i in detailed_array:
-                    #        usbf.write(i + "\n")
-                    #    usbf.close()
-                    #    h = subprocess.getstatusoutput("cp MicroDevTest_Results.txt " + usb_file)
-                    
-                    model.usb_save(detailed_array)
-
-                    #print(usb_filepath)
+                    # model.usb_save(detailed_array)
                     view.setResultsScreen(pass_array)
 
 

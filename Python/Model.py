@@ -751,14 +751,18 @@ def usb_list():
     mess = "ls /media/" + str(user[1])
     res_usb = subprocess.getstatusoutput(mess)
     print(res_usb)
-
-    split_usb = str(res_usb).split("\n")
-    print(split_usb)
+    
+    if "NOD" in res_usb[1]:
+        split_usb = str(res_usb).split('\\')
+        split_usb = str(split_usb[0]).split('\'')
+        print(split_usb)
+    else:
+        split_usb = res_usb
 
     # Find USB Drives (Not STM Board)
     for i in split_usb:
         if i != 0:
-            if "NOD" not in i:
+            if "NOD" not in i and "(" not in i:
                 print(i)
                 return "/media/" + str(user[1]) + "/" + i
 
