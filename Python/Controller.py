@@ -421,7 +421,7 @@ if __name__ == '__main__':
         try:
             if start and not redo:
                 model.subject_flash(board_type)
-                view.setRunningScreen(pass_array)
+                view.setRunningScreen(0)
                 # While Loop Confirms Serial Connection
                 if serial_check():
                     # Read Config | Loop Through Tests
@@ -506,54 +506,54 @@ if __name__ == '__main__':
                         # Show Progress of Tests
                         ratio_progress = int((float(loop_count)/float(test_count)) * 100)
                         print("Progress: " + str(ratio_progress) + "%")
-                        #view.setRunningScreen(ratio_progress)
+                        view.setRunningScreen(ratio_progress)
                         
                         if test_num == 1:
                             # print(res[loop_count - 1])
                             test1_occured = True
-                            if test1_pass == True and res[loop_count - 1] == True:
+                            if test1_pass and res[loop_count - 1]:
                                 test1_pass = res[loop_count - 1]
                             else:
                                 test1_pass = False
                         elif test_num == 2:
                             test2_occured = True
-                            if test2_pass == True and res[loop_count - 1] == True:
+                            if test2_pass and res[loop_count - 1]:
                                 test2_pass = res[loop_count - 1]
                             else:
                                 test2_pass = False
                         elif test_num == 3:
                             test3_occured = True
-                            if test3_pass == True and res[loop_count - 1] == True:
+                            if test3_pass and res[loop_count - 1]:
                                 test3_pass = res[loop_count - 1]
                             else:
                                 test3_pass = False
                         elif test_num == 4:
                             test4_occured = True
-                            if test4_pass == True and res[loop_count - 1] == True:
+                            if test4_pass and res[loop_count - 1] == True:
                                 test4_pass = res[loop_count - 1]
                             else:
                                 test4_pass = False
                         elif test_num == 5:
                             test5_occured = True
-                            if test5_pass == True and res[loop_count - 1] == True:
+                            if test5_pass and res[loop_count - 1] == True:
                                 test5_pass = res[loop_count - 1]
                             else:
                                 test5_pass = False
                         elif test_num == 6:
                             test6_occured = True
-                            if test6_pass == True and res[loop_count - 1] == True:
+                            if test6_pass and res[loop_count - 1] == True:
                                 test6_pass = res[loop_count - 1]
                             else:
                                 test6_pass = False
                         elif test_num == 7:
                             test7_occured = True
-                            if test7_pass == True and res[loop_count - 1] == True:
+                            if test7_pass and res[loop_count - 1] == True:
                                 test7_pass = res[loop_count - 1]
                             else:
                                 test7_pass = False
                         elif test_num == 8:
                             test8_occured = True
-                            if test8_pass == True and res[loop_count - 1] == True:
+                            if test8_pass and res[loop_count - 1] == True:
                                 test8_pass = res[loop_count - 1]
                             else:
                                 test8_pass = False
