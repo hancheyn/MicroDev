@@ -491,6 +491,7 @@ def run_adc_test(pin, enable, address, instruction, ser):
     # Configure Bigfoot to reset Subject ADC pins
     # Enable DAC
     bigfoot.dac_enable(1)
+    time.sleep(0.02)
     bigfoot.rpi_i2c_dac()
     time.sleep(0.02)
 

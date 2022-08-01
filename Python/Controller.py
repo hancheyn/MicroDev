@@ -286,6 +286,8 @@ def subject_test(t, p, a, e, board, _ser):
         while test_num < test_len:
             instruct = float(compare[test_num])
             model.bigfoot.set_vout(instruct)
+            model.run_subject_test(p, e, a, t, 0, _ser)
+            sleep(0.2)
             subject_adc_high = model.run_subject_test(p, e, a, t, 0, _ser)
             print("ADC Return Value: " + str(test_num) + ": " + str(subject_adc_high) + "\n")
 
@@ -296,8 +298,9 @@ def subject_test(t, p, a, e, board, _ser):
                 subject_adc_high = (subject_adc_high * 3.3) / 1024
 
             Debug_file.write("ADC Return Value: " + str(test_num) + ": " + str(subject_adc_high) + "\n")
+            print("ADC Return Value: " + str(test_num) + ": " + str(subject_adc_high) + "\n")
             # compare subject voltage to dac voltage
-            if subject_adc_high > instruct - 0.1 and condition_success:
+            if subject_adc_high > instruct - 0.4 and condition_success:
                 condition_success = True
             else:
                 condition_success = False
