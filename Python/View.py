@@ -34,13 +34,13 @@ def setStandbyScreen():
     
     subframe = Frame(frame)
     subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
-    report = Label(subframe, text="Place dev board onto header\ninterface and connect cable", background='black', font=("Helvetica", 40), fg="green")
+    report = Label(subframe, text="Place dev board onto header\ninterface and connect cable", background='black', font=("futura", 65), fg="green")
 
-    leftButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    leftButton = Label(frame, text="", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     leftButton.config(highlightbackground="white", highlightcolor="white")
-    middleButton = Label(frame, text="Shutdown", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    middleButton = Label(frame, text="Shutdown", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     middleButton.config(highlightbackground="white", highlightcolor="white")
-    rightButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    rightButton = Label(frame, text="", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     rightButton.config(highlightbackground="white", highlightcolor="white")
     
     subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
@@ -63,13 +63,13 @@ def setStartScreen():
     
     subframe = Frame(frame)
     subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
-    report = Label(subframe, text="Your dev board has been detected", background='black', font=("Helvetica", 40), fg="green")
+    report = Label(subframe, text="Your dev board has been detected", background='black', font=("futura", 65), fg="green")
 
-    leftButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    leftButton = Label(frame, text="", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     leftButton.config(highlightbackground="white", highlightcolor="white")
-    middleButton = Label(frame, text="Start Test", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    middleButton = Label(frame, text="Start Test", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     middleButton.config(highlightbackground="white", highlightcolor="white")
-    rightButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    rightButton = Label(frame, text="", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     rightButton.config(highlightbackground="white", highlightcolor="white")
     
     subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
@@ -92,13 +92,13 @@ def setFlashScreen():
     
     subframe = Frame(frame)
     subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
-    report = Label(subframe, text="Flashing Software to Subject Board", background='black', font=("Helvetica", 40), fg="green")
+    report = Label(subframe, text="Flashing Software to\nSubject Board...", background='black', font=("futura", 65), fg="green")
 
-    leftButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    leftButton = Label(frame, text="", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     leftButton.config(highlightbackground="white", highlightcolor="white")
-    middleButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    middleButton = Label(frame, text="", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     middleButton.config(highlightbackground="white", highlightcolor="white")
-    rightButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    rightButton = Label(frame, text="", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     rightButton.config(highlightbackground="white", highlightcolor="white")
     
     subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
@@ -112,33 +112,56 @@ def setFlashScreen():
     root.update()      
 
 
-def setRunningScreen(pass_array):
-    # Clears main window's subframe
-    for widget in frame.winfo_children():
-        if widget.winfo_exists():
-            widget.destroy()
-    frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
+def setRunningScreen(percent):
     
-    subframe = Frame(frame)
-    subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
-    report = Label(subframe, text="Running Tests...", background='black', font=("Helvetica", 40), fg="green")
-
-    leftButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
-    leftButton.config(highlightbackground="white", highlightcolor="white")
-    middleButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
-    middleButton.config(highlightbackground="white", highlightcolor="white")
-    rightButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
-    rightButton.config(highlightbackground="white", highlightcolor="white")
+    global progress
+    global progressBar
     
-    subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
-    report.place(relx=0.5, rely=0.5, relwidth=1.0, relheight=1.0, anchor="center")
+    try:
+        progress.configure(text=str(percent) + "%")
+        if percent > 0 and percent <= 100:
+            progressBar.place(relx=0.0, rely=0.0, relwidth=float(percent)/100, relheight=1.0)
+        else:
+            progressBar.place(relx=0.0, rely=0.0, relwidth=0, relheight=1.0)
+            
+        progress.update()
+        progressBar.update()
+    except:
+        for widget in frame.winfo_children():
+            if widget.winfo_exists():
+                widget.destroy()
+        frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
+        
+        subframe = Frame(frame)
+        subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
+        report = Label(subframe, text="Running Tests...", background='black', font=("futura", 65), fg="green")
+        progress = Label(subframe, text=str(percent) + "%", background='black', font=("futura", 65), fg="green")
+        progressBarFrame = Frame(subframe)
+        progressBarFrame.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
+        progressBar = Label(progressBarFrame, text="", background="green", fg="black")
 
-    leftButton.place(relx=0.025, rely=0.775, relheight=0.2, relwidth=0.3)
-    middleButton.place(relx=0.35, rely=0.775, relheight=0.2, relwidth=0.3)
-    rightButton.place(relx=0.675, rely=0.775, relheight=0.2, relwidth=0.3)
+        leftButton = Label(frame, text="", background='black', font=("futura", 65), fg="green", highlightthickness=5)
+        leftButton.config(highlightbackground="white", highlightcolor="white")
+        middleButton = Label(frame, text="", background='black', font=("futura", 65), fg="green", highlightthickness=5)
+        middleButton.config(highlightbackground="white", highlightcolor="white")
+        rightButton = Label(frame, text="", background='black', font=("futura", 65), fg="green", highlightthickness=5)
+        rightButton.config(highlightbackground="white", highlightcolor="white")
+        
+        subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
+        report.place(relx=0.5, rely=0.2, relwidth=1.0, relheight=0.3, anchor="center")
+        progress.place(relx=0.5, rely=0.5, relwidth=1.0, relheight=0.3, anchor="center")
+        progressBarFrame.place(relx=0.5, rely=0.8, relwidth=0.80, relheight=0.3, anchor="center")
+        if percent > 0 and percent <= 100:
+            progressBar.place(relx=0.0, rely=0.0, relwidth=float(percent)/100, relheight=1.0)
+        else:
+            progressBar.place(relx=0.0, rely=0.0, relwidth=0, relheight=1.0)
 
-    # Updates main window
-    root.update()
+        leftButton.place(relx=0.025, rely=0.775, relheight=0.2, relwidth=0.3)
+        middleButton.place(relx=0.35, rely=0.775, relheight=0.2, relwidth=0.3)
+        rightButton.place(relx=0.675, rely=0.775, relheight=0.2, relwidth=0.3)
+        
+        # Updates main window
+        root.update()
 
 
 def setResultsScreen(pass_array):
@@ -151,11 +174,11 @@ def setResultsScreen(pass_array):
     # Creates scrolling subframe and button icons
     subframe = Frame(frame)
     subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
-    leftButton = Label(frame, text="Save", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    leftButton = Label(frame, text="Save", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     leftButton.config(highlightbackground="white", highlightcolor="white")
-    middleButton = Label(frame, text="Details", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    middleButton = Label(frame, text="Details", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     middleButton.config(highlightbackground="white", highlightcolor="white")
-    rightButton = Label(frame, text="New Test", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    rightButton = Label(frame, text="New Test", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     rightButton.config(highlightbackground="white", highlightcolor="white")
     
     subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
@@ -164,7 +187,7 @@ def setResultsScreen(pass_array):
     rightButton.place(relx=0.675, rely=0.775, relheight=0.2, relwidth=0.3)
         
      # Displays first page worth of entries
-    report = Text(subframe, width=100, height=100, wrap=NONE, background='black', font=("Helvetica", 40), fg="green", padx=10, pady=10)
+    report = Text(subframe, width=100, height=100, wrap=WORD, background='black', font=("futura", 65), fg="green", padx=10, pady=10)
     for i in range(len(pass_array)):
         report.insert(END, str(pass_array[i]) + "\n")
     report.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=1.0)
@@ -183,11 +206,11 @@ def setDetailTestScreen(detailed_report):
     # Creates scrolling subframe and button icons
     subframe = Frame(frame)
     subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
-    leftButton = Label(frame, text="Page Down", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    leftButton = Label(frame, text="Page Down", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     leftButton.config(highlightbackground="white", highlightcolor="white")
-    middleButton = Label(frame, text="Next", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    middleButton = Label(frame, text="Next", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     middleButton.config(highlightbackground="white", highlightcolor="white")
-    rightButton = Label(frame, text="Page Up", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    rightButton = Label(frame, text="Page Up", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     rightButton.config(highlightbackground="white", highlightcolor="white")
     
     subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
@@ -204,7 +227,7 @@ def setDetailTestScreen(detailed_report):
         num_pages -= 1
         
      # Displays first page worth of entries
-    report = Text(subframe, width=100, height=100, wrap=NONE, background='black', font=("Helvetica", 40), fg="green", padx=10, pady=10)
+    report = Text(subframe, width=100, height=100, wrap=WORD, background='black', font=("futura", 65), fg="green", padx=10, pady=10)
     for i in range(len(detailed_report)):
         if i < current_page * page_size:
             continue
@@ -238,7 +261,7 @@ def setDetailTestScreen(detailed_report):
         subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
         
          # Creates new entries to go in subframe that acts like scrolling to next page
-        report = Text(subframe, width=100, height=100, wrap=NONE, font=("Helvetica", 40), background='black', fg="green", padx=10, pady=10)
+        report = Text(subframe, width=100, height=100, wrap=WORD, font=("futura", 65), background='black', fg="green", padx=10, pady=10)
         for i in range(len(detailed_report)):
             if i < current_page * page_size:
                 continue
@@ -261,13 +284,13 @@ def setSaveScreen():
     
     subframe = Frame(frame)
     subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
-    report = Label(subframe, text="Saved Test Results to USB", background='black', font=("Helvetica", 40), fg="green")
+    report = Label(subframe, text="Saved Test Results to USB", background='black', font=("futura", 65), fg="green")
 
-    leftButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    leftButton = Label(frame, text="", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     leftButton.config(highlightbackground="white", highlightcolor="white")
-    middleButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    middleButton = Label(frame, text="", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     middleButton.config(highlightbackground="white", highlightcolor="white")
-    rightButton = Label(frame, text="Back", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    rightButton = Label(frame, text="Back", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     rightButton.config(highlightbackground="white", highlightcolor="white")
     
     subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
@@ -291,13 +314,13 @@ def setShutdownScreen():
     
     subframe = Frame(frame)
     subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
-    report = Label(subframe, text="Shutdown in Progress", background='black', font=("Helvetica", 40), fg="green")
+    report = Label(subframe, text="Shutdown in Progress...", background='black', font=("futura", 65), fg="green")
 
-    leftButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    leftButton = Label(frame, text="", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     leftButton.config(highlightbackground="white", highlightcolor="white")
-    middleButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    middleButton = Label(frame, text="", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     middleButton.config(highlightbackground="white", highlightcolor="white")
-    rightButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    rightButton = Label(frame, text="", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     rightButton.config(highlightbackground="white", highlightcolor="white")
     
     subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
@@ -321,13 +344,13 @@ def setRemovalScreen():
     
     subframe = Frame(frame)
     subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
-    report = Label(subframe, text="Remove Dev Board From Fixture", background='black', font=("Helvetica", 40), fg="green")
+    report = Label(subframe, text="Remove Dev Board From Fixture", background='black', font=("futura", 65), fg="green")
 
-    leftButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    leftButton = Label(frame, text="", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     leftButton.config(highlightbackground="white", highlightcolor="white")
-    middleButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    middleButton = Label(frame, text="", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     middleButton.config(highlightbackground="white", highlightcolor="white")
-    rightButton = Label(frame, text="", background='black', font=("Helvetica", 40), fg="green", highlightthickness=5)
+    rightButton = Label(frame, text="", background='black', font=("futura", 65), fg="green", highlightthickness=5)
     rightButton.config(highlightbackground="white", highlightcolor="white")
     
     subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
@@ -339,7 +362,7 @@ def setRemovalScreen():
 
     # Updates main window
     root.update() 
-
+    
 
 def pollButtons():
     
