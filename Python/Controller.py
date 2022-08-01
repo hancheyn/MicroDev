@@ -171,6 +171,7 @@ def subject_test(t, p, a, e, board, _ser):
 
     elif t == 2:
         print("Test 2: Output w/ Load")
+        Debug_file.write("Test 2: Output w/ Load")
         compare = lines2[2].split(",")
 
         # Read adc value of logic high from micro
@@ -181,6 +182,8 @@ def subject_test(t, p, a, e, board, _ser):
         print("Test Logic Low")
         low = model.run_subject_test(p, e, a, t, 0, _ser)
 
+        Debug_file.write("Test Logic High" + str(high))
+        Debug_file.write("Test Logic Low" + str(low))
         # Compare to Config threshold and Return Pass or Fail Boolean
         if float(compare[1]) < high and float(compare[2]) > low:
             return True
@@ -188,6 +191,8 @@ def subject_test(t, p, a, e, board, _ser):
 
     elif t == 3:
         print("Test 3: Pull-Up Input")
+        Debug_file.write("Test 3: Pull-Up Input")
+
         compare = lines2[t].split(",")
         adc2 = 0.0
         Rpu = 0.0
@@ -207,6 +212,7 @@ def subject_test(t, p, a, e, board, _ser):
 
         # calculation with adc to pull down resistance value
         print("Test adc val: " + str(adc2))
+        Debug_file.write("Test Pull Up Resistance Value" + str(Rpu))
         #Rpu = (((390 * 5) / adc2) - 390)
         if Rpu > float(compare[1]) and Rpu < float(compare[2]) and adc1 > float(compare[3]):
             return True
@@ -214,6 +220,7 @@ def subject_test(t, p, a, e, board, _ser):
 
     elif t == 4:
         print("Test 4: Pull-Down Input")
+        Debug_file.write("Test 4: Pull-Down Input")
         compare = lines2[t].split(",")
         adc4 = 0
         Rpd = 0.0
@@ -234,6 +241,7 @@ def subject_test(t, p, a, e, board, _ser):
 
         # calculation with adc to pull down resistance value
         print("Test adc val: " + str(adc4))
+        Debug_file.write("Test Pull Down Resistance Value" + str(Rpd))
         
         if Rpd > float(compare[1]) and Rpd < float(compare[2]) and adc1 < float(compare[3]):
             return True
@@ -241,6 +249,7 @@ def subject_test(t, p, a, e, board, _ser):
 
     elif t == 5:
         print("Test 5: Input Logic")
+        Debug_file.write("Test 5: Input Logic")
 
         # Read digital pin from subject board
         if logic == 5:
@@ -255,7 +264,9 @@ def subject_test(t, p, a, e, board, _ser):
         model.bigfoot.set_vout(0)
         subject_input_low = model.run_subject_test(p, e, a, t, 0, _ser)
         print("Logic High Val: " + str(subject_input_high))
+        Debug_file.write("Logic High Val: " + str(subject_input_high))
         print("Logic Low Val: " + str(subject_input_low))
+        Debug_file.write("Logic Low Val: " + str(subject_input_low))
 
         if 1 == subject_input_high and 0 == subject_input_low:
             return True
@@ -263,6 +274,7 @@ def subject_test(t, p, a, e, board, _ser):
 
     elif t == 6:
         print("Test 6: ADC Check")
+        Debug_file.write("Test 6: ADC Check")
         compare = lines2[t].split(",")
         test_num = 1
         test_len = len(compare)
@@ -276,12 +288,14 @@ def subject_test(t, p, a, e, board, _ser):
             model.bigfoot.set_vout(instruct)
             subject_adc_high = model.run_subject_test(p, e, a, t, 0, _ser)
             print("ADC Return Value: " + str(test_num) + ": " + str(subject_adc_high))
+
             # convert instruction to voltage
             if logic == 5:
                 subject_adc_high = (subject_adc_high * 5.2) / 1024
             else:
                 subject_adc_high = (subject_adc_high * 3.3) / 1024
 
+            Debug_file.write("ADC Return Value: " + str(test_num) + ": " + str(subject_adc_high))
             # compare subject voltage to dac voltage
             if subject_adc_high > instruct - 0.1 and condition_success:
                 condition_success = True
@@ -295,6 +309,7 @@ def subject_test(t, p, a, e, board, _ser):
 
     elif t == 7:
         print("Test 7: Set Power Mode")
+        Debug_file.write("Test 7: Set Power Mode")
         # Reads current 0
         current_0 = model.current_read()
 
@@ -305,6 +320,8 @@ def subject_test(t, p, a, e, board, _ser):
 
         print("Current Val Null: " + str(current_0))
         print("Current Val: " + str(current))
+        Debug_file.write("Current in mA Before Power Mode: " + str(current_0))
+        Debug_file.write("Current in mA After Power Mode: " + str(current))
         # compare subject current to threshold
         if float(compare[1]) < (current_0-current):
             return True
@@ -312,6 +329,7 @@ def subject_test(t, p, a, e, board, _ser):
 
     elif t == 8:
         print("Test 8: Wakeup From Sleep")
+        Debug_file.write("Test 8: Wakeup From Sleep")
         # Reads current 0
         current_0 = model.current_read()
 
@@ -322,6 +340,8 @@ def subject_test(t, p, a, e, board, _ser):
 
         print("Current Val Null: " + str(current_0))
         print("Current Val: " + str(current))
+        Debug_file.write("Current in mA Before Wakeup: " + str(current_0))
+        Debug_file.write("Current in mA After Wakeup: " + str(current))
         # compare subject current to threshold
         if float(compare[1]) < (current-current_0):
             return True
@@ -386,9 +406,8 @@ if __name__ == '__main__':
             state_buttons = model.bigfoot.get_button_state()
             if state_buttons & 2 == 2:
                 view.setFlashScreen()
-                # _board_type = model.board_list()
-                #if (supply_pin_voltages(board_type)):
-                #    redo = True
+                if supply_pin_voltages(board_type):
+                    redo = True
                 start = True
                 model.bigfoot.b2_disable()
 
@@ -458,6 +477,8 @@ if __name__ == '__main__':
                                                                    ser)
                                 # print(res[loop_count-1])
                                 print("Test#,PinID,Address,Enable: " + str(Lines[loop_count]))
+                                Debug_file.write("Test#, PinID, Address, Enable: " + str(Lines[loop_count]))
+
                                 test_num = int(test[0])
                                 if res[loop_count - 1]:
                                     if test_num == 9:
