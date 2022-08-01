@@ -331,6 +331,11 @@ def subject_test(t, p, a, e, board, _ser):
         if float(compare[1]) < (current-current_0):
             return True
         return False
+        
+    # Reset Pin Test
+    elif t == 9:
+        model.run_subject_test(p, e, a, 8, 0, _ser)
+        return True
 
     return False
 
@@ -342,7 +347,7 @@ if __name__ == '__main__':
     # Facade Macro
     Facade = 0
 
-    # Initializemodel.check_5V() < 4.0 and model.check_3V3() < 2.5
+    # Initialize model.check_5V() < 4.0 and model.check_3V3() < 2.5
     # Fork | Pipe View
     pass_array = ["Basic Test Results"]
     detailed_array = ["Detailed Test Results"]
@@ -683,6 +688,7 @@ if __name__ == '__main__':
         time_i = 0
         while model.check_5V() > 4.0 and time_i < 10:
             sleep(1)
+            time_i = time_i + 1
             state_buttons = model.bigfoot.get_button_state()
             print(state_buttons)
         

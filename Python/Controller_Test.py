@@ -529,9 +529,9 @@ if __name__ == '__main__':
     #PullDown_Test4_NoLoad(32, 4, 7, 0)
     # PullUp_Test3(23, 3, 6, 0x00)
     #PullDown_Test4(23, 3, 6, 0x00)
-    Validation_3071_3V3_Logic(34, 5, 1)
+    #Validation_3071_3V3_Logic(34, 5, 1)
 
-    #STM32Sleep_Test()
+    STM32Sleep_Test()
     #ArduinoSleep_Test()
     #model.bigfoot.set_mux_add(1, 7, 6)
     #Littlefoot_Test()

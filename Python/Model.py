@@ -236,7 +236,7 @@ def run_subject_test(pin, enable, address, test, instruction, ser):
     elif test == 6:
         val = run_adc_test(pin, enable, address, instruction, ser)
     elif test == 7:
-        val = run_power_mode_test(pin, enable, ser)
+        val = run_power_mode_test(pin, instruction, ser)
     elif test == 8:
         val = run_wakeup_test(pin, enable, address, instruction)
        
@@ -538,9 +538,7 @@ def run_power_mode_test(pin, instruction, ser):
     # .encode([test], [pin], [instruction])
     s = crc_encode(0x07, pin, instruction)
     subject_write(str_write=s, ser=ser)
-    # test_bytes = subject_read(ser_=ser)
-    # output = crc_decode(test_bytes, 2)
-    # print(output)
+
 
     # Read Bigfoot Low Current Sensor
     # TIME DELAY
@@ -562,17 +560,23 @@ def run_power_mode_test(pin, instruction, ser):
 def run_wakeup_test(pin, enable, address, instruction):
     # Configure Bigfoot
     # Set Wakeup pin
+    bigfoot.adc_enable(0)
+    bigfoot.adc_load(0)
     bigfoot.set_mux_add(1, enable, address)
     bigfoot.dac_enable(1)
     bigfoot.high_current(0)
     bigfoot.low_current(1)
+    
 
     # Configure Bigfoot to high logic
+    bigfoot.set_vout(0)
     bigfoot.rpi_i2c_dac()
     # TIME DELAY?
-
-    # Red Bigfoot Low Current Sensor
-    time.sleep(0.2)
+    time.sleep(0.1)
+    bigfoot.set_vout(3.3)
+    bigfoot.rpi_i2c_dac()
+    # Read Bigfoot Low Current Sensor
+    time.sleep(0.1)
     current = bigfoot.rpi_i2c_ina219(1)
 
     # default pin configurations
@@ -748,7 +752,7 @@ def usb_list():
     res_usb = subprocess.getstatusoutput(mess)
     print(res_usb)
 
-    split_usb = res_usb.split('\n')
+    split_usb = str(res_usb).split("\n")
     print(split_usb)
 
     # Find USB Drives (Not STM Board)
