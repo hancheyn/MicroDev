@@ -19,12 +19,19 @@ import View
 view = View
 model = Model
 
+"""
+Debug File 
+"""
+Debug_file = open("Debug_MicroDevTest.txt", "w")
+Debug_file.close()
 
 """
 Configuration Getters:
 The following functions grab important configuration data for 
 the test cycle of the subject board.
 """
+
+
 # ----------------------------------------------------------------------
 # Description: For looping through serial check if communication works
 # Returns: True only if serial communication is established
@@ -104,16 +111,6 @@ def subject_logic(_board_type):
 # ----------------------------------------------------------------------
 def supply_pin_voltages(board):
     # Gather Config Data from Config file of board type
-
-    # FIX MOVE TO THRESHOLD FUNCTION
-    #if board == "Arduino Uno Detected":
-    #    file2 = open('unoThreshold.config', 'r')
-    #    logic = 5
-    #elif board == "STM32F411 Detected" or board == "STM32F446 Detected":
-    #    file2 = open('stm32f4Threshold.config', 'r')
-    #    logic = 3.3
-    #else:
-    #    return False
     
     lines2 = threshold_config_file(board)
     logic = subject_logic(board)
@@ -131,34 +128,30 @@ Individual Pin Tests:
 The following function runs a test on a given pin. To do this it must 
 access configurations and return a pass fail boolean value.
 """
+
+
 # ----------------------------------------------------------------------
 # Description: Preforms Test Comparisons
 # Parameters: Test ID Int | Pin ID Int | Address Int | Enable Int | Board type String
 # Returns: Boolean Pass or Fail
 # ----------------------------------------------------------------------
 def subject_test(t, p, a, e, board, _ser):
+
+    # Debug File
+    global Debug_file
+
     # Logic Level Config
     logic = 0
 
     # Gather Config Data from Config file of board type
 
-    # FIX MOVE TO THRESHOLD FUNCTION
-    #if board == "Arduino Uno Detected":
-    #    file2 = open('unoThreshold.config', 'r')
-    #    logic = 5
-    #elif board == "STM32F411 Detected" or board == "STM32F446 Detected":
-    #    file2 = open('stm32f4Threshold.config', 'r')
-    #    logic = 3.3
-    #else:
-    #    return False
-        
     lines2 = threshold_config_file(board)
     logic = subject_logic(board)
-    #lines2 = file2.readlines()
 
     # Run tests and compare based on test configured values
     if t == 1:
         print("Test 1: Output without Load")
+        Debug_file.write("Test 1: Output without Load")
         compare = lines2[1].split(",")
 
         # Read adc value of logic high from micro
@@ -169,6 +162,8 @@ def subject_test(t, p, a, e, board, _ser):
         print("Test Logic Low")
         low = model.run_subject_test(p, e, a, t, 0, _ser)
 
+        Debug_file.write("Test Logic High" + str(high))
+        Debug_file.write("Test Logic Low" + str(low))
         # Compare to Config threshold and Return Pass or Fail Boolean
         if float(compare[1]) < high and float(compare[2]) > low:
             return True
@@ -445,13 +440,17 @@ if __name__ == '__main__':
                     test7_occured = False
                     test8_occured = False
 
+                    # Open New Debug File
+                    Debug_file = open("Debug_MicroDevTest.txt", "w")
+
                     while loop_count < test_count:
                         
                         # Test Loop
                         test_loop = True
                         loop_limit = 0
                         while test_loop and loop_limit < 5:
-                        # Run Test
+
+                            # Run Test Starts Here
                             try:
                                 test = Lines[loop_count].split(",")
                                 res[loop_count - 1] = subject_test(int(test[0]), int(test[1]), int(test[2]), int(test[3]),
@@ -482,12 +481,11 @@ if __name__ == '__main__':
                                 if loop_limit == 5:
                                     detailed_array.append("Not Able to Complete Testing")
                                 pass                                   
-                        
 
                         # Show Progress of Tests
-                        ratio_progess = (float(loop_count)/float(test_count)) * 100
-                        print("Progress: " + str(ratio_progess) + "%")
-                        #view.setRunningScreen(detailed_array[loop_count - 1])
+                        ratio_progress = int((float(loop_count)/float(test_count)) * 100)
+                        print("Progress: " + str(ratio_progress) + "%")
+                        #view.setRunningScreen(ratio_progress)
                         
                         if test_num == 1:
                             # print(res[loop_count - 1])
@@ -646,19 +644,19 @@ if __name__ == '__main__':
                 model.bigfoot.b2_disable()
                 model.bigfoot.b2_enable()
                 model.bigfoot.b3_enable()
-            while details_wait and not redo:
-                state_buttons = model.bigfoot.get_button_state()
+            #while details_wait and not redo:
+            #    state_buttons = model.bigfoot.get_button_state()
 
-                if state_buttons & 4 == 4:
-                    model.bigfoot.b3_disable()
-                    model.bigfoot.b3_enable()
-                    details_wait = False
-                    results_menu = False
-                elif state_buttons & 1 == 1:
-                    view.setSaveScreen()
-                    save_wait = True
-                    model.bigfoot.b1_disable()
-                    details_wait = False
+            #    if state_buttons & 4 == 4:
+            #        model.bigfoot.b3_disable()
+            #        model.bigfoot.b3_enable()
+            #        details_wait = False
+            #        results_menu = False
+            #    elif state_buttons & 1 == 1:
+            #        view.setSaveScreen()
+            #        save_wait = True
+            #        model.bigfoot.b1_disable()
+            #        details_wait = False
 
             # Save Condition States
             if save_wait:
@@ -691,3 +689,4 @@ if __name__ == '__main__':
         
         # NEW LOOP
         # Assign -> View General Results Screen with 3 button inputs
+        Debug_file.close()
