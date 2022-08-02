@@ -25,6 +25,59 @@ Debug File
 Debug_file = open("Debug_MicroDevTest.txt", "w")
 Debug_file.close()
 
+
+"""
+Test ID Mapping Key
+"""
+test_map = {1: 'Output Test', 2: 'Output Load Test', 3: 'Pull Up Test' 
+    , 4: 'Pull Down Test', 5: 'Input Logic Test', 6: 'ADC Test', 
+    7: 'Sleep Test', 8: 'Wakeup Pin Test', 9: 'Reset Board'}
+
+"""
+STM Nucleo Mapping Key
+"""
+stm_pinmap = {1: 'PD2', 2: 'PC12', 3: 'PC11', 4: 'PC10', 5: 'PB8'
+    , 6: 'PC6', 7: 'PC9', 8: 'PC8', 9: 'IOREF', 10: 'BOOT0', 11: 'E5V'
+    , 12: 'VDD', 13: 'AVDD', 14: 'U5V', 15: 'PB9', 16: 'PC5', 17: 'PA14'
+    , 18: '3V3', 19: 'PA13', 20: 'RESET', 21: 'PA6', 22: 'PA11'
+    , 23: 'PA5', 24: 'PA12', 25: 'PC13', 26: 'PB7', 27: 'PA15', 28: '5V'
+    , 29: 'PB2', 30: 'PB6', 31: 'PB12', 32: 'PA7', 33: 'PC15', 34: 'PA0'
+    , 35: 'PC14', 36: 'VIN', 37: 'PA8', 38: 'PB1', 39: 'PA9', 40: 'PC7'
+    , 41: 'PH1', 42: 'PA4', 43: 'PH0', 44: 'PA1', 45: 'PB4', 46: 'PB14'
+    , 47: 'PB10', 48: 'PB15', 49: 'PC2', 50: 'PC1', 51: 'VBAT',  52: 'PB0'
+    , 53: 'PB3', 54: 'AGND', 55: 'PB5', 56: 'PB13', 57: 'PC3', 58: 'PC0'
+    , 59: 'PA3', 60: 'PA2', 61: 'PA10', 62: 'PC4'}
+
+"""
+Arduino Uno Mapping Key
+"""
+arduino_pinmap = {1: 'None', 2: 'None', 3: 'None', 4: 'None', 5: 'SCL'
+    , 6: 'None', 7: 'None', 8: 'None', 9: 'IOREF', 10: 'None', 11: 'None'
+    , 12: 'VDD', 13: 'AVDD', 14: 'None', 15: 'SDA', 16: 'None', 17: 'None'
+    , 18: '3V3', 19: 'None', 20: 'RESET', 21: 'D12', 22: 'None'
+    , 23: 'D13', 24: 'None', 25: 'None', 26: 'None', 27: 'None', 28: '5V'
+    , 29: 'None', 30: 'D10', 31: 'None', 32: 'D11', 33: 'None', 34: 'A0'
+    , 35: 'None', 36: 'VIN', 37: 'D7', 38: 'None', 39: 'D8', 40: 'D9'
+    , 41: 'None', 42: 'A2', 43: 'None', 44: 'A1', 45: 'D5', 46: 'None'
+    , 47: 'D6', 48: 'None', 49: 'None', 50: 'A4', 51: 'VBAT',  52: 'A3'
+    , 53: 'D3', 54: 'None', 55: 'D4', 56: 'None', 57: 'None', 58: 'A5'
+    , 59: 'D0', 60: 'D1', 61: 'D2', 62: 'None'}
+
+"""
+NEW Subject Mapping Key
+"""
+new_pinmap = {1: 'None', 2: 'None', 3: 'None', 4: 'None', 5: 'None'
+    , 6: 'None', 7: 'None', 8: 'None', 9: 'None', 10: 'None', 11: 'None'
+    , 12: 'None', 13: 'None', 14: 'None', 15: 'None', 16: 'None', 17: 'None'
+    , 18: '3V3', 19: 'None', 20: 'None', 21: 'None', 22: 'None'
+    , 23: 'None', 24: 'None', 25: 'None', 26: 'None', 27: 'None', 28: '5V'
+    , 29: 'None', 30: 'None', 31: 'None', 32: 'None', 33: 'None', 34: 'None'
+    , 35: 'None', 36: 'None', 37: 'None', 38: 'None', 39: 'None', 40: 'None'
+    , 41: 'None', 42: 'None', 43: 'None', 44: 'None', 45: 'None', 46: 'None'
+    , 47: 'None', 48: 'None', 49: 'None', 50: 'None', 51: 'None',  52: 'None'
+    , 53: 'None', 54: 'None', 55: 'None', 56: 'None', 57: 'None', 58: 'None'
+    , 59: 'None', 60: 'None', 61: 'None', 62: 'None'}
+
 """
 Configuration Getters:
 The following functions grab important configuration data for 
@@ -85,6 +138,24 @@ def threshold_config_file(_board_type):
     
     lines2 = file2.readlines()
     return lines2
+    
+    
+# ----------------------------------------------------------------------
+# Description: Generates Pinmap for Subject Board
+# Returns: Pinmap Key Array of Subject Board
+# ----------------------------------------------------------------------
+def pinmap_array(_board_type):
+    """
+    New Subject Config
+    """
+    if _board_type == "Arduino Uno Detected":
+        map_pin = arduino_pinmap
+    elif _board_type == "STM32F411 Detected" or _board_type == "STM32F446 Detected":
+        map_pin = stm_pinmap
+    else:
+        map_pin = stm_pinmap
+    
+    return map_pin
    
     
 # ----------------------------------------------------------------------
@@ -138,7 +209,8 @@ access configurations and return a pass fail boolean value.
 def subject_test(t, p, a, e, board, _ser):
 
     # Debug File
-    global Debug_file
+    #global Debug_file
+    
 
     # Logic Level Config
     logic = 0
@@ -156,14 +228,14 @@ def subject_test(t, p, a, e, board, _ser):
 
         # Read adc value of logic high from micro
         print("Test Logic High")
-        high = model.run_subject_test(p, e, a, t, 1, _ser)
+        high = round(model.run_subject_test(p, e, a, t, 1, _ser), 1)
 
         # Read adc value of logic low from micro
         print("Test Logic Low")
-        low = model.run_subject_test(p, e, a, t, 0, _ser)
+        low = round(model.run_subject_test(p, e, a, t, 0, _ser), 1)
 
-        Debug_file.write("Test Logic High: " + str(high) + "V\n")
-        Debug_file.write("Test Logic Low: " + str(low) + "V\n")
+        Debug_file.write("Test Logic High: " + str(high) + " V\n")
+        Debug_file.write("Test Logic Low: " + str(low) + " V\n")
         # Compare to Config threshold and Return Pass or Fail Boolean
         if float(compare[1]) < high and float(compare[2]) > low:
             return True
@@ -176,14 +248,14 @@ def subject_test(t, p, a, e, board, _ser):
 
         # Read adc value of logic high from micro
         print("Test Logic High")
-        high = model.run_subject_test(p, e, a, t, 1, _ser)
+        high = round(model.run_subject_test(p, e, a, t, 1, _ser), 1)
 
         # Read adc value of logic low from micro
         print("Test Logic Low")
-        low = model.run_subject_test(p, e, a, t, 0, _ser)
+        low = round(model.run_subject_test(p, e, a, t, 0, _ser), 1)
 
-        Debug_file.write("Test Logic High: " + str(high) + "V\n")
-        Debug_file.write("Test Logic Low: " + str(low) + "V\n")
+        Debug_file.write("Test Logic High: " + str(high) + " V\n")
+        Debug_file.write("Test Logic Low: " + str(low) + " V\n")
         # Compare to Config threshold and Return Pass or Fail Boolean
         if float(compare[1]) < high and float(compare[2]) > low:
             return True
@@ -204,11 +276,11 @@ def subject_test(t, p, a, e, board, _ser):
         if logic == 5:
             adc2 = model.run_subject_test(p, e, a, t, 0x01, _ser)
             if adc2 > 0:
-                Rpu = (((390 * 5) / float(adc2)) - 390)
+                Rpu = int((((390 * 5) / float(adc2)) - 390))
         else:
             adc2 = model.run_subject_test(p, e, a, t, 0x01, _ser)
             if adc2 > 0:
-                Rpu = (((390 * 3.3) / float(adc2)) - 390)
+                Rpu = int((((390 * 3.3) / float(adc2)) - 390))
 
         # calculation with adc to pull down resistance value
         print("Test adc val: " + str(adc2))
@@ -230,14 +302,14 @@ def subject_test(t, p, a, e, board, _ser):
 
         if logic == 5:
             model.bigfoot.set_vout(5)
-            adc4 = model.run_subject_test(p, e, a, t, 0x0F, _ser)
+            adc4 = round(model.run_subject_test(p, e, a, t, 0x0F, _ser), 1)
             if adc4 != 5:
-                Rpd = (2000 * adc4) / (5 - adc4)
+                Rpd = int((2000 * adc4) / (5 - adc4))
         else:
             model.bigfoot.set_vout(3.3)
-            adc4 = model.run_subject_test(p, e, a, t, 0x0A, _ser)
+            adc4 = round(model.run_subject_test(p, e, a, t, 0x0A, _ser), 1)
             if adc4 != 3.3:
-                Rpd = (2000 * adc4) / (3.3 - adc4)
+                Rpd = int((2000 * adc4) / (3.3 - adc4))
 
         # calculation with adc to pull down resistance value
         print("Test adc val: " + str(adc4))
@@ -254,15 +326,15 @@ def subject_test(t, p, a, e, board, _ser):
         # Read digital pin from subject board
         if logic == 5:
             model.bigfoot.set_vout(5)
-            subject_input_high = model.run_subject_test(p, e, a, t, 0x0F, _ser)
+            subject_input_high = round(model.run_subject_test(p, e, a, t, 0x0F, _ser), 1)
         else:
             model.bigfoot.set_vout(3.3)
-            subject_input_high = model.run_subject_test(p, e, a, t, 0x0A, _ser)
+            subject_input_high = round(model.run_subject_test(p, e, a, t, 0x0A, _ser), 1)
             
 
         # Read Digital Pin Low
         model.bigfoot.set_vout(0)
-        subject_input_low = model.run_subject_test(p, e, a, t, 0, _ser)
+        subject_input_low = round(model.run_subject_test(p, e, a, t, 0, _ser), 1)
         print("Logic High Val: " + str(subject_input_high))
         Debug_file.write("Logic High: " + str(subject_input_high) + "\n")
         print("Logic Low Val: " + str(subject_input_low))
@@ -288,14 +360,14 @@ def subject_test(t, p, a, e, board, _ser):
             model.bigfoot.set_vout(instruct)
             model.run_subject_test(p, e, a, t, 0, _ser)
             sleep(0.2)
-            subject_adc_high = model.run_subject_test(p, e, a, t, 0, _ser)
-            print("ADC Return Value: " + str(test_num) + ": " + str(subject_adc_high) + "\n")
+            subject_adc_high = round(model.run_subject_test(p, e, a, t, 0, _ser), 1)
+            print("ADC Return Value: " + str(test_num) + ": " + str(subject_adc_high) + "V \n")
 
             # convert instruction to voltage
             if logic == 5:
-                subject_adc_high = (subject_adc_high * 5.2) / 1024
+                subject_adc_high = round((subject_adc_high * 5.2) / 1024, 1)
             else:
-                subject_adc_high = (subject_adc_high * 3.3) / 1024
+                subject_adc_high = round((subject_adc_high * 3.3) / 1024, 1)
 
             Debug_file.write("ADC Return Value: " + str(test_num) + ": " + str(subject_adc_high) + "\n")
             print("ADC Return Value: " + str(test_num) + ": " + str(subject_adc_high) + "\n")
@@ -314,12 +386,12 @@ def subject_test(t, p, a, e, board, _ser):
         print("Test 7: Set Power Mode")
         Debug_file.write("Test 7: Set Power Mode\n")
         # Reads current 0
-        current_0 = model.current_read()
+        current_0 = round(model.current_read(), 1)
 
         # Reads current
         # Instruction is in config
         compare = lines2[t].split(",")
-        current = model.run_subject_test(p, e, a, t, p, _ser)
+        current = round(model.run_subject_test(p, e, a, t, p, _ser), 1)
 
         print("Current Val Null: " + str(current_0))
         print("Current Val: " + str(current))
@@ -334,12 +406,12 @@ def subject_test(t, p, a, e, board, _ser):
         print("Test 8: Wakeup From Sleep")
         Debug_file.write("Test 8: Wakeup From Sleep\n")
         # Reads current 0
-        current_0 = model.current_read()
+        current_0 = round(model.current_read(), 1)
 
         compare = lines2[t].split(",")
         # Instruction is in config
         model.bigfoot.set_vout(0)
-        current = model.run_subject_test(p, e, a, t, 0, _ser)
+        current = round(model.run_subject_test(p, e, a, t, 0, _ser), 1)
 
         print("Current Val Null: " + str(current_0))
         print("Current Val: " + str(current))
@@ -410,6 +482,8 @@ if __name__ == '__main__':
             if state_buttons & 2 == 2:
                 view.setFlashScreen()
                 if supply_pin_voltages(board_type):
+                    detailed_array.append("3V3 or 5V Pins Are Not Connected")
+                    view.setResultsScreen(detailed_array)
                     redo = True
                 start = True
                 model.bigfoot.b2_disable()
@@ -429,13 +503,14 @@ if __name__ == '__main__':
                 if serial_check():
                     # Read Config | Loop Through Tests
                     Lines = test_config_file(board_type)
-                    #Lines = file1.readlines()
                     test_count = len(Lines)
                     loop_count = 1
-
-                    # Facade ?
-                    if Facade == 1:
-                        print("Facade")
+                    
+                    
+                    # Pinmap Array
+                    pinmap = pinmap_array(board_type)
+                    
+                    
 
                     res = [False for i in range(test_count - 1)]
 
@@ -464,6 +539,7 @@ if __name__ == '__main__':
 
                     # Open New Debug File
                     Debug_file = open("Debug_MicroDevTest.txt", "w")
+                    Debug_file.close()
 
                     while loop_count < test_count:
                         
@@ -471,6 +547,7 @@ if __name__ == '__main__':
                         test_loop = True
                         loop_limit = 0
                         while test_loop and loop_limit < 5:
+                            Debug_file = open("Debug_MicroDevTest.txt", "a")
 
                             # Run Test Starts Here
                             try:
@@ -480,21 +557,26 @@ if __name__ == '__main__':
                                                                    ser)
                                 # print(res[loop_count-1])
                                 print("Test#,PinID,Address,Enable: " + str(Lines[loop_count]))
-                                Debug_file.write("Test#, PinID, Address, Enable: " + str(Lines[loop_count]) + "\n")
+                                Debug_file.write("Above results for Pin ID " + str(
+                                            pinmap.get(int(test[1]))) + "\n\n")
 
                                 test_num = int(test[0])
                                 if res[loop_count - 1]:
                                     if test_num == 9:
                                         current_test = "Board Reset"
                                     elif test_num >= 7:
-                                        current_test = "Test #" + str(Lines[loop_count][0]) + " Sleep Mode #" + str(
+                                        current_test = "" + str(test_map.get(int(Lines[loop_count][0]))) + " Sleep Mode #" + str(
                                             test[1]) + " Result: Passed"
                                     else:
-                                        current_test = "Test #" + str(Lines[loop_count][0]) + " Pin #" + str(
-                                            test[1]) + " Result: Passed"
+                                        current_test = "" + str(test_map.get(int(Lines[loop_count][0])))  + " Pin #" + str(
+                                            pinmap.get(int(test[1]))) + " Result: Passed"
                                 else:
-                                    current_test = "Test #" + str(Lines[loop_count][0]) + " Pin #" + str(
-                                        test[1]) + " Result: Failed"
+                                    if test_num >= 7:
+                                        current_test = "" + str(test_map.get(int(Lines[loop_count][0]))) + " Sleep Mode #" + str(
+                                            test[1]) + " Result: Failed"
+                                    else:
+                                        current_test = "" + str(test_map.get(int(Lines[loop_count][0]))) + " Pin #" + str(
+                                            pinmap.get(int(test[1]))) + " Result: Failed"
                                 detailed_array.append(current_test)
                                 test_loop = False
                             except Exception:
@@ -504,8 +586,9 @@ if __name__ == '__main__':
                                 loop_limit = loop_limit + 1
                                 if loop_limit == 5:
                                     detailed_array.append("Not Able to Complete Testing")
-                                pass                                   
-
+                                pass
+                                                                   
+                        Debug_file.close()
                         # Show Progress of Tests
                         ratio_progress = int((float(loop_count)/float(test_count)) * 100)
                         print("Progress: " + str(ratio_progress) + "%")
@@ -570,51 +653,51 @@ if __name__ == '__main__':
                     # Write Basic Test Results
                     if test1_occured:
                         if test1_pass:
-                            mess_test = "Test #1 Result: Passed"
+                            mess_test = "" + str(test_map.get(1)) + " Result: Passed"
                         else:
-                            mess_test = "Test #1 Result: Failed"
+                            mess_test = "" + str(test_map.get(1)) + " Result: Failed"
                         pass_array.append(mess_test)
                     if test2_occured:
                         if test2_pass:
-                            mess_test = "Test #2 Result: Passed"
+                            mess_test = "" + str(test_map.get(2)) + " Result: Passed"
                         else:
-                            mess_test = "Test #2 Result: Failed"
+                            mess_test = "" + str(test_map.get(2)) + " Result: Failed"
                         pass_array.append(mess_test)
                     if test3_occured:
                         if test3_pass:
-                            mess_test = "Test #3 Result: Passed"
+                            mess_test = "" + str(test_map.get(3)) + " Result: Passed"
                         else:
-                            mess_test = "Test #3 Result: Failed"
+                            mess_test = "" + str(test_map.get(3)) + " Result: Failed"
                         pass_array.append(mess_test)
                     if test4_occured:
                         if test4_pass:
-                            mess_test = "Test #4 Result: Passed"
+                            mess_test = "" + str(test_map.get(4)) + " Result: Passed"
                         else:
-                            mess_test = "Test #4 Result: Failed"
+                            mess_test = "" + str(test_map.get(4)) + " Result: Failed"
                         pass_array.append(mess_test)
                     if test5_occured:
                         if test5_pass:
-                            mess_test = "Test #5 Result: Passed"
+                            mess_test = "" + str(test_map.get(5)) + " Result: Passed"
                         else:
-                            mess_test = "Test #5 Result: Failed"
+                            mess_test = "" + str(test_map.get(5)) + " Result: Failed"
                         pass_array.append(mess_test)
                     if test6_occured:
                         if test6_pass:
-                            mess_test = "Test #6 Result: Passed"
+                            mess_test = "" + str(test_map.get(6)) + " Result: Passed"
                         else:
-                            mess_test = "Test #6 Result: Failed"
+                            mess_test = "" + str(test_map.get(6)) + " Result: Failed"
                         pass_array.append(mess_test)
                     if test7_occured:
                         if test7_pass:
-                            mess_test = "Test #7 Result: Passed"
+                            mess_test = "" + str(test_map.get(7)) + " Result: Passed"
                         else:
-                            mess_test = "Test #7 Result: Failed"
+                            mess_test = "" + str(test_map.get(7)) + " Result: Failed"
                         pass_array.append(mess_test)
                     if test8_occured:
                         if test8_pass:
-                            mess_test = "Test #8 Result: Passed"
+                            mess_test = "" + str(test_map.get(8)) + " Result: Passed"
                         else:
-                            mess_test = "Test #8 Result: Failed"
+                            mess_test = "" + str(test_map.get(8)) + " Result: Failed"
                         pass_array.append(mess_test)
 
 
@@ -663,7 +746,7 @@ if __name__ == '__main__':
             # Detailed Results State
             if details_wait:
                 details_wait = False
-                results_menu = False
+                results_menu = True
                 model.bigfoot.b1_enable()
                 model.bigfoot.b2_disable()
                 model.bigfoot.b2_enable()

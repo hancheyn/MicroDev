@@ -785,7 +785,9 @@ def usb_save(detailed_array):
             usbf.write(i + "\n")
         usbf.close()
         h = subprocess.getstatusoutput("cp MicroDevTest_Results.txt " + usb_file)
-    
+        # Debug Debug_MicroDevTest.txt
+        subprocess.getstatusoutput("cp Debug_MicroDevTest.txt " + usb_file)
+        
 
 # ----------------------------------------------------------------------
 # Description: Shutdown Instruction
