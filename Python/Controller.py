@@ -470,7 +470,7 @@ if __name__ == '__main__':
         board_type = model.board_wait()
 
         # Assign -> View Start Test Screen
-        view.setStartScreen()
+        view.setStartScreen(board_type)
 
         # Start Menu Screen Function
         # FIX: States Controlled by View -> button input
@@ -482,9 +482,11 @@ if __name__ == '__main__':
             if state_buttons & 2 == 2:
                 view.setFlashScreen()
                 if supply_pin_voltages(board_type):
+                    detailed_array.clear()
                     detailed_array.append("3V3 or 5V Pins Are Not Connected")
                     view.setResultsScreen(detailed_array)
                     redo = True
+                    sleep(3)
                 start = True
                 model.bigfoot.b2_disable()
 

@@ -13,7 +13,6 @@ import os
 import threading
 import time
 from tkinter import *
-# from PIL import ImageTk,Image
 import RPi.GPIO as GPIO
 
 # Creates main GUI window and its subframe for data to be displayed
@@ -55,7 +54,7 @@ def setStandbyScreen():
     root.update()
 
 
-def setStartScreen():
+def setStartScreen(board_type):
     # Clears main window's subframe
     for widget in frame.winfo_children():
         if widget.winfo_exists():
@@ -64,11 +63,8 @@ def setStartScreen():
     
     subframe = Frame(frame)
     subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
-    report = Label(subframe, text="Your dev board has been detected", background='black', font=("futura", 50), fg="green")
-    
-    # Show Connected Dev Board
-    #img = ImageTk.PhotoImage(Image.open("pics/uno.png"))
-    #subframe.create_image(20, 20, anchor=NW, image=img)
+    report = Label(subframe, text=board_type, background='black', font=("futura", 50), fg="green")
+
 
     leftButton = Label(frame, text="", background='black', font=("futura", 50), fg="green", highlightthickness=5)
     leftButton.config(highlightbackground="white", highlightcolor="white")
