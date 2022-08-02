@@ -271,7 +271,7 @@ def run_gpio_output_test(pin, enable, address, instruction, ser):
     output = crc_decode(test_bytes, 2)
 
     # Read Bigfoot ADC
-    time.sleep(0.02)
+    time.sleep(0.01)
     if crc_decode(test_bytes, 0) == 0:
         adc = -1
     else:
@@ -309,7 +309,7 @@ def run_gpio_output_loading_test(pin, enable, address, instruction, ser):
     output = crc_decode(test_bytes, 2)
 
     # Read Bigfoot ADC
-    time.sleep(0.02)
+    time.sleep(0.01)
     if crc_decode(test_bytes, 0) == 0:
         adc = -1
     else:
@@ -358,7 +358,7 @@ def run_gpio_input_pull_up_test(pin, enable, address, instruction, ser):
     # Configure Bigfoot w/
     bigfoot.adc_enable(1)
     # Read Bigfoot ADC Voltage
-    time.sleep(0.02)
+    time.sleep(0.01)
     if crc_decode(test_bytes, 0) == 0:
         adc = -1
     else:
@@ -405,7 +405,7 @@ def run_gpio_input_pull_down_test(pin, enable, address, instruction, ser):
     output = crc_decode(test_bytes, 2)
 
     # Read Bigfoot ADC Voltage
-    time.sleep(0.02)
+    time.sleep(0.01)
     if crc_decode(test_bytes, 0) == 0:
         adc = -1
     else:
@@ -438,7 +438,7 @@ def run_gpio_input_logic_level_test(pin, enable, address, instruction, ser):
     # .encode([test], [pin], [instruction])
     s = crc_encode(0x05, pin, instruction)
     subject_write(str_write=s, ser=ser)
-    time.sleep(0.01)
+    #time.sleep(0.01)
     test_bytes = subject_read(ser_=ser)
     output = crc_decode(test_bytes, 2)
 
@@ -452,7 +452,7 @@ def run_gpio_input_logic_level_test(pin, enable, address, instruction, ser):
     # .encode([test], [pin], [instruction])
     s = crc_encode(0x05, pin, instruction)
     subject_write(str_write=s, ser=ser)
-    time.sleep(0.01)
+    #time.sleep(0.01)
     test_bytes = subject_read(ser_=ser)
     output = crc_decode(test_bytes, 3)
     print("Logic: " + str(output))
@@ -491,7 +491,6 @@ def run_adc_test(pin, enable, address, instruction, ser):
     # Configure Bigfoot to reset Subject ADC pins
     # Enable DAC
     bigfoot.dac_enable(1)
-    time.sleep(0.02)
     bigfoot.rpi_i2c_dac()
     time.sleep(0.02)
 

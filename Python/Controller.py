@@ -359,7 +359,7 @@ def subject_test(t, p, a, e, board, _ser):
             instruct = float(compare[test_num])
             model.bigfoot.set_vout(instruct)
             model.run_subject_test(p, e, a, t, 0, _ser)
-            sleep(0.2)
+            sleep(0.01)
             subject_adc_high = round(model.run_subject_test(p, e, a, t, 0, _ser), 1)
             print("ADC Return Value: " + str(test_num) + ": " + str(subject_adc_high) + "V \n")
 
@@ -494,7 +494,6 @@ if __name__ == '__main__':
         # Start Test Condition
         # Loop Through Config File
         # Test Conditions In Loop
-        # FIX MOVE START TEST to FUNCTION?
         try:
             if start and not redo:
                 model.subject_flash(board_type)
@@ -506,11 +505,8 @@ if __name__ == '__main__':
                     test_count = len(Lines)
                     loop_count = 1
                     
-                    
                     # Pinmap Array
                     pinmap = pinmap_array(board_type)
-                    
-                    
 
                     res = [False for i in range(test_count - 1)]
 
@@ -710,26 +706,25 @@ if __name__ == '__main__':
             model.bigfoot.b1_enable()
             model.bigfoot.b2_enable()
 
-        # End of Test Menu
+        # End of Test Sreen | Menu Booleans
         view.setResultsScreen(pass_array)
         results_menu = True
         screen_wait = True
         details_wait = False
         save_wait = False
 
-        # End of Test Screen
+        # End of Test Screens
         while results_menu and not redo:
+            
+            # Loops back to Results Screen
             while screen_wait and not redo:
                 state_buttons = model.bigfoot.get_button_state()
-
                 if state_buttons & 1 == 1:
-                    
                     save_wait = True
                     screen_wait = False
                     model.bigfoot.b1_disable()
                     model.usb_save(detailed_array)
                     view.setSaveScreen()
-
                 elif state_buttons & 2 == 2:
                     model.bigfoot.b1_disable()
                     model.bigfoot.b2_disable()
@@ -737,7 +732,6 @@ if __name__ == '__main__':
                     view.setDetailTestScreen(detailed_array)
                     details_wait = True
                     screen_wait = False
-
                 elif state_buttons & 4 == 4:
                     model.bigfoot.b3_disable()
                     screen_wait = False
@@ -747,23 +741,12 @@ if __name__ == '__main__':
             if details_wait:
                 details_wait = False
                 results_menu = True
+                screen_wait = True
                 model.bigfoot.b1_enable()
                 model.bigfoot.b2_disable()
                 model.bigfoot.b2_enable()
                 model.bigfoot.b3_enable()
-            #while details_wait and not redo:
-            #    state_buttons = model.bigfoot.get_button_state()
-
-            #    if state_buttons & 4 == 4:
-            #        model.bigfoot.b3_disable()
-            #        model.bigfoot.b3_enable()
-            #        details_wait = False
-            #        results_menu = False
-            #    elif state_buttons & 1 == 1:
-            #        view.setSaveScreen()
-            #        save_wait = True
-            #        model.bigfoot.b1_disable()
-            #        details_wait = False
+                view.setResultsScreen(pass_array)
 
             # Save Condition States
             if save_wait:
@@ -775,18 +758,11 @@ if __name__ == '__main__':
                     model.bigfoot.b3_disable()
                     save_wait = False
                     screen_wait = True
-                    
-                    # model.usb_save(detailed_array)
                     view.setResultsScreen(pass_array)
 
-
-        # Remove Board State
+        # Remove Board State | [After Screen Wait Loop]
         view.setRemovalScreen()
-
-        # Loop
-        # print("Flash")
-        # print(detailed_array)
-        # print(pass_array)
+        # Loop Removal Board Screen
         time_i = 0
         while model.check_5V() > 4.0 and time_i < 10:
             sleep(1)
