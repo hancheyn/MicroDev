@@ -71,7 +71,7 @@ int sleepmode(int mode);
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef huart2;
 
-
+uint8_t RMSG[3];
 
 /**
   * @brief  The application entry point.
@@ -79,7 +79,7 @@ UART_HandleTypeDef huart2;
   */
 int main(void) {
 
-	/* MCU Configuration----------------------------------------------------------*/
+	/* MCU Configuration--------------------------------------------------------*/
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 	HAL_Init();
 	SystemClock_Config();
@@ -89,28 +89,26 @@ int main(void) {
 
 	//IO INITs
 	init_pins(PINS_);
-
 	// pinMode(0, OUTPUT);
 	// digitalWrite(0, HIGH);
 
   	//GPIOC Input
-  	//RCC->AHB1ENR |= 4; //GPIOC clock
-  	//GPIOC->MODER &= ~0x0C000000;
+  	RCC->AHB1ENR |= 4; //GPIOC clock
+  	GPIOC->MODER &= ~0x0C000000;
 
     while (1) {
 
-    	//USART2->;
-  	  if(__HAL_UART_GET_FLAG(&huart2, UART_FLAG_RXNE)) {
+
+  	  if(GPIOC->IDR & 0x2000) {
   		  // GPIOA->ODR |= 0x00000020; //turn on
   		  // digitalWrite(0, LOW);
-  		   //delay(500);
+  		  // delay(500);
 
   		    //Write Test
-    		uint8_t RMSG[3] = {0};
   			command_read(RMSG);
-  			delay(50);	//delay is important
+  			delay(10);	//delay is important
 
-  			if(crc_decode(RMSG) && RMSG[0] > 0){
+  			if(crc_decode(RMSG)){
   				//GPIOA->ODR &= ~0x00000020;
   				//digitalWrite(0, LOW);
 
@@ -125,9 +123,8 @@ int main(void) {
   				//Send Back Results
   				command_write(RMSG[0], RMSG[1], RMSG[2]);
   			}
-  			else {
-  				command_write(RMSG[0], RMSG[1], RMSG[2]);
-  			}
+
+
 
   	  }
     }
@@ -216,7 +213,7 @@ void configure_output(unsigned int pin, unsigned int logic) {
     return;
 }
 
-/*FIX The digitalREAD!
+/*
  * Description: Configures GPIO pin as an INPUT. Used for testing input logic levels. The input pin cannot be a pullup,
  * as that would allow the pin to act as a current source and could damage the testing device's DAC.
  * Accepts: unsigned int pin - the pin number to configure as INPUT
@@ -250,14 +247,14 @@ void configure_input_pulldown(unsigned int pin) {
 }
 
 
-/* FIX
+/*
  * Description: Returns the analog reading of the selected analog pin (A0, A1, ..., A5). Used for testing the Arduino's
  * ADC.
  * Accepts: unsigned int analogPin - the analog pin number to read
  * Returns: int - 0 to 1023, depending on the voltage reading of the ADC. (0 = GND, 1023 = 5V)
  */
 int configure_analog_input(unsigned int analogPin) {
-   return (analogRead(analogPin) >> 4); //returns a value 0- (0=GND,  = 3V3)
+   return (analogRead(analogPin) >> 4); //returns a value 0-1023 (0=GND, 1023 = 5V)
 }
 
 
@@ -288,8 +285,8 @@ void configure_sleep_mode(unsigned int mode, unsigned int interruptPin) {
 		HAL_SuspendTick();
 		//HAL_PWR_EnableSleepOnExit();
 		wakeUp(interruptPin);
-		HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN1);
 		__HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
+		HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN1);
 		HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_SLEEPENTRY_WFI);
 		//HAL_ResumeTick();
 	}
@@ -317,7 +314,6 @@ void wakeUp(int pin) {
 	__disable_irq();
 
 	//FIX (Which is which)
-	/*
 	if(pin == 2) {
 		RCC->AHB1ENR |= 4;
 		GPIOC->MODER &= ~0x0C000000;
@@ -346,21 +342,6 @@ void wakeUp(int pin) {
 		NVIC_EnableIRQ(EXTI15_10_IRQn);
 		__enable_irq();
 	}
-	*/
-
-	// Pin A0
-	RCC->AHB1ENR |= 1;
-	GPIOC->MODER &= ~0x00000003;
-	GPIOC->PUPDR &= ~0x00000003;
-	GPIOC->PUPDR |= 0x00000001;
-
-	SYSCFG->EXTICR[0] &= ~0x000F;
-	SYSCFG->EXTICR[0] |= 0x0002;
-	EXTI->IMR |= 0x0001;
-	EXTI->FTSR |= 0x0001;
-
-	NVIC_EnableIRQ(EXTI15_10_IRQn);
-	__enable_irq();
 }
 
 void EXTI15_10_IRQHandler(void) {
@@ -465,8 +446,9 @@ void digitalWrite(int pin, int logic) {
 //SERIAL
 /********************************************************/
 
+
 int command_read(unsigned char data[]) {
-	HAL_UART_Receive(&huart2, data, 3, 1000); //Changed from 10000 & while loop
+	HAL_UART_Receive(&huart2, data, 3, 100); //Changed from 10000
 	return 0;
 }
 

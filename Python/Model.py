@@ -21,11 +21,12 @@ import serial
 import subprocess
 import string
 import Bigfoot as bigfoot
+import View
 
 # STM32 ADC = 16 | GPIO = 5 ports * 16 pins | Sleep Modes = 3
 from serial import to_bytes
 
-view = None
+view = View
 model = None
 driver = None
 
@@ -728,6 +729,7 @@ def board_wait():
         print("Button State: " + str(state_buttons))
         if state_buttons & 2 == 2:
             bigfoot.b2_disable()
+            view.setShutdownScreen()
             shutdown()
 
         if _board_type == "No Boards Detected" or _board_type == "Overflow":
@@ -786,6 +788,20 @@ def usb_save(detailed_array):
         h = subprocess.getstatusoutput("cp MicroDevTest_Results.txt " + usb_file)
         # Debug Debug_MicroDevTest.txt
         subprocess.getstatusoutput("cp Debug_MicroDevTest.txt " + usb_file)
+        
+    try:
+        if usb_filepath == "None":
+            return "None"
+        
+        usbt = open(usb_file + "/MicroDevTest_Results.txt", "r")
+        usbt.close()
+        return "Success"
+        
+    except Exception:
+        print("Could Not Open USB File")
+        pass
+    
+    return "Fail"
         
 
 # ----------------------------------------------------------------------

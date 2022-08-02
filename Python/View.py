@@ -13,6 +13,7 @@ import os
 import threading
 import time
 from tkinter import *
+# from PIL import ImageTk,Image
 import RPi.GPIO as GPIO
 
 # Creates main GUI window and its subframe for data to be displayed
@@ -64,6 +65,10 @@ def setStartScreen():
     subframe = Frame(frame)
     subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
     report = Label(subframe, text="Your dev board has been detected", background='black', font=("futura", 50), fg="green")
+    
+    # Show Connected Dev Board
+    #img = ImageTk.PhotoImage(Image.open("pics/uno.png"))
+    #subframe.create_image(20, 20, anchor=NW, image=img)
 
     leftButton = Label(frame, text="", background='black', font=("futura", 50), fg="green", highlightthickness=5)
     leftButton.config(highlightbackground="white", highlightcolor="white")
@@ -275,7 +280,7 @@ def setDetailTestScreen(detailed_report):
         root.update()
 
 
-def setSaveScreen():
+def setSaveScreen(save_condition):
     # Clears main window's subframe
     for widget in frame.winfo_children():
         if widget.winfo_exists():
@@ -283,8 +288,12 @@ def setSaveScreen():
     frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
     
     subframe = Frame(frame)
-    subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
-    report = Label(subframe, text="Saved Test Results to USB", background='black', font=("futura", 50), fg="green")
+    if save_condition == "Success":
+        subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
+        report = Label(subframe, text="Saved Test Results to USB", background='black', font=("futura", 50), fg="green")
+    else:
+        subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
+        report = Label(subframe, text="Results Failed to Save on USB", background='black', font=("futura", 50), fg="red")
 
     leftButton = Label(frame, text="", background='black', font=("futura", 50), fg="green", highlightthickness=5)
     leftButton.config(highlightbackground="white", highlightcolor="white")

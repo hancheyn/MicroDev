@@ -722,18 +722,19 @@ if __name__ == '__main__':
                 if state_buttons & 1 == 1:
                     save_wait = True
                     screen_wait = False
-                    model.bigfoot.b1_disable()
-                    model.usb_save(detailed_array)
-                    view.setSaveScreen()
+                    model.bigfoot.b1_enable()
+                    save_out = model.usb_save(detailed_array)
+                    print(save_out)
+                    view.setSaveScreen(save_out)
                 elif state_buttons & 2 == 2:
-                    model.bigfoot.b1_disable()
-                    model.bigfoot.b2_disable()
-                    model.bigfoot.b3_disable()
+                    model.bigfoot.b1_enable()
+                    model.bigfoot.b2_enable()
+                    model.bigfoot.b3_enable()
                     view.setDetailTestScreen(detailed_array)
                     details_wait = True
                     screen_wait = False
                 elif state_buttons & 4 == 4:
-                    model.bigfoot.b3_disable()
+                    model.bigfoot.b3_enable()
                     screen_wait = False
                     results_menu = False
 
@@ -755,9 +756,11 @@ if __name__ == '__main__':
                 state_buttons = model.bigfoot.get_button_state()
                 # Add condition to save test results to usb
                 if state_buttons & 4 == 4:
-                    model.bigfoot.b3_disable()
+                    
+                    model.bigfoot.b3_enable()
                     save_wait = False
                     screen_wait = True
+                    
                     view.setResultsScreen(pass_array)
 
         # Remove Board State | [After Screen Wait Loop]
