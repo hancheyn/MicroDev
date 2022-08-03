@@ -284,7 +284,7 @@ def subject_test(t, p, a, e, board, _ser):
 
         # calculation with adc to pull down resistance value
         print("Test adc val: " + str(adc2))
-        Debug_file.write("Test Pull Up Resistance Value: " + str(Rpu) + "\n")
+        Debug_file.write("Test Pull Up Resistance Value: " + str(Rpu-(Rpu%1000)) + "\n")
         #Rpu = (((390 * 5) / adc2) - 390)
         if Rpu > float(compare[1]) and Rpu < float(compare[2]) and adc1 > float(compare[3]):
             return True
@@ -313,7 +313,7 @@ def subject_test(t, p, a, e, board, _ser):
 
         # calculation with adc to pull down resistance value
         print("Test adc val: " + str(adc4))
-        Debug_file.write("Test Pull Down Resistance Value: " + str(Rpd) + "\n")
+        Debug_file.write("Test Pull Down Resistance Value: " + str(Rpd - (Rpd%1000)) + "\n")
         
         if Rpd > float(compare[1]) and Rpd < float(compare[2]) and adc1 < float(compare[3]):
             return True
@@ -471,31 +471,29 @@ if __name__ == '__main__':
 
         # Assign -> View Start Test Screen
         view.setStartScreen(board_type)
+    
 
         # Start Menu Screen Function
         # FIX: States Controlled by View -> button input
         print("Press Button 1 to Start New Test")
         start = False
         redo = False
-
-        # Error With Board Type
-        if board_type == "No Boards Detected" or board_type == "Overflow":
-            redo = True
-            sleep(2)
-
+            
         while start is False:
             state_buttons = model.bigfoot.get_button_state()
             if state_buttons & 2 == 2:
                 view.setFlashScreen()
                 if supply_pin_voltages(board_type):
-                    detailed_array.clear()
-                    detailed_array.append("3V3 or 5V Pins Are Not Connected")
-                    view.setResultsScreen(detailed_array)
+                    view.setStartScreen("3V3 or 5V Pins Are Not Connected")
                     redo = True
                     sleep(3)
                 start = True
                 model.bigfoot.b2_disable()
 
+        # Subject Not Connecting
+        if board_type == "No Boards Detected":
+            redo = True
+            sleep(3)
 
         # Assign -> View Testing Screen
 
@@ -504,10 +502,18 @@ if __name__ == '__main__':
         # Test Conditions In Loop
         try:
             if start and not redo:
-                model.subject_flash(board_type)
-                view.setRunningScreen(0)
+                board_status = model.subject_flash(board_type)
+                print(board_status)
+                
+                if board_status:
+                    view.setStartScreen("Flash Unsuccessful")
+                    sleep(2)
+                    redo = True
+                else:
+                    view.setRunningScreen(0)
+               
                 # While Loop Confirms Serial Connection
-                if serial_check():
+                if serial_check() and not redo:
                     # Read Config | Loop Through Tests
                     Lines = test_config_file(board_type)
                     test_count = len(Lines)
@@ -545,7 +551,7 @@ if __name__ == '__main__':
                     Debug_file = open("Debug_MicroDevTest.txt", "w")
                     Debug_file.close()
 
-                    while loop_count < test_count:
+                    while loop_count < test_count and not redo:
                         
                         # Test Loop
                         test_loop = True
@@ -713,9 +719,12 @@ if __name__ == '__main__':
 
             model.bigfoot.b1_enable()
             model.bigfoot.b2_enable()
+            model.bigfoot.b3_enable()
 
         # End of Test Sreen | Menu Booleans
-        view.setResultsScreen(pass_array)
+        if not board_status:
+            view.setResultsScreen(pass_array)
+            
         results_menu = True
         screen_wait = True
         details_wait = False
