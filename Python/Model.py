@@ -614,14 +614,26 @@ def subject_flash(board):
         # Confirm Success with CLI output
 
     # STM32F411 FLASH
-    elif board == "STM32F401 Detected":
-        res = subprocess.getstatusoutput(
-            f'st-flash write Flash/stmf411.bin 0x08000000')
-
+    elif board == "STM32F411 Detected":
+        reflash = True
+        while reflash and tloop < 5:
+            tloop = tloop + 1
+            res = subprocess.getstatusoutput(
+                    f'st-flash write Flash/stmf411.bin 0x08000000')
+            s = len(res[1])
+            if s < 870:
+                reflash = False
+                
     # STM32F401 FLASH
     elif board == "STM32F401 Detected":
-        res = subprocess.getstatusoutput(
-            f'st-flash write Flash/stmf401.bin 0x08000000')
+        reflash = True
+        while reflash and tloop < 5:
+            tloop = tloop + 1
+            res = subprocess.getstatusoutput(
+                f'st-flash write Flash/stmf401.bin 0x08000000')
+            s = len(res[1])
+            if s < 870:
+                reflash = False
 
     # STM32F446 FLASH
     elif board == "STM32F446 Detected":
@@ -697,6 +709,7 @@ def board_list():
     # STM UNIQUE IDs
     # 0x0433: STM32F401xD/E
     # 0x0431: STM32F411xC/E
+    # 0x0421: STM32F446
     if boards1 > 6:
 
         Chip_ID = STM[5].split(" ")
@@ -708,10 +721,10 @@ def board_list():
 
         print(Chip_ID)
         print(Family)
-        if Family == "F4" and Chip_ID[1] == "0x0431":
+        if Chip_ID[1] == "0x0431":
             return "STM32F411 Detected"
 
-        elif Family == "F4" and Chip_ID[1] == "0x0433":
+        elif Chip_ID[1] == "0x0433":
             return "STM32F401 Detected"
 
         elif Family == "F446" and Chip_ID[1] == "0x0421":
@@ -734,7 +747,9 @@ def board_list():
 # ----------------------------------------------------------------------
 def board_wait():
     cont = 1
+    waiti = 0
     while cont == 1:
+        
         _board_type = board_list()
         state_buttons = bigfoot.get_button_state()
         print("Button State: " + str(state_buttons))
@@ -746,7 +761,11 @@ def board_wait():
         if _board_type == "No Boards Detected" or _board_type == "Overflow":
             cont = 1
             if check_5V() > 4.5:
-                cont = 0
+                waiti = waiti + 1
+                if waiti > 2:
+                    cont = 0
+            else:
+                waiti = 0
         else:
             cont = 0
             print(_board_type)

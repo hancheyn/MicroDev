@@ -111,7 +111,7 @@ def test_config_file(_board_type):
     """
     if _board_type == "Arduino Uno Detected":
         file = open('unoTest.config', 'r')
-    elif _board_type == "STM32F411 Detected" or _board_type == "STM32F446 Detected":
+    elif _board_type == "STM32F411 Detected" or _board_type == "STM32F401 Detected" or _board_type == "STM32F446 Detected":
         file = open('stm32f4Test.config', 'r')
     else:
         file = open('unoTest.config', 'r')
@@ -131,7 +131,7 @@ def threshold_config_file(_board_type):
     """
     if _board_type == "Arduino Uno Detected":
         file2 = open('unoThreshold.config', 'r')
-    elif _board_type == "STM32F411 Detected" or _board_type == "STM32F446 Detected":
+    elif _board_type == "STM32F411 Detected" or _board_type == "STM32F401 Detected" or _board_type == "STM32F446 Detected":
         file2 = open('stm32f4Threshold.config', 'r')
     else:
         file2 = open('unoThreshold.config', 'r')
@@ -150,7 +150,7 @@ def pinmap_array(_board_type):
     """
     if _board_type == "Arduino Uno Detected":
         map_pin = arduino_pinmap
-    elif _board_type == "STM32F411 Detected" or _board_type == "STM32F446 Detected":
+    elif _board_type == "STM32F411 Detected" or _board_type == "STM32F401 Detected" or _board_type == "STM32F446 Detected":
         map_pin = stm_pinmap
     else:
         map_pin = stm_pinmap
@@ -168,7 +168,7 @@ def subject_logic(_board_type):
     """
     if _board_type == "Arduino Uno Detected":
         logic = 5
-    elif _board_type == "STM32F411 Detected" or _board_type == "STM32F446 Detected":
+    elif _board_type == "STM32F411 Detected" or _board_type == "STM32F401 Detected" or _board_type == "STM32F446 Detected":
         logic = 3.3
     else:
         logic = 5
@@ -467,7 +467,14 @@ if __name__ == '__main__':
 
         # Wait for Subject Board Connection / Shutdown Screen
         # Check Board Type | Save Variable | Blocking Loop
-        board_type = model.board_wait()
+        try:
+            board_type = model.board_wait()
+        except Exception:
+            
+            sleep(2)
+            setShutdownScreen()
+            shutdown()
+            pass
 
         # Assign -> View Start Test Screen
         view.setStartScreen(board_type)
@@ -478,6 +485,7 @@ if __name__ == '__main__':
         print("Press Button 1 to Start New Test")
         start = False
         redo = False
+        board_status = False
             
         while start is False:
             state_buttons = model.bigfoot.get_button_state()
