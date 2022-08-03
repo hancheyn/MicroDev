@@ -604,6 +604,7 @@ Command Line Interface
 # ----------------------------------------------------------------------
 def subject_flash(board):
 
+    flash_to = 0
     # ARDUINO UNO FLASH
     if board == "Arduino Uno Detected":
         res = subprocess.getstatusoutput(
@@ -620,10 +621,11 @@ def subject_flash(board):
     # STM32F446 FLASH
     elif board == "STM32F446 Detected":
         reflash = True
-        while reflash:
+        while reflash and flash_to < 5:
             res = subprocess.getstatusoutput(
                 f'st-flash write Flash/stmf446.bin 0x08000000')
             s = len(res[1])
+            flash_to = flash_to + 1
             if s < 870:
                 reflash = False
         print(s)
@@ -632,8 +634,15 @@ def subject_flash(board):
     Add new subject board flash conditional...
     
     """
-    
     print(res)
+    # Find if result is an error
+    #value = res.find('exit status 1')
+    #print(value)
+    #if value == -1:
+    #    return True
+    #else:
+    #    return False
+
 
 
 # ----------------------------------------------------------------------
@@ -734,6 +743,9 @@ def board_wait():
 
         if _board_type == "No Boards Detected" or _board_type == "Overflow":
             cont = 1
+            if check_5V() > 4.0:
+                cont = 0
+
         else:
             cont = 0
             print(_board_type)

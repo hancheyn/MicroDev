@@ -477,6 +477,12 @@ if __name__ == '__main__':
         print("Press Button 1 to Start New Test")
         start = False
         redo = False
+
+        # Error With Board Type
+        if board_type == "No Boards Detected" or board_type == "Overflow":
+            redo = True
+            sleep(2)
+
         while start is False:
             state_buttons = model.bigfoot.get_button_state()
             if state_buttons & 2 == 2:
