@@ -737,8 +737,6 @@ if __name__ == '__main__':
         # End of Test Sreen | Menu Booleans
         if not board_status and not redo:
             view.setResultsScreen(pass_array)
-            results_menu = False
-            
 
         # End of Test Screens
         while results_menu and not redo:
