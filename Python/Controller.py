@@ -492,7 +492,7 @@ if __name__ == '__main__':
             if state_buttons & 2 == 2:
                 view.setFlashScreen()
                 if supply_pin_voltages(board_type):
-                    view.setStartScreen("3V3 or 5V Pins Are Not Connected")
+                    view.setStartScreen("Please Place Dev Board\nonto Header Interface")
                     redo = True
                     sleep(3)
                 start = True
@@ -728,15 +728,17 @@ if __name__ == '__main__':
             model.bigfoot.b1_enable()
             model.bigfoot.b2_enable()
             model.bigfoot.b3_enable()
-
-        # End of Test Sreen | Menu Booleans
-        if not board_status:
-            view.setResultsScreen(pass_array)
             
         results_menu = True
         screen_wait = True
         details_wait = False
         save_wait = False
+
+        # End of Test Sreen | Menu Booleans
+        if not board_status and not redo:
+            view.setResultsScreen(pass_array)
+            results_menu = False
+            
 
         # End of Test Screens
         while results_menu and not redo:
@@ -789,7 +791,8 @@ if __name__ == '__main__':
                     view.setResultsScreen(pass_array)
 
         # Remove Board State | [After Screen Wait Loop]
-        view.setRemovalScreen()
+        if not redo:
+            view.setRemovalScreen()
         # Loop Removal Board Screen
         time_i = 0
         while model.check_5V() > 4.0 and time_i < 10:
