@@ -489,6 +489,12 @@ if __name__ == '__main__':
             
         while start is False:
             state_buttons = model.bigfoot.get_button_state()
+            if supply_pin_voltages(board_type):
+                view.setStartScreen("Please Place Dev Board\nonto Header Interface")
+                redo = True
+                start = True
+                sleep(3)
+            
             if state_buttons & 2 == 2:
                 view.setFlashScreen()
                 if supply_pin_voltages(board_type):
@@ -501,7 +507,7 @@ if __name__ == '__main__':
         # Subject Not Connecting
         if board_type == "No Boards Detected":
             redo = True
-            sleep(3)
+            sleep(2)
 
         # Assign -> View Testing Screen
 
@@ -752,12 +758,14 @@ if __name__ == '__main__':
                     print(save_out)
                     view.setSaveScreen(save_out)
                 elif state_buttons & 2 == 2:
-                    model.bigfoot.b1_enable()
-                    model.bigfoot.b2_enable()
-                    model.bigfoot.b3_enable()
+                    model.bigfoot.b1_disable()
+                    model.bigfoot.b2_disable()
+                    model.bigfoot.b3_disable()
                     view.setDetailTestScreen(detailed_array)
+                    print("continue")
                     details_wait = True
                     screen_wait = False
+                    #sleep(1)
                 elif state_buttons & 4 == 4:
                     model.bigfoot.b3_enable()
                     screen_wait = False
@@ -768,8 +776,8 @@ if __name__ == '__main__':
                 details_wait = False
                 results_menu = True
                 screen_wait = True
+                
                 model.bigfoot.b1_enable()
-                model.bigfoot.b2_disable()
                 model.bigfoot.b2_enable()
                 model.bigfoot.b3_enable()
                 view.setResultsScreen(pass_array)
@@ -785,7 +793,6 @@ if __name__ == '__main__':
                     model.bigfoot.b3_enable()
                     save_wait = False
                     screen_wait = True
-                    
                     view.setResultsScreen(pass_array)
 
         # Remove Board State | [After Screen Wait Loop]
