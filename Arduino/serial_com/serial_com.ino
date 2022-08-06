@@ -26,23 +26,7 @@ void wakeUp();
 
 struct pin pin_set(uint32_t pin, uint8_t pin_id);
 void init_pins(struct pin pins[]);
-
-/* Facade Function Prototypes */
-void facade_pinMode(uint8_t pin, uint8_t setting);
-void facade_digitalWrite(uint8_t pin, uint8_t logic);
-void facade_analogWrite(uint8_t pin, int logic);
-int facade_digitalRead(unsigned char pin);
-int facade_analogRead(unsigned char pin);
-
-/* Facade and Actual Function Pointer Prototypes */
-void (*test) (uint8_t, uint8_t);
-void (*p_pinMode) (uint8_t, uint8_t);
-void (*p_digitalWrite) (uint8_t, uint8_t);
-void (*p_analogWrite) (uint8_t, int);
-int (*p_digitalRead) (unsigned char);
-int (*p_analogRead) (unsigned char);
-// sleep modes pointers?
-
+void reset_pins();
 
 /* Pin Struct */
 struct pin {
@@ -65,13 +49,6 @@ void setup() {
         ; // wait for serial port to connect. Needed for native USB port only
     }
 
-    //FACADE POINTER EXAMPLES (setup)
-    //test = &digitalWrite;
-   // p_digitalWrite = &digitalWrite;
-   // p_digitalRead = &digitalRead;
-   // p_pinMode = &pinMode;
-   // p_analogRead = &analogRead;
-   // p_analogWrite = &analogWrite;
     //+Sleep Modes
 
     init_pins(PINS_);
@@ -108,10 +85,8 @@ void loop() {
                         RMSG[1] = (unsigned char)0;
                     }
                     else {
+                        reset_pins();
                         configure_output(pin_val, RMSG[1]); 
-
-                      // Reconfigure Pin Setup
-                      configure_input(pin_val);
                     }
                     command_write(RMSG[0], RMSG[1], RMSG[2]);
                     break;
@@ -121,10 +96,8 @@ void loop() {
                         RMSG[1] = 2;
                     }
                     else {
+                        reset_pins();
                         configure_output(pin_val, RMSG[1]);
-
-                      // Reconfigure Pin Setup
-                      configure_input(pin_val);
                     }
                     command_write(RMSG[0], RMSG[1], RMSG[2]);
                     break;
@@ -134,10 +107,8 @@ void loop() {
                         RMSG[1] = 3;
                     }
                     else {
+                      reset_pins();
                       configure_input_pullup(pin_val);
-
-                      // Reconfigure Pin Setup
-                      configure_input(pin_val);
                     }
                     command_write(RMSG[0], RMSG[1], RMSG[2]);
                     break;
@@ -154,9 +125,6 @@ void loop() {
                     else {
                       test_result = configure_input(pin_val);
                       command_write(RMSG[0], test_result, RMSG[2]);
-
-                      // Reconfigure Pin Setup
-                      configure_input(pin_val);
                     }
                     
                     break;
@@ -204,7 +172,7 @@ void loop() {
  * Returns: void
  */
 void command_read(unsigned char data[]) {
-    //HAL_UART_Receive(&huart2, data, 3, 10000);
+    //HAL_UART_Receive(&huart2, data, 3, 10000); //On STM
     data[0] = Serial.read(); //Serial.read() returns the first available byte in the serial buffer, then removes it.
     data[1] = Serial.read();
     data[2] = Serial.read();
@@ -226,7 +194,7 @@ void command_write(unsigned int pin, unsigned int result, unsigned int test) {
 
     crc_encode(data, pin, result, test);
 
-    //HAL_UART_Transmit(&huart2, data, 3, 100);
+    //HAL_UART_Transmit(&huart2, data, 3, 100); // On STM
     Serial.write(data[0]); //Serial.write(x) writes binary data to the serial port as a byte or series of bytes
     Serial.write(data[1]);
     Serial.write(data[2]);
@@ -391,6 +359,18 @@ void wakeUp(){
     return;
 }
 
+/*
+ * Description: Resets all pins on the pin mapping to output low
+ * Accepts: void
+ * Returns: void
+ */
+void reset_pins() {
+  int i;
+  for(i = 1; i < 63; i++) {
+    configure_output(i, LOW);
+  }
+}
+
 
 /*
  * Description: Builds Struct for Pins
@@ -406,7 +386,6 @@ struct pin pin_set(uint32_t pin, uint8_t pin_id) {
 
   return P;
 }
-
 
 /*
  * Description: Initializes Struct Array for Pins
