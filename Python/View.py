@@ -3,15 +3,13 @@
 # Date: May 2, 2022
 # Description: View Class
 # Authors:
+# Connor Inglet
+# Dylan Vetter
+# Corey Noura
 # Nathan Hanchey
-# Dylan
-# Connor
-# Corey
 # #################################################
 
-import os
-import threading
-import time
+# import time
 from tkinter import *
 import RPi.GPIO as GPIO
 
@@ -24,7 +22,14 @@ frame = Frame(root)
 frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
 frame.configure(background="black")
 
+global progress
+global progressBar
 
+# ----------------------------------------------------------------------
+# Description: Preforms Test Comparisons
+# Parameters: Test ID Int | Pin ID Int | Address Int | Enable Int | Board type String
+# Returns: Boolean Pass or Fail
+# ----------------------------------------------------------------------
 def setStandbyScreen():
     # Clears main window's subframe
     for widget in frame.winfo_children():
@@ -65,7 +70,6 @@ def setStartScreen(board_type):
     subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
     report = Label(subframe, text=board_type, background='black', font=("futura", 35), fg="green")
 
-
     leftButton = Label(frame, text="", background='black', font=("futura", 35), fg="green", highlightthickness=5)
     leftButton.config(highlightbackground="white", highlightcolor="white")
     middleButton = Label(frame, text="Start Test", background='black', font=("futura", 35), fg="green", highlightthickness=5)
@@ -81,7 +85,37 @@ def setStartScreen(board_type):
     rightButton.place(relx=0.675, rely=0.775, relheight=0.2, relwidth=0.3)
 
     # Updates main window
-    root.update()    
+    root.update()
+
+
+def setMessageScreen(message):
+    # Clears main window's subframe
+    for widget in frame.winfo_children():
+        if widget.winfo_exists():
+            widget.destroy()
+    frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
+
+    subframe = Frame(frame)
+    subframe.configure(background="black", highlightbackground="white", highlightcolor="white", highlightthickness=5)
+    report = Label(subframe, text=message, background='black', font=("futura", 35), fg="green")
+
+    leftButton = Label(frame, text="", background='black', font=("futura", 35), fg="green", highlightthickness=5)
+    leftButton.config(highlightbackground="white", highlightcolor="white")
+    middleButton = Label(frame, text="", background='black', font=("futura", 35), fg="green",
+                         highlightthickness=5)
+    middleButton.config(highlightbackground="white", highlightcolor="white")
+    rightButton = Label(frame, text="", background='black', font=("futura", 35), fg="green", highlightthickness=5)
+    rightButton.config(highlightbackground="white", highlightcolor="white")
+
+    subframe.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.75)
+    report.place(relx=0.5, rely=0.5, relwidth=1.0, relheight=1.0, anchor="center")
+
+    leftButton.place(relx=0.025, rely=0.775, relheight=0.2, relwidth=0.3)
+    middleButton.place(relx=0.35, rely=0.775, relheight=0.2, relwidth=0.3)
+    rightButton.place(relx=0.675, rely=0.775, relheight=0.2, relwidth=0.3)
+
+    # Updates main window
+    root.update()
 
 
 def setFlashScreen():
@@ -114,20 +148,19 @@ def setFlashScreen():
 
 
 def setRunningScreen(percent):
-    
     global progress
     global progressBar
     
     try:
         progress.configure(text=str(percent) + "%")
-        if percent > 0 and percent <= 100:
+        if 0 < percent <= 100:
             progressBar.place(relx=0.0, rely=0.0, relwidth=float(percent)/100, relheight=1.0)
         else:
             progressBar.place(relx=0.0, rely=0.0, relwidth=0, relheight=1.0)
             
         progress.update()
         progressBar.update()
-    except:
+    except Exception:
         for widget in frame.winfo_children():
             if widget.winfo_exists():
                 widget.destroy()
@@ -152,7 +185,7 @@ def setRunningScreen(percent):
         report.place(relx=0.5, rely=0.2, relwidth=1.0, relheight=0.3, anchor="center")
         progress.place(relx=0.5, rely=0.5, relwidth=1.0, relheight=0.3, anchor="center")
         progressBarFrame.place(relx=0.5, rely=0.8, relwidth=0.80, relheight=0.3, anchor="center")
-        if percent > 0 and percent <= 100:
+        if 0 < percent <= 100:
             progressBar.place(relx=0.0, rely=0.0, relwidth=float(percent)/100, relheight=1.0)
         else:
             progressBar.place(relx=0.0, rely=0.0, relwidth=0, relheight=1.0)
@@ -309,7 +342,6 @@ def setSaveScreen(save_condition):
     root.update()      
 
 
-#
 def setShutdownScreen():
     # Clears main window's subframe
     for widget in frame.winfo_children():
@@ -339,7 +371,6 @@ def setShutdownScreen():
     root.update() 
 
 
-#
 def setRemovalScreen():
     # Clears main window's subframe
     for widget in frame.winfo_children():
@@ -383,7 +414,7 @@ def pollButtons():
     while GPIO.input(BTN_L) and GPIO.input(BTN_C) and GPIO.input(BTN_R):
         continue
         
-     # Returns string for which button was pressed and waits until the user lets go
+    # Returns string for which button was pressed and waits until the user lets go
     if not GPIO.input(BTN_L):
         while not GPIO.input(BTN_L):
             continue

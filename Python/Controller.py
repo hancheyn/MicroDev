@@ -12,12 +12,11 @@
 # ----------------------------------------------------------------------
 
 from time import sleep
-import subprocess
-import Model
-import View
+import Model as model
+import View as view
 
-view = View
-model = Model
+# view = View
+# model = Model
 
 """
 Debug File 
@@ -28,6 +27,7 @@ Debug_file.close()
 
 """
 Test ID Mapping Key
+This links the title of each test to the GUI and results files
 """
 test_map = {1: 'Output Test', 2: 'Output Load Test', 3: 'Pull Up Test' 
     , 4: 'Pull Down Test', 5: 'Input Logic Test', 6: 'ADC Test', 
@@ -35,48 +35,49 @@ test_map = {1: 'Output Test', 2: 'Output Load Test', 3: 'Pull Up Test'
 
 """
 STM Nucleo Mapping Key
+Built around the STM Nucleo with 64 pins
 """
-stm_pinmap = {1: 'PD2', 2: 'PC12', 3: 'PC11', 4: 'PC10', 5: 'PB8'
-    , 6: 'PC6', 7: 'PC9', 8: 'PC8', 9: 'IOREF', 10: 'BOOT0', 11: 'E5V'
-    , 12: 'VDD', 13: 'AVDD', 14: 'U5V', 15: 'PB9', 16: 'PC5', 17: 'PA14'
-    , 18: '3V3', 19: 'PA13', 20: 'RESET', 21: 'PA6', 22: 'PA11'
-    , 23: 'PA5', 24: 'PA12', 25: 'PC13', 26: 'PB7', 27: 'PA15', 28: '5V'
-    , 29: 'PB2', 30: 'PB6', 31: 'PB12', 32: 'PA7', 33: 'PC15', 34: 'PA0'
-    , 35: 'PC14', 36: 'VIN', 37: 'PA8', 38: 'PB1', 39: 'PA9', 40: 'PC7'
-    , 41: 'PH1', 42: 'PA4', 43: 'PH0', 44: 'PA1', 45: 'PB4', 46: 'PB14'
-    , 47: 'PB10', 48: 'PB15', 49: 'PC2', 50: 'PC1', 51: 'VBAT',  52: 'PB0'
-    , 53: 'PB3', 54: 'AGND', 55: 'PB5', 56: 'PB13', 57: 'PC3', 58: 'PC0'
-    , 59: 'PA3', 60: 'PA2', 61: 'PA10', 62: 'PC4'}
+stm_pinmap = {1: 'PD2', 2: 'PC12', 3: 'PC11', 4: 'PC10', 5: 'PB8',
+              6: 'PC6', 7: 'PC9', 8: 'PC8', 9: 'IOREF', 10: 'BOOT0', 11: 'E5V',
+              12: 'VDD', 13: 'AVDD', 14: 'U5V', 15: 'PB9', 16: 'PC5', 17: 'PA14',
+              18: '3V3', 19: 'PA13', 20: 'RESET', 21: 'PA6', 22: 'PA11',
+              23: 'PA5', 24: 'PA12', 25: 'PC13', 26: 'PB7', 27: 'PA15', 28: '5V',
+              29: 'PB2', 30: 'PB6', 31: 'PB12', 32: 'PA7', 33: 'PC15', 34: 'PA0',
+              35: 'PC14', 36: 'VIN', 37: 'PA8', 38: 'PB1', 39: 'PA9', 40: 'PC7',
+              41: 'PH1', 42: 'PA4', 43: 'PH0', 44: 'PA1', 45: 'PB4', 46: 'PB14',
+              47: 'PB10', 48: 'PB15', 49: 'PC2', 50: 'PC1', 51: 'VBAT',  52: 'PB0',
+              53: 'PB3', 54: 'AGND', 55: 'PB5', 56: 'PB13', 57: 'PC3', 58: 'PC0',
+              59: 'PA3', 60: 'PA2', 61: 'PA10', 62: 'PC4'}
 
 """
 Arduino Uno Mapping Key
 """
-arduino_pinmap = {1: 'None', 2: 'None', 3: 'None', 4: 'None', 5: 'SCL'
-    , 6: 'None', 7: 'None', 8: 'None', 9: 'IOREF', 10: 'None', 11: 'None'
-    , 12: 'VDD', 13: 'AVDD', 14: 'None', 15: 'SDA', 16: 'None', 17: 'None'
-    , 18: '3V3', 19: 'None', 20: 'RESET', 21: 'D12', 22: 'None'
-    , 23: 'D13', 24: 'None', 25: 'None', 26: 'None', 27: 'None', 28: '5V'
-    , 29: 'None', 30: 'D10', 31: 'None', 32: 'D11', 33: 'None', 34: 'A0'
-    , 35: 'None', 36: 'VIN', 37: 'D7', 38: 'None', 39: 'D8', 40: 'D9'
-    , 41: 'None', 42: 'A2', 43: 'None', 44: 'A1', 45: 'D5', 46: 'None'
-    , 47: 'D6', 48: 'None', 49: 'None', 50: 'A4', 51: 'VBAT',  52: 'A3'
-    , 53: 'D3', 54: 'None', 55: 'D4', 56: 'None', 57: 'None', 58: 'A5'
-    , 59: 'D0', 60: 'D1', 61: 'D2', 62: 'None'}
+arduino_pinmap = {1: 'None', 2: 'None', 3: 'None', 4: 'None', 5: 'SCL',
+                  6: 'None', 7: 'None', 8: 'None', 9: 'IOREF', 10: 'None', 11: 'None',
+                  12: 'VDD', 13: 'AVDD', 14: 'None', 15: 'SDA', 16: 'None', 17: 'None',
+                  18: '3V3', 19: 'None', 20: 'RESET', 21: 'D12', 22: 'None',
+                  23: 'D13', 24: 'None', 25: 'None', 26: 'None', 27: 'None', 28: '5V',
+                  29: 'None', 30: 'D10', 31: 'None', 32: 'D11', 33: 'None', 34: 'A0',
+                  35: 'None', 36: 'VIN', 37: 'D7', 38: 'None', 39: 'D8', 40: 'D9',
+                  41: 'None', 42: 'A2', 43: 'None', 44: 'A1', 45: 'D5', 46: 'None',
+                  47: 'D6', 48: 'None', 49: 'None', 50: 'A4', 51: 'VBAT',  52: 'A3',
+                  53: 'D3', 54: 'None', 55: 'D4', 56: 'None', 57: 'None', 58: 'A5',
+                  59: 'D0', 60: 'D1', 61: 'D2', 62: 'None'}
 
 """
 NEW Subject Mapping Key
 """
-new_pinmap = {1: 'None', 2: 'None', 3: 'None', 4: 'None', 5: 'None'
-    , 6: 'None', 7: 'None', 8: 'None', 9: 'None', 10: 'None', 11: 'None'
-    , 12: 'None', 13: 'None', 14: 'None', 15: 'None', 16: 'None', 17: 'None'
-    , 18: '3V3', 19: 'None', 20: 'None', 21: 'None', 22: 'None'
-    , 23: 'None', 24: 'None', 25: 'None', 26: 'None', 27: 'None', 28: '5V'
-    , 29: 'None', 30: 'None', 31: 'None', 32: 'None', 33: 'None', 34: 'None'
-    , 35: 'None', 36: 'None', 37: 'None', 38: 'None', 39: 'None', 40: 'None'
-    , 41: 'None', 42: 'None', 43: 'None', 44: 'None', 45: 'None', 46: 'None'
-    , 47: 'None', 48: 'None', 49: 'None', 50: 'None', 51: 'None',  52: 'None'
-    , 53: 'None', 54: 'None', 55: 'None', 56: 'None', 57: 'None', 58: 'None'
-    , 59: 'None', 60: 'None', 61: 'None', 62: 'None'}
+new_pinmap = {1: 'None', 2: 'None', 3: 'None', 4: 'None', 5: 'None',
+              6: 'None', 7: 'None', 8: 'None', 9: 'None', 10: 'None', 11: 'None',
+              12: 'None', 13: 'None', 14: 'None', 15: 'None', 16: 'None', 17: 'None',
+              18: '3V3', 19: 'None', 20: 'None', 21: 'None', 22: 'None',
+              23: 'None', 24: 'None', 25: 'None', 26: 'None', 27: 'None', 28: '5V',
+              29: 'None', 30: 'None', 31: 'None', 32: 'None', 33: 'None', 34: 'None',
+              35: 'None', 36: 'None', 37: 'None', 38: 'None', 39: 'None', 40: 'None',
+              41: 'None', 42: 'None', 43: 'None', 44: 'None', 45: 'None', 46: 'None',
+              47: 'None', 48: 'None', 49: 'None', 50: 'None', 51: 'None',  52: 'None',
+              53: 'None', 54: 'None', 55: 'None', 56: 'None', 57: 'None', 58: 'None',
+              59: 'None', 60: 'None', 61: 'None', 62: 'None'}
 
 """
 Configuration Getters:
@@ -160,7 +161,7 @@ def pinmap_array(_board_type):
     
 # ----------------------------------------------------------------------
 # Description: Finds Subject Logic Level
-# Returns: Logic Level
+# Returns: Logic Level for Subject Board
 # ----------------------------------------------------------------------
 def subject_logic(_board_type):
     """
@@ -186,7 +187,7 @@ def supply_pin_voltages(board):
     lines2 = threshold_config_file(board)
     logic = subject_logic(board)
     
-    #lines2 = file2.readlines()
+    # lines2 = file2.readlines()
     compare = lines2[9].split(",")
 
     if model.check_5V() < float(compare[1]) and model.check_3V3() < float(compare[2]):
@@ -207,10 +208,6 @@ access configurations and return a pass fail boolean value.
 # Returns: Boolean Pass or Fail
 # ----------------------------------------------------------------------
 def subject_test(t, p, a, e, board, _ser):
-
-    # Debug File
-    #global Debug_file
-    
 
     # Logic Level Config
     logic = 0
@@ -276,17 +273,17 @@ def subject_test(t, p, a, e, board, _ser):
         if logic == 5:
             adc2 = model.run_subject_test(p, e, a, t, 0x01, _ser)
             if adc2 > 0:
-                Rpu = int((((390 * 5) / float(adc2)) - 390))
+                Rpu = int(((float(390 * 5.0) / float(adc2)) - 390))
         else:
             adc2 = model.run_subject_test(p, e, a, t, 0x01, _ser)
             if adc2 > 0:
-                Rpu = int((((390 * 3.3) / float(adc2)) - 390))
+                Rpu = int(((float(390 * 3.3) / float(adc2)) - 390))
 
         # calculation with adc to pull down resistance value
         print("Test adc val: " + str(adc2))
-        Debug_file.write("Test Pull Up Resistance Value: " + str((Rpu-(Rpu%1000)/100) + "k ohms\n"))
-        #Rpu = (((390 * 5) / adc2) - 390)
-        if Rpu > float(compare[1]) and Rpu < float(compare[2]) and adc1 > float(compare[3]):
+        Debug_file.write("Test Pull Up Resistance Value: " + str((Rpu-(Rpu%1000)/100)) + "k ohms\n")
+
+        if float(compare[1]) < Rpu < float(compare[2]) and adc1 > float(compare[3]):
             return True
         return False
 
@@ -302,20 +299,20 @@ def subject_test(t, p, a, e, board, _ser):
 
         if logic == 5:
             model.bigfoot.set_vout(5)
-            adc4 = round(model.run_subject_test(p, e, a, t, 0x0F, _ser), 1)
+            adc4 = model.run_subject_test(p, e, a, t, 0x0F, _ser)
             if adc4 != 5:
-                Rpd = int((2000 * adc4) / (5 - adc4))
+                Rpd = int(float(2000.0 * adc4) / float(5 - adc4))
         else:
             model.bigfoot.set_vout(3.3)
-            adc4 = round(model.run_subject_test(p, e, a, t, 0x0A, _ser), 1)
+            adc4 = model.run_subject_test(p, e, a, t, 0x0A, _ser)
             if adc4 != 3.3:
-                Rpd = int((2000 * adc4) / (3.3 - adc4))
+                Rpd = int(float(2000 * adc4) / float(3.3 - adc4))
 
         # calculation with adc to pull down resistance value
         print("Test adc val: " + str(adc4))
         Debug_file.write("Test Pull Down Resistance Value: " + str((Rpd - (Rpd%1000))/100) + "k ohms\n")
         
-        if Rpd > float(compare[1]) and Rpd < float(compare[2]) and adc1 < float(compare[3]):
+        if float(compare[1]) < Rpd < float(compare[2]) and adc1 < float(compare[3]):
             return True
         return False
 
@@ -330,7 +327,6 @@ def subject_test(t, p, a, e, board, _ser):
         else:
             model.bigfoot.set_vout(3.3)
             subject_input_high = round(model.run_subject_test(p, e, a, t, 0x0A, _ser), 1)
-            
 
         # Read Digital Pin Low
         model.bigfoot.set_vout(0)
@@ -459,6 +455,7 @@ if __name__ == '__main__':
         
         detailed_array.clear()
         pass_array.clear()
+        test_num = 0
 
         detailed_array.append("Detailed Test Results")
 
@@ -470,7 +467,7 @@ if __name__ == '__main__':
         try:
             board_type = model.board_wait()
         except Exception:
-            
+            board_type = "None"
             sleep(2)
             view.setShutdownScreen()
             model.shutdown()
@@ -478,7 +475,6 @@ if __name__ == '__main__':
 
         # Assign -> View Start Test Screen
         view.setStartScreen(board_type)
-    
 
         # Start Menu Screen Function
         # FIX: States Controlled by View -> button input
@@ -490,7 +486,7 @@ if __name__ == '__main__':
         while start is False:
             state_buttons = model.bigfoot.get_button_state()
             if supply_pin_voltages(board_type):
-                view.setStartScreen("Please Place Dev Board\nonto Header Interface")
+                view.setMessageScreen("Please Place Dev Board\nonto Header Interface")
                 redo = True
                 start = True
                 sleep(3)
@@ -498,7 +494,7 @@ if __name__ == '__main__':
             if state_buttons & 2 == 2:
                 view.setFlashScreen()
                 if supply_pin_voltages(board_type):
-                    view.setStartScreen("Please Place Dev Board\nonto Header Interface")
+                    view.setMessageScreen("Please Place Dev Board\nonto Header Interface")
                     redo = True
                     sleep(3)
                 start = True
@@ -520,7 +516,7 @@ if __name__ == '__main__':
                 print(board_status)
                 
                 if board_status:
-                    view.setStartScreen("Flash Unsuccessful")
+                    view.setMessageScreen("Flash Unsuccessful")
                     sleep(2)
                     redo = True
                 else:
@@ -806,6 +802,5 @@ if __name__ == '__main__':
             state_buttons = model.bigfoot.get_button_state()
             print(state_buttons)
         
-        # NEW LOOP
-        # Assign -> View General Results Screen with 3 button inputs
+        # NEXT LOOP ITERATION
         Debug_file.close()

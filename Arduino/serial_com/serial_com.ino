@@ -108,7 +108,10 @@ void loop() {
                         RMSG[1] = (unsigned char)0;
                     }
                     else {
-                        configure_output(pin_val, RMSG[1]);                    
+                        configure_output(pin_val, RMSG[1]); 
+
+                      // Reconfigure Pin Setup
+                      configure_input(pin_val);
                     }
                     command_write(RMSG[0], RMSG[1], RMSG[2]);
                     break;
@@ -119,6 +122,9 @@ void loop() {
                     }
                     else {
                         configure_output(pin_val, RMSG[1]);
+
+                      // Reconfigure Pin Setup
+                      configure_input(pin_val);
                     }
                     command_write(RMSG[0], RMSG[1], RMSG[2]);
                     break;
@@ -129,6 +135,9 @@ void loop() {
                     }
                     else {
                       configure_input_pullup(pin_val);
+
+                      // Reconfigure Pin Setup
+                      configure_input(pin_val);
                     }
                     command_write(RMSG[0], RMSG[1], RMSG[2]);
                     break;
@@ -145,6 +154,9 @@ void loop() {
                     else {
                       test_result = configure_input(pin_val);
                       command_write(RMSG[0], test_result, RMSG[2]);
+
+                      // Reconfigure Pin Setup
+                      configure_input(pin_val);
                     }
                     
                     break;
@@ -157,6 +169,9 @@ void loop() {
                     else {
                       test_result = configure_analog_input(pin_val);
                       command_write(RMSG[0], test_result, RMSG[2]);
+
+                      // Reconfigure Pin Setup
+                      configure_input(pin_val);
                     }
                     break;
                 case 7:

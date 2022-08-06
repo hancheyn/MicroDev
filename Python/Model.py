@@ -19,23 +19,19 @@
 import time
 import serial
 import subprocess
-import string
 import Bigfoot as bigfoot
-import View
+import View as view
 
-# STM32 ADC = 16 | GPIO = 5 ports * 16 pins | Sleep Modes = 3
-from serial import to_bytes
-
-view = View
-model = None
-driver = None
-
-
+# STM32  ADC = 16 | GPIO/Pinout = 64 Pins | Sleep Modes = 3
+# ARDUINO UNO  ADC = 6 | GPIO/Pinout = 38 Pins | Sleep Modes = 6
+# from serial import to_bytes
 # ******************************** Subject Board I/O ************************************
 """
 Subject Board I/O
-
+Serial Communication to and from Subject Development Board
 """
+
+
 # ----------------------------------------------------------------------
 # Description: This will open a serial port
 # Accepts: NA
@@ -439,7 +435,6 @@ def run_gpio_input_logic_level_test(pin, enable, address, instruction, ser):
     # .encode([test], [pin], [instruction])
     s = crc_encode(0x05, pin, instruction)
     subject_write(str_write=s, ser=ser)
-    #time.sleep(0.01)
     test_bytes = subject_read(ser_=ser)
     output = crc_decode(test_bytes, 2)
 
@@ -453,7 +448,6 @@ def run_gpio_input_logic_level_test(pin, enable, address, instruction, ser):
     # .encode([test], [pin], [instruction])
     s = crc_encode(0x05, pin, instruction)
     subject_write(str_write=s, ser=ser)
-    #time.sleep(0.01)
     test_bytes = subject_read(ser_=ser)
     output = crc_decode(test_bytes, 3)
     print("Logic: " + str(output))
@@ -592,18 +586,21 @@ def current_read():
     current = bigfoot.rpi_i2c_ina219(1)
     return current
 
+
 # ******************************** Command Line Interface ************************************
 """
 Command Line Interface 
-
+The following function methods deal with the linux command line interface.
+These instructions are used alongside the arduino-cli and stm-link applications
 """
+
+
 # ----------------------------------------------------------------------
 # Description: Flashes the Subject Board
 # Accepts: board detected string (from board_list function)
 # Returns: NA
 # ----------------------------------------------------------------------
 def subject_flash(board):
-    
     res = "error"
     tloop = 0
     
@@ -670,7 +667,6 @@ def board_list():
     res_ardiuno = subprocess.getstatusoutput(f'arduino-cli board list')
 
     # PARSE DATA FOR ARDUINO
-    # print(res_ardiuno[1])
     ARD = res_ardiuno[1].split("\n")
     boards = len(ARD)
 
