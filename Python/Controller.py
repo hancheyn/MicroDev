@@ -225,11 +225,11 @@ def subject_test(t, p, a, e, board, _ser):
 
         # Read adc value of logic high from micro
         print("Test Logic High")
-        high = round(model.run_subject_test(p, e, a, t, 1, _ser), 1)
+        high = round(model.run_subject_test(p, e, a, t, 1, _ser), 2)
 
         # Read adc value of logic low from micro
         print("Test Logic Low")
-        low = round(model.run_subject_test(p, e, a, t, 0, _ser), 1)
+        low = round(model.run_subject_test(p, e, a, t, 0, _ser), 2)
 
         Debug_file.write("Test Logic High: " + str(high) + " V\n")
         Debug_file.write("Test Logic Low: " + str(low) + " V\n")
@@ -245,11 +245,11 @@ def subject_test(t, p, a, e, board, _ser):
 
         # Read adc value of logic high from micro
         print("Test Logic High")
-        high = round(model.run_subject_test(p, e, a, t, 1, _ser), 1)
+        high = round(model.run_subject_test(p, e, a, t, 1, _ser), 2)
 
         # Read adc value of logic low from micro
         print("Test Logic Low")
-        low = round(model.run_subject_test(p, e, a, t, 0, _ser), 1)
+        low = round(model.run_subject_test(p, e, a, t, 0, _ser), 2)
 
         Debug_file.write("Test Logic High: " + str(high) + " V\n")
         Debug_file.write("Test Logic Low: " + str(low) + " V\n")
@@ -368,7 +368,7 @@ def subject_test(t, p, a, e, board, _ser):
             Debug_file.write("ADC Return Value: " + str(test_num) + ": " + str(subject_adc_high) + "\n")
             print("ADC Return Value: " + str(test_num) + ": " + str(subject_adc_high) + "\n")
             # compare subject voltage to dac voltage
-            if subject_adc_high > instruct - 0.4 and condition_success:
+            if subject_adc_high > instruct - 0.2 and condition_success:
                 condition_success = True
             else:
                 condition_success = False
@@ -382,12 +382,12 @@ def subject_test(t, p, a, e, board, _ser):
         print("Test 7: Set Power Mode")
         Debug_file.write("Test 7: Set Power Mode\n")
         # Reads current 0
-        current_0 = round(model.current_read(), 1)
+        current_0 = round(model.current_read(), 2)
 
         # Reads current
         # Instruction is in config
         compare = lines2[t].split(",")
-        current = round(model.run_subject_test(p, e, a, t, p, _ser), 1)
+        current = round(model.run_subject_test(p, e, a, t, p, _ser), 2)
 
         print("Current Val Null: " + str(current_0))
         print("Current Val: " + str(current))
