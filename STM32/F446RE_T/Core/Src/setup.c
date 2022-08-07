@@ -80,19 +80,19 @@ void init_pins(struct pin pins[]) {
 	pins[14] = pin_set(0x00, 0x00, GPIOA, 14);
 
 	//Pin 15 | PB9
-	pins[15] = pin_set(0x09, 0x04, GPIOC, 15);
+	pins[15] = pin_set(0x09, 0x04, GPIOB, 15);
 
 	//Pin 16 | PC5
 	pins[16] = pin_set(0x05, 0x04, GPIOC, 16);
 
 	//Pin 17 | PA14
-	pins[17] = pin_set(0x0E, 0x01, GPIOA, 17);
+	pins[17] = pin_set(0x00, 0x01, GPIOA, 17);
 
 	//Pin 18 | 3V3
 	pins[18] = pin_set(0x00, 0x00, GPIOA, 18);
 
 	//Pin 19 | PA13
-	pins[19] = pin_set(0x0D, 0x01, GPIOA, 19);
+	pins[19] = pin_set(0x00, 0x01, GPIOA, 19);
 
 
 	//Pin 20 | RESET
@@ -129,7 +129,7 @@ void init_pins(struct pin pins[]) {
 	pins[30] = pin_set(0x06, 0x02, GPIOB, 30);
 
 	//Pin 31 | PB12
-	pins[31] = pin_set(0x0C, 0x02, GPIOC, 31);
+	pins[31] = pin_set(0x0C, 0x02, GPIOB, 31);
 
 	//Pin 32 | PA7
 	pins[32] = pin_set(0x07, 0x01, GPIOA, 32);
@@ -214,10 +214,10 @@ void init_pins(struct pin pins[]) {
 	pins[58] = pin_set(0x00, 0x04, GPIOC, 58);
 
 	//Pin 59 | PA3
-	pins[59] = pin_set(0x03, 0x01, GPIOA, 59);
+	pins[59] = pin_set(0x00, 0x01, GPIOA, 59);
 
 	//Pin 60 | PA2
-	pins[60] = pin_set(0x02, 0x01, GPIOA, 60);
+	pins[60] = pin_set(0x00, 0x01, GPIOA, 60);
 
 	//Pin 61 | PA10
 	pins[61] = pin_set(0x0A, 0x01, GPIOA, 61);

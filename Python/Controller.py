@@ -15,9 +15,6 @@ from time import sleep
 import Model as model
 import View as view
 
-# view = View
-# model = Model
-
 """
 Debug File 
 """
@@ -66,9 +63,13 @@ arduino_pinmap = {1: 'None', 2: 'None', 3: 'None', 4: 'None', 5: 'SCL',
 
 """
 New Subject Config.
-Add Subject Mapping Key Below
+Add a Subject Mapping Key Below
 """
-new_pinmap = {1: 'None', 2: 'None', 3: 'None', 4: 'None', 5: 'None',
+configurable_board = "Name Here"
+configurable_filename = "fileTest.config"
+configurableThreshold_filename = "fileThreshold.config"
+configurable_logic = 3.3
+configurable_pinmap = {1: 'None', 2: 'None', 3: 'None', 4: 'None', 5: 'None',
               6: 'None', 7: 'None', 8: 'None', 9: 'None', 10: 'None', 11: 'None',
               12: 'None', 13: 'None', 14: 'None', 15: 'None', 16: 'None', 17: 'None',
               18: '3V3', 19: 'None', 20: 'None', 21: 'None', 22: 'None',
@@ -90,6 +91,8 @@ Configuration Getters:
 The following functions grab important configuration data for 
 the test cycle of the subject board.
 """
+
+
 # ----------------------------------------------------------------------
 # Description: For looping through serial check if communication works
 # Returns: True only if serial communication is established
@@ -118,6 +121,11 @@ def test_config_file(_board_type):
         file = open('unoTest.config', 'r')
     elif _board_type == "STM32F411 Detected" or _board_type == "STM32F401 Detected" or _board_type == "STM32F446 Detected":
         file = open('stm32f4Test.config', 'r')
+
+    # New Board Added Below
+    elif _board_type == configurable_board:
+        file = open(configurable_filename, 'r')
+
     else:
         file = open('unoTest.config', 'r')
     
@@ -138,6 +146,9 @@ def threshold_config_file(_board_type):
         file2 = open('unoThreshold.config', 'r')
     elif _board_type == "STM32F411 Detected" or _board_type == "STM32F401 Detected" or _board_type == "STM32F446 Detected":
         file2 = open('stm32f4Threshold.config', 'r')
+    # New Board Added Below
+    elif _board_type == configurable_board:
+        file2 = open(configurableThreshold_filename, 'r')
     else:
         file2 = open('unoThreshold.config', 'r')
     
@@ -157,6 +168,9 @@ def pinmap_array(_board_type):
         map_pin = arduino_pinmap
     elif _board_type == "STM32F411 Detected" or _board_type == "STM32F401 Detected" or _board_type == "STM32F446 Detected":
         map_pin = stm_pinmap
+    # New Board Added Below
+    elif _board_type == configurable_board:
+        map_pin = configurable_pinmap
     else:
         map_pin = stm_pinmap
     
@@ -175,6 +189,9 @@ def subject_logic(_board_type):
         logic = 5
     elif _board_type == "STM32F411 Detected" or _board_type == "STM32F401 Detected" or _board_type == "STM32F446 Detected":
         logic = 3.3
+    # New Board Added Below
+    elif _board_type == configurable_board:
+        logic = configurable_logic
     else:
         logic = 5
     return logic
@@ -190,8 +207,7 @@ def supply_pin_voltages(board):
     
     lines2 = threshold_config_file(board)
     logic = subject_logic(board)
-    
-    # lines2 = file2.readlines()
+
     compare = lines2[9].split(",")
 
     if model.check_5V() < float(compare[1]) and model.check_3V3() < float(compare[2]):
@@ -217,7 +233,6 @@ def subject_test(t, p, a, e, board, _ser):
     logic = 0
 
     # Gather Config Data from Config file of board type
-
     lines2 = threshold_config_file(board)
     logic = subject_logic(board)
 

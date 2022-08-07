@@ -13,6 +13,10 @@
   * in the root directory of this software component.
   * If no LICENSE file comes with this software, it is provided AS-IS.
   *
+  * References:
+  * STM32 Arm Programming For Embedded Systems
+  * Authors: Muhammad Ali Mazidi | Shujen Chen | Eshragh Ghaemi
+  *
   ******************************************************************************
   */
 /* USER CODE END Header */
@@ -52,26 +56,17 @@ void analogWrite(int pin, int value);
 void digitalWrite(int pin, int logic);
 void pinMode(int pin, int mode);
 
-
-//FIX AFTER ARDUINO PORTION
+//TESTS
 void run_tests(unsigned char data[]);
+void reset_pins();
+
+//SLEEPMODES
 int sleepmode(int mode);
-
-//https://thekurks.net/blog/2018/1/24/guide-to-arduino-sleep-mode
-//void attachInterrupt();
-//void set_sleep_mode();
-//void sleep_cpu();
-
-/* Private typedef -----------------------------------------------------------*/
-
-/* Private define ------------------------------------------------------------*/
-
-/* Private macro -------------------------------------------------------------*/
 
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef huart2;
 
-uint8_t RMSG[3];
+
 
 /**
   * @brief  The application entry point.
@@ -79,38 +74,29 @@ uint8_t RMSG[3];
   */
 int main(void) {
 
-	/* MCU Configuration--------------------------------------------------------*/
+	/* MCU Configuration----------------------------------------------------------*/
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 	HAL_Init();
 	SystemClock_Config();
+
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
 	MX_USART2_UART_Init();
 
 	//IO INITs
 	init_pins(PINS_);
-	// pinMode(0, OUTPUT);
-	// digitalWrite(0, HIGH);
-
-  	//GPIOC Input
-  	RCC->AHB1ENR |= 4; //GPIOC clock
-  	GPIOC->MODER &= ~0x0C000000;
 
     while (1) {
 
-
-  	  if(GPIOC->IDR & 0x2000) {
-  		  // GPIOA->ODR |= 0x00000020; //turn on
-  		  // digitalWrite(0, LOW);
-  		  // delay(500);
+    	//USART2->;
+  	  if(__HAL_UART_GET_FLAG(&huart2, UART_FLAG_RXNE)) {
 
   		    //Write Test
+    		uint8_t RMSG[3] = {0};
   			command_read(RMSG);
-  			delay(10);	//delay is important
+  			delay(50);	//delay is important
 
-  			if(crc_decode(RMSG)){
-  				//GPIOA->ODR &= ~0x00000020;
-  				//digitalWrite(0, LOW);
+  			if(crc_decode(RMSG) && RMSG[0] > 0){
 
   				//Interpret Instructions
   				if (RMSG[1] < 128) {
@@ -120,11 +106,7 @@ int main(void) {
   					RMSG[0] = PINS_[RMSG[0]].pin;
   				}
 
-  				//Send Back Results
-  				command_write(RMSG[0], RMSG[1], RMSG[2]);
   			}
-
-
 
   	  }
     }
@@ -143,39 +125,47 @@ void run_tests(unsigned char data[]) {
 
 	// Test #1
 	if(data[2] == 1) {
-		/*
-		if(instruction == 1) {
-			pinMode(pin, OUTPUT);
-			digitalWrite(pin, 1);
-		}
-		else if(instruction == 0) {
-			pinMode(pin, OUTPUT);
-			digitalWrite(pin, 0);
-		}
-		*/
+		// Reconfigure Previous Pins Setup
+		reset_pins();
+
 		configure_output(pin, instruction);
 		command_write(data[0], data[1], data[2]);
-
 	}
 	else if(data[2] == 2) {
+		// Reconfigure Previous Pins Setup
+		reset_pins();
+
 		configure_output(pin, instruction);
 		command_write(data[0], data[1], data[2]);
 	}
 	else if(data[2] == 3) {
+		// Reconfigure Previous Pins Setup
+		reset_pins();
+
 		configure_input_pullup(pin);
 		command_write(data[0], data[1], data[2]);
 	}
 	else if(data[2] == 4) {
+		// Reconfigure Previous Pins Setup
+		reset_pins();
+
 		configure_input_pulldown(pin);
 		command_write(data[0], data[1], data[2]);
+
 	}
 	else if(data[2] == 5) {
 		data[1] = configure_input(pin);
 		command_write(data[0], data[1], data[2]);
+
+		// Reconfigure Pin Setup
+
 	}
 	else if(data[2] == 6) {
 		data[1] = configure_analog_input(pin);
 		command_write(data[0], data[1], data[2]);
+
+		// Reconfigure Pin Setup
+
 	}
 	else if(data[2] == 7) {
 		if(instruction == 1) {
@@ -188,6 +178,9 @@ void run_tests(unsigned char data[]) {
 			configure_sleep_mode(4, pin);
 		}
 
+	}
+	else {
+		command_write(data[0], data[1], data[2]);
 	}
 
 }
@@ -254,7 +247,8 @@ void configure_input_pulldown(unsigned int pin) {
  * Returns: int - 0 to 1023, depending on the voltage reading of the ADC. (0 = GND, 1023 = 5V)
  */
 int configure_analog_input(unsigned int analogPin) {
-   return (analogRead(analogPin) >> 4); //returns a value 0-1023 (0=GND, 1023 = 5V)
+	pinMode(analogPin, INPUT);
+   return (analogRead(analogPin) >> 4); //returns a value 0- (0=GND,  = 3V3)
 }
 
 
@@ -264,31 +258,38 @@ int configure_analog_input(unsigned int analogPin) {
 //IO  Sleep Modes / PINS
 /********************************************************/
 
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_pin) {
+	SystemClock_Config();
+	HAL_PWR_DisableSleepOnExit();
+	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+	HAL_ResumeTick();
+}
+
 //
 void configure_sleep_mode(unsigned int mode, unsigned int interruptPin) {
 
 	// SLEEP == 1
+	MX_GPIO_Init();
+	SystemClock_Config();
 	// Wake Up = ?PA0 | D13
 	if(mode == 1) {
-		HAL_SuspendTick();
-		//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 0);
-		//HAL_PWR_EnableSleepOnExit();
+		HAL_PWR_EnableSEVOnPend();
 		wakeUp(interruptPin);
-		HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN1);
-		__HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
-		HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);
-		//HAL_ResumeTick();
+		HAL_SuspendTick();
+		HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFE);
+		HAL_ResumeTick();
 	}
 	// STOP == 2
 	// Wake Up = Reset
 	else if(mode == 2) {
-		HAL_SuspendTick();
-		//HAL_PWR_EnableSleepOnExit();
-		wakeUp(interruptPin);
+		HAL_PWR_EnableSEVOnPend();
 		__HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
+		//wakeUp(interruptPin);
+		HAL_SuspendTick();
 		HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN1);
-		HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_SLEEPENTRY_WFI);
-		//HAL_ResumeTick();
+
+		HAL_PWR_EnterSTOPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);
+		HAL_ResumeTick();
 	}
 	// STANDBY == 4
 	// Wake up Pin1 = PA0 | Pin2 = PC13
@@ -297,9 +298,9 @@ void configure_sleep_mode(unsigned int mode, unsigned int interruptPin) {
 		if(interruptPin == 1) {
 			HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN1);
 		}
-		else if (interruptPin == 2) {
-			HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN2);
-		}
+		//else if (interruptPin == 2) {
+		//	HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN2);
+		//}
 		else {
 			HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN1);
 		}
@@ -308,41 +309,23 @@ void configure_sleep_mode(unsigned int mode, unsigned int interruptPin) {
 
 }
 
-//FIX : TEST if this is needed
 // EXTI Interrupt Function
 void wakeUp(int pin) {
-	__disable_irq();
+		__disable_irq();
+		// Pin A0
+		GPIO_InitTypeDef GPIO_InitStruct = {0};
+		/*Configure GPIO pin : PA0 */
+		GPIO_InitStruct.Pin = GPIO_PIN_0;
+		GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+		GPIO_InitStruct.Pull = GPIO_NOPULL;
+		HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-	//FIX (Which is which)
-	if(pin == 2) {
-		RCC->AHB1ENR |= 4;
-		GPIOC->MODER &= ~0x0C000000;
-		GPIOC->PUPDR &= ~0x0C000000;
-		GPIOC->PUPDR |= 0x04000000;
-
-		SYSCFG->EXTICR[3] &= ~0x00F0;
-		SYSCFG->EXTICR[3] |= 0x0020;
-		EXTI->IMR |= 0x2000;
-		EXTI->FTSR |= 0x2000;
-
-		NVIC_EnableIRQ(EXTI15_10_IRQn);
+		/* EXTI interrupt init*/
+		HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+		HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 		__enable_irq();
-	}
-	else {
-		RCC->AHB1ENR |= 1;
-		GPIOC->MODER &= ~0x00000003;
-		GPIOC->PUPDR &= ~0x00000003;
-		GPIOC->PUPDR |= 0x00000001;
-
-		SYSCFG->EXTICR[0] &= ~0x000F;
-		SYSCFG->EXTICR[0] |= 0x0002;
-		EXTI->IMR |= 0x0001;
-		EXTI->FTSR |= 0x0001;
-
-		NVIC_EnableIRQ(EXTI15_10_IRQn);
-		__enable_irq();
-	}
 }
+
 
 void EXTI15_10_IRQHandler(void) {
 	if(EXTI->PR == 0x2000) {
@@ -353,7 +336,12 @@ void EXTI15_10_IRQHandler(void) {
 		HAL_ResumeTick();
 		EXTI->PR = 0x0001;
 	}
+	SystemClock_Config();
+	HAL_PWR_DisableSleepOnExit();
+	HAL_ResumeTick();
+	EXTI->PR = 0x0001;
 }
+
 
 /********************************************************/
 // Read & Write Functions
@@ -361,8 +349,19 @@ void EXTI15_10_IRQHandler(void) {
 
 int analogRead(int pin) { //!IN PROGRESS [NEED TO DEVELOP DEBUGGING METHOD]
 
-	int result;
+	int result, channel = 0;
 	//SET REGESTERS p213
+
+	//ANALOG MAPPING
+	if(PINS_[pin].clock == 1) {
+		channel = PINS_[pin].pin;
+	}
+	else if(PINS_[pin].clock == 2) {
+		channel = PINS_[pin].pin + 8;
+	}
+	else if(PINS_[pin].clock == 4) {
+		channel = PINS_[pin].pin + 10;
+	}
 
 	//Pin Setup
 	RCC->AHB1ENR |= PINS_[pin].clock;  //clock for pin
@@ -372,9 +371,9 @@ int analogRead(int pin) { //!IN PROGRESS [NEED TO DEVELOP DEBUGGING METHOD]
 	RCC->APB2ENR |= 0x00000100; /* Enable ADC1 clock */
 	/* Setup for ACD1 */
 	ADC1->CR2 = 0;
-	ADC1->SQR3 = 1;
+	ADC1->SQR3 = channel;
 	ADC1->SQR1 = 0;
-	ADC1->CR2 = 1;
+	ADC1->CR2 |= 1;
 
 	//FIND VALUE in ADC1
 	ADC1->CR2 |= 0x40000000;
@@ -419,7 +418,7 @@ int digitalRead(int pin_num) {
 
 	int out = 0;
 
- 	if(PINS_[pin_num].GPIO->IDR & PINS_[pin_num].pin) {
+ 	if(PINS_[pin_num].GPIO->IDR & (0x01 << PINS_[pin_num].pin)) {
  		out = 1;
  	}
 
@@ -441,14 +440,19 @@ void digitalWrite(int pin, int logic) {
 
 }
 
+void reset_pins() {
+	int i;
+	for(i = 1; i < 63; i++) {
+		configure_output(i, LOW);
+	}
+}
 
 /********************************************************/
 //SERIAL
 /********************************************************/
 
-
 int command_read(unsigned char data[]) {
-	HAL_UART_Receive(&huart2, data, 3, 100); //Changed from 10000
+	HAL_UART_Receive(&huart2, data, 3, 1000); //Changed from 10000 & while loop
 	return 0;
 }
 
@@ -476,7 +480,6 @@ int crc_encode(unsigned char data[], unsigned int pin, unsigned int result, unsi
 
 	return 0;
 }
-
 
 int crc_decode(unsigned char data[]) {
 
@@ -580,29 +583,51 @@ void MX_USART2_UART_Init(void)
   */
 void MX_GPIO_Init(void)
 {
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
+	  GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOH_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
+	  /* GPIO Ports Clock Enable */
+	  __HAL_RCC_GPIOC_CLK_ENABLE();
+	  __HAL_RCC_GPIOH_CLK_ENABLE();
+	  __HAL_RCC_GPIOA_CLK_ENABLE();
+	  __HAL_RCC_GPIOB_CLK_ENABLE();
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+	  /*Configure GPIO pin Output Level */
+	  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : B1_Pin */
-  GPIO_InitStruct.Pin = B1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
+	  /*Configure GPIO pin : B1_Pin */
+	  GPIO_InitStruct.Pin = B1_Pin;
+	  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+	  GPIO_InitStruct.Pull = GPIO_NOPULL;
+	  HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : LD2_Pin */
-  GPIO_InitStruct.Pin = LD2_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+	  /*Configure GPIO pin : PA0 */
+	  GPIO_InitStruct.Pin = GPIO_PIN_0;
+	  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+	  GPIO_InitStruct.Pull = GPIO_NOPULL;
+	  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+	  /*Configure GPIO pin : LD2_Pin */
+	  GPIO_InitStruct.Pin = LD2_Pin;
+	  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	  GPIO_InitStruct.Pull = GPIO_NOPULL;	  /*Configure GPIO pin : PA0 */
+	  GPIO_InitStruct.Pin = GPIO_PIN_0;
+	  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+	  GPIO_InitStruct.Pull = GPIO_NOPULL;
+	  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+	  /*Configure GPIO pin : LD2_Pin */
+	  GPIO_InitStruct.Pin = LD2_Pin;
+	  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	  GPIO_InitStruct.Pull = GPIO_NOPULL;
+	  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	  HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+
+	  /* EXTI interrupt init*/
+	  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+	  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+	  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	  HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+
 
 }
 
