@@ -726,7 +726,6 @@ if __name__ == '__main__':
             pass
         finally:
             print("Complete Test Cycle")
-
             model.bigfoot.b1_enable()
             model.bigfoot.b2_enable()
             model.bigfoot.b3_enable()

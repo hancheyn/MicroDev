@@ -484,6 +484,7 @@ def ArduinoSleep_Test():
     Validation_3091(61, 8, 6)  # Test 8 Wake up + (INA)
     print("End of Sleep Mode Test")
 
+
 # ##################### STM Power Modes Test    ################# #
 def STM32Sleep_Test():
     Validation_2062() 
@@ -499,42 +500,42 @@ def STM32Sleep_Test():
     Validation_3091(34, 5, 1)  # Test 8 Wake up + (INA)
     print("End of Sleep Mode Test")
 
+
 if __name__ == '__main__':
     print("Run Validation Tests on Arduino")
     # Generic DAC Setting
-    # DAC_Set(3.3)
-    # Littlefoot_Test()
+    DAC_Set(3.3)
+    Littlefoot_Test()
 
     # No Subject Board
-    #Validation_2051()                     # ADC Check
-    #Validation_2061()                     # LOW CURRENT
-    #Validation_2062()                     # HIGH CURRENT
+    Validation_2051()                     # ADC Check
+    Validation_2061()                     # LOW CURRENT
+    Validation_2062()                     # HIGH CURRENT
 
     # Arduino Uno Subject Board Connected
-    #Validation_3021(23, 3, 6)             # Test 1 Output Logic (ADC)
-    #Validation_3031(23, 3, 6)             # Test 3 Pull Up (ADC Test)
-    #Validation_3031(23, 3, 6)             # Test 3 Pull Up (ADC Test)
-    #Validation_3031(21, 3, 4)             # Test 3 Pull Up (ADC Test)
-    #Validation_3031(32, 4, 7)             # Test 3 Pull Up (ADC Test)
-    #Validation_3061_5V_Logic(23, 3, 6)   # Test 5 Logic Levels (DAC Test)
-    #Validation_3071_5V_Logic(34, 5, 1)    # Test 6 Subject ADC (DAC Test)
-    #Validation_3081(2, 1)                 # Test 7 Sleep Mode #2 + (INA)
-    #Validation_3091(61, 8, 6)             # Test 8 Wake up + (INA)
+    Validation_3021(23, 3, 6)             # Test 1 Output Logic (ADC)
+    Validation_3031(23, 3, 6)             # Test 3 Pull Up (ADC Test)
+    Validation_3031(23, 3, 6)             # Test 3 Pull Up (ADC Test)
+    Validation_3031(21, 3, 4)             # Test 3 Pull Up (ADC Test)
+    Validation_3031(32, 4, 7)             # Test 3 Pull Up (ADC Test)
+    Validation_3061_5V_Logic(23, 3, 6)   # Test 5 Logic Levels (DAC Test)
+    Validation_3071_3V3_Logic(34, 5, 1)    # Test 6 Subject ADC (DAC Test)
+    Validation_3081(2, 1)                 # Test 7 Sleep Mode #2 + (INA)
+    Validation_3091(61, 8, 6)             # Test 8 Wake up + (INA)
+
+    ArduinoSleep_Test()
 
     # STM32 Nucleo Subject Board
-    #Validation_3032(21, 3, 4)            # Test 4 Pull Down (ADC Test)
-    #Validation_3032(23, 3, 6)
+    Validation_3032(21, 3, 4)            # Test 4 Pull Down (ADC Test)
+    Validation_3032(23, 3, 6)
     
-    # PullUp_Test3_NoLoad(32, 4, 7, 0)
-    #PullDown_Test4_NoLoad(32, 4, 7, 0)
-    # PullUp_Test3(23, 3, 6, 0x00)
-    #PullDown_Test4(23, 3, 6, 0x00)
-    #Validation_3071_3V3_Logic(34, 5, 1)
+    PullUp_Test3_NoLoad(32, 4, 7, 0)
+    PullDown_Test4_NoLoad(32, 4, 7, 0)
+    PullUp_Test3(23, 3, 6, 0x00)
+    PullDown_Test4(23, 3, 6, 0x00)
+    Validation_3071_3V3_Logic(34, 5, 1)
 
     STM32Sleep_Test()
-    #ArduinoSleep_Test()
-    #model.bigfoot.set_mux_add(1, 7, 6)
-    #Littlefoot_Test()
 
     
     

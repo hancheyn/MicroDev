@@ -449,4 +449,38 @@ def get_button_state():
 	return button_state
 
 
+# ----------------------------------------------------------------------
+# Description:
+# Parameters: None
+# Returns: None
+# ----------------------------------------------------------------------
+def pollButtons():
+	# Initializes GPIO button for polling
+	BTN_L = 14
+	BTN_C = 15
+	BTN_R = 18
+	GPIO.setwarnings(False)
+	GPIO.setmode(GPIO.BCM)
+	GPIO.setup([BTN_L, BTN_C, BTN_R], GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+	# Waits until user presses button
+	while GPIO.input(BTN_L) and GPIO.input(BTN_C) and GPIO.input(BTN_R):
+		continue
+
+	# Returns string for which button was pressed and waits until the user lets go
+	if not GPIO.input(BTN_L):
+		while not GPIO.input(BTN_L):
+			continue
+		return "left"
+	elif not GPIO.input(BTN_C):
+		while not GPIO.input(BTN_C):
+			continue
+		return "center"
+	elif not GPIO.input(BTN_R):
+		while not GPIO.input(BTN_R):
+			continue
+		return "right"
+	else:
+		return None
+
 print("End of Bigfoot Init")
