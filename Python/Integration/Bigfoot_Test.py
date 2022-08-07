@@ -47,7 +47,6 @@ class GPIOTest(unittest.TestCase):
         bigfoot.set_mux_add(0, 1, 0)
         
         # Others
-        
         bigfoot.low_current(1)
         time.sleep(1)
         bigfoot.low_current(0)

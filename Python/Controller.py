@@ -29,9 +29,9 @@ Debug_file.close()
 Test ID Mapping Key
 This links the title of each test to the GUI and results files
 """
-test_map = {1: 'Output Test', 2: 'Output Load Test', 3: 'Pull Up Test' 
-    , 4: 'Pull Down Test', 5: 'Input Logic Test', 6: 'ADC Test', 
-    7: 'Sleep Test', 8: 'Wakeup Pin Test', 9: 'Reset Board'}
+test_map = {1: 'Output Test', 2: 'Output Load Test', 3: 'Pull Up Test',
+            4: 'Pull Down Test', 5: 'Input Logic Test', 6: 'ADC Test', 
+            7: 'Sleep Test', 8: 'Wakeup Pin Test', 9: 'Reset Board'}
 
 """
 STM Nucleo Mapping Key
@@ -65,7 +65,8 @@ arduino_pinmap = {1: 'None', 2: 'None', 3: 'None', 4: 'None', 5: 'SCL',
                   59: 'D0', 60: 'D1', 61: 'D2', 62: 'None'}
 
 """
-NEW Subject Mapping Key
+New Subject Config.
+Add Subject Mapping Key Below
 """
 new_pinmap = {1: 'None', 2: 'None', 3: 'None', 4: 'None', 5: 'None',
               6: 'None', 7: 'None', 8: 'None', 9: 'None', 10: 'None', 11: 'None',
@@ -79,13 +80,16 @@ new_pinmap = {1: 'None', 2: 'None', 3: 'None', 4: 'None', 5: 'None',
               53: 'None', 54: 'None', 55: 'None', 56: 'None', 57: 'None', 58: 'None',
               59: 'None', 60: 'None', 61: 'None', 62: 'None'}
 
+
+test_pass = [True, True, True, True, True, True, True, True]
+test_occurred = [False, False, False, False, False, False, False, False]
+
+
 """
 Configuration Getters:
 The following functions grab important configuration data for 
 the test cycle of the subject board.
 """
-
-
 # ----------------------------------------------------------------------
 # Description: For looping through serial check if communication works
 # Returns: True only if serial communication is established
@@ -108,7 +112,7 @@ def serial_check():
 # ----------------------------------------------------------------------
 def test_config_file(_board_type):
     """
-    New Subject Config
+    New Subject Config.
     """
     if _board_type == "Arduino Uno Detected":
         file = open('unoTest.config', 'r')
@@ -281,7 +285,7 @@ def subject_test(t, p, a, e, board, _ser):
 
         # calculation with adc to pull down resistance value
         print("Test adc val: " + str(adc2))
-        Debug_file.write("Test Pull Up Resistance Value: " + str((Rpu-(Rpu%1000)/100)) + "k ohms\n")
+        Debug_file.write("Test Pull Up Resistance Value: " + str(round(((Rpu-(Rpu%1000))/1000), 0)) + "k ohms\n")
 
         if float(compare[1]) < Rpu < float(compare[2]) and adc1 > float(compare[3]):
             return True
@@ -310,7 +314,7 @@ def subject_test(t, p, a, e, board, _ser):
 
         # calculation with adc to pull down resistance value
         print("Test adc val: " + str(adc4))
-        Debug_file.write("Test Pull Down Resistance Value: " + str((Rpd - (Rpd%1000))/100) + "k ohms\n")
+        Debug_file.write("Test Pull Down Resistance Value: " + str(round((Rpd - (Rpd%1000))/1000, 0)) + "k ohms\n")
         
         if float(compare[1]) < Rpd < float(compare[2]) and adc1 < float(compare[3]):
             return True
@@ -427,36 +431,146 @@ def subject_test(t, p, a, e, board, _ser):
     return False
 
 
+# ----------------------------------------------------------------------
+# Description: Checks if Subject Development Board is Ready to be Tested
+# Parameters: [string] board_type
+# Returns: [boolean] redo
+# ----------------------------------------------------------------------
+def start_check(board_type):
+    
+    start = False
+    redo = False
+        
+    while start is False:
+            state_buttons = model.bigfoot.get_button_state()
+            if supply_pin_voltages(board_type):
+                view.setMessageScreen("Please Place Dev Board\nonto Header Interface")
+                redo = True
+                start = True
+                sleep(3)
+            
+            if state_buttons & 2 == 2:
+                view.setFlashScreen()
+                if supply_pin_voltages(board_type):
+                    view.setMessageScreen("Please Place Dev Board\nonto Header Interface")
+                    redo = True
+                    sleep(3)
+                start = True
+                model.bigfoot.b2_disable()
+    
+    return redo
+
+
+# ----------------------------------------------------------------------
+# Description: Results State Machine for GUI 
+# Parameters: [boolean] redo  | [string array] pass_array | [string array] detailed_array
+# Returns: None
+# ----------------------------------------------------------------------
+def results_menu(redo, pass_array, detailed_array):
+    
+    results_menu = True
+    screen_wait = True
+    details_wait = False
+    save_wait = False
+
+    # End of Test Sreen | Menu Booleans
+    if not board_status and not redo:
+        view.setResultsScreen(pass_array)
+
+    # End of Test Screens
+    while results_menu and not redo:
+        
+        # Loops back to Results Screen
+        if screen_wait:
+            model.bigfoot.b1_enable()
+            model.bigfoot.b2_enable()
+            model.bigfoot.b3_enable()
+        while screen_wait and not redo:
+            state_buttons = model.bigfoot.get_button_state()
+            if state_buttons & 1 == 1:
+                save_wait = True
+                screen_wait = False
+                model.bigfoot.b1_enable()
+                save_out = model.usb_save(detailed_array)
+                print(save_out)
+                view.setSaveScreen(save_out)
+            elif state_buttons & 2 == 2:
+                model.bigfoot.b1_disable()
+                model.bigfoot.b2_disable()
+                model.bigfoot.b3_disable()
+                view.setDetailTestScreen(detailed_array)
+                print("continue")
+                details_wait = True
+                screen_wait = False
+                #sleep(1)
+            elif state_buttons & 4 == 4:
+                model.bigfoot.b3_enable()
+                screen_wait = False
+                results_menu = False
+
+        # Detailed Results State
+        if details_wait:
+            details_wait = False
+            results_menu = True
+            screen_wait = True
+            
+            model.bigfoot.b1_enable()
+            model.bigfoot.b2_enable()
+            model.bigfoot.b3_enable()
+            view.setResultsScreen(pass_array)
+
+        # Save Condition States
+        if save_wait:
+            model.bigfoot.b3_enable()
+        while save_wait and not redo:
+            state_buttons = model.bigfoot.get_button_state()
+            # Add condition to save test results to usb
+            if state_buttons & 4 == 4:
+                
+                model.bigfoot.b3_enable()
+                save_wait = False
+                screen_wait = True
+                view.setResultsScreen(pass_array)
+
+    # Remove Board State | [After Screen Wait Loop]
+    if not redo:
+        view.setRemovalScreen()
+    # Loop Removal Board Screen
+    time_i = 0
+    while model.check_5V() > 4.0 and time_i < 10:
+        sleep(1)
+        time_i = time_i + 1
+        state_buttons = model.bigfoot.get_button_state()
+        print(state_buttons)
+        
+
 # ######################################################################
 # STARTS MAIN LOOP
 # ######################################################################
 if __name__ == '__main__':
-    # Facade Macro
-    Facade = 0
 
-    # Initialize model.check_5V() < 4.0 and model.check_3V3() < 2.5
-    # Fork | Pipe View
+    # String Arrays for General & Detailed Results
     pass_array = ["Basic Test Results"]
     detailed_array = ["Detailed Test Results"]
 
-    # New test
+    # Start of Main Loop & New Test
     while True:
 
-        # Button Interrupts
+        # Button Interrupts Configured
         model.bigfoot.b1_disable()
         model.bigfoot.b2_disable()
         model.bigfoot.b3_disable()
-        print(model.bigfoot.get_button_state())
+        # print(model.bigfoot.get_button_state())
                 
         model.bigfoot.b1_enable()
         model.bigfoot.b2_enable()
         model.bigfoot.b3_enable()
-        print(model.bigfoot.get_button_state())
+        # print(model.bigfoot.get_button_state())
         
+        # Clear Results for New Test
         detailed_array.clear()
         pass_array.clear()
         test_num = 0
-
         detailed_array.append("Detailed Test Results")
 
         # Assign -> View Standby Screen
@@ -477,49 +591,35 @@ if __name__ == '__main__':
         view.setStartScreen(board_type)
 
         # Start Menu Screen Function
-        # FIX: States Controlled by View -> button input
+        # States Controlled by Bigfoot -> button input
         print("Press Button 1 to Start New Test")
-        start = False
-        redo = False
         board_status = False
-            
-        while start is False:
-            state_buttons = model.bigfoot.get_button_state()
-            if supply_pin_voltages(board_type):
-                view.setMessageScreen("Please Place Dev Board\nonto Header Interface")
-                redo = True
-                start = True
-                sleep(3)
-            
-            if state_buttons & 2 == 2:
-                view.setFlashScreen()
-                if supply_pin_voltages(board_type):
-                    view.setMessageScreen("Please Place Dev Board\nonto Header Interface")
-                    redo = True
-                    sleep(3)
-                start = True
-                model.bigfoot.b2_disable()
+        
+        # Wait for Start pressbutton   
+        redo = start_check(board_type)
 
-        # Subject Not Connecting
+        # When Subject is Not Connecting
         if board_type == "No Boards Detected":
             redo = True
             sleep(2)
 
-        # Assign -> View Testing Screen
-
-        # Start Test Condition
-        # Loop Through Config File
+        #########################################
+        # START OF CONFIGURED TESTS LOOP
+        # Loops Through [subject]Test.config File
         # Test Conditions In Loop
+        #########################################
         try:
-            if start and not redo:
+            if not redo:
                 board_status = model.subject_flash(board_type)
                 print(board_status)
                 
                 if board_status:
+                    # Assign -> Unsuccessful screen
                     view.setMessageScreen("Flash Unsuccessful")
                     sleep(2)
                     redo = True
                 else:
+                    # Assign -> View Testing Screen
                     view.setRunningScreen(0)
                
                 # While Loop Confirms Serial Connection
@@ -535,27 +635,8 @@ if __name__ == '__main__':
                     res = [False for i in range(test_count - 1)]
 
                     # Loop until end of file line array | Open Serial
-                    # Try Except Thing / Exception
                     ser = model.open_serial()
                     sleep(2)
-
-                    # Test Booleans
-                    test1_pass = True
-                    test2_pass = True
-                    test3_pass = True
-                    test4_pass = True
-                    test5_pass = True
-                    test6_pass = True
-                    test7_pass = True
-                    test8_pass = True
-                    test1_occured = False
-                    test2_occured = False
-                    test3_occured = False
-                    test4_occured = False
-                    test5_occured = False
-                    test6_occured = False
-                    test7_occured = False
-                    test8_occured = False
 
                     # Open New Debug File
                     Debug_file = open("Debug_MicroDevTest.txt", "w")
@@ -573,9 +654,8 @@ if __name__ == '__main__':
                             try:
                                 test = Lines[loop_count].split(",")
                                 res[loop_count - 1] = subject_test(int(test[0]), int(test[1]), int(test[2]), int(test[3]),
-                                                                   board_type,
-                                                                   ser)
-                                # print(res[loop_count-1])
+                                                                   board_type, ser)
+
                                 print("Test#,PinID,Address,Enable: " + str(Lines[loop_count]))
                                 Debug_file.write("Above results for Pin ID " + str(
                                             pinmap.get(int(test[1]))) + "\n\n")
@@ -614,55 +694,12 @@ if __name__ == '__main__':
                         print("Progress: " + str(ratio_progress) + "%")
                         view.setRunningScreen(ratio_progress)
                         
-                        if test_num == 1:
-                            # print(res[loop_count - 1])
-                            test1_occured = True
-                            if test1_pass and res[loop_count - 1]:
-                                test1_pass = res[loop_count - 1]
+                        if 0 < test_num < 9: 
+                            test_occurred[test_num-1] = True
+                            if test_pass[test_num-1] and res[loop_count - 1]:
+                                test_pass[test_num-1] = res[loop_count - 1]
                             else:
-                                test1_pass = False
-                        elif test_num == 2:
-                            test2_occured = True
-                            if test2_pass and res[loop_count - 1]:
-                                test2_pass = res[loop_count - 1]
-                            else:
-                                test2_pass = False
-                        elif test_num == 3:
-                            test3_occured = True
-                            if test3_pass and res[loop_count - 1]:
-                                test3_pass = res[loop_count - 1]
-                            else:
-                                test3_pass = False
-                        elif test_num == 4:
-                            test4_occured = True
-                            if test4_pass and res[loop_count - 1] == True:
-                                test4_pass = res[loop_count - 1]
-                            else:
-                                test4_pass = False
-                        elif test_num == 5:
-                            test5_occured = True
-                            if test5_pass and res[loop_count - 1] == True:
-                                test5_pass = res[loop_count - 1]
-                            else:
-                                test5_pass = False
-                        elif test_num == 6:
-                            test6_occured = True
-                            if test6_pass and res[loop_count - 1] == True:
-                                test6_pass = res[loop_count - 1]
-                            else:
-                                test6_pass = False
-                        elif test_num == 7:
-                            test7_occured = True
-                            if test7_pass and res[loop_count - 1] == True:
-                                test7_pass = res[loop_count - 1]
-                            else:
-                                test7_pass = False
-                        elif test_num == 8:
-                            test8_occured = True
-                            if test8_pass and res[loop_count - 1] == True:
-                                test8_pass = res[loop_count - 1]
-                            else:
-                                test8_pass = False
+                                test_pass[test_num-1] = False
 
                         loop_count = loop_count + 1
                         sleep(0.01)
@@ -671,135 +708,29 @@ if __name__ == '__main__':
                     model.close_serial(ser)
 
                     # Write Basic Test Results
-                    if test1_occured:
-                        if test1_pass:
-                            mess_test = "" + str(test_map.get(1)) + " Result: Passed"
-                        else:
-                            mess_test = "" + str(test_map.get(1)) + " Result: Failed"
-                        pass_array.append(mess_test)
-                    if test2_occured:
-                        if test2_pass:
-                            mess_test = "" + str(test_map.get(2)) + " Result: Passed"
-                        else:
-                            mess_test = "" + str(test_map.get(2)) + " Result: Failed"
-                        pass_array.append(mess_test)
-                    if test3_occured:
-                        if test3_pass:
-                            mess_test = "" + str(test_map.get(3)) + " Result: Passed"
-                        else:
-                            mess_test = "" + str(test_map.get(3)) + " Result: Failed"
-                        pass_array.append(mess_test)
-                    if test4_occured:
-                        if test4_pass:
-                            mess_test = "" + str(test_map.get(4)) + " Result: Passed"
-                        else:
-                            mess_test = "" + str(test_map.get(4)) + " Result: Failed"
-                        pass_array.append(mess_test)
-                    if test5_occured:
-                        if test5_pass:
-                            mess_test = "" + str(test_map.get(5)) + " Result: Passed"
-                        else:
-                            mess_test = "" + str(test_map.get(5)) + " Result: Failed"
-                        pass_array.append(mess_test)
-                    if test6_occured:
-                        if test6_pass:
-                            mess_test = "" + str(test_map.get(6)) + " Result: Passed"
-                        else:
-                            mess_test = "" + str(test_map.get(6)) + " Result: Failed"
-                        pass_array.append(mess_test)
-                    if test7_occured:
-                        if test7_pass:
-                            mess_test = "" + str(test_map.get(7)) + " Result: Passed"
-                        else:
-                            mess_test = "" + str(test_map.get(7)) + " Result: Failed"
-                        pass_array.append(mess_test)
-                    if test8_occured:
-                        if test8_pass:
-                            mess_test = "" + str(test_map.get(8)) + " Result: Passed"
-                        else:
-                            mess_test = "" + str(test_map.get(8)) + " Result: Failed"
-                        pass_array.append(mess_test)
-
+                    for i in range(0,8,1):
+                        if test_occurred[i]:
+                            if test_pass[i]:
+                                mess_test = "" + str(test_map.get(i+1)) + " Result: Passed"
+                            else:
+                                mess_test = "" + str(test_map.get(i+1)) + " Result: Failed"
+                            pass_array.append(mess_test)
 
         except Exception:
             pass_array.append("Testing has Failed to Finish")
             pass
         finally:
             print("Complete Test Cycle")
+
             model.bigfoot.b1_enable()
             model.bigfoot.b2_enable()
             model.bigfoot.b3_enable()
             
-        results_menu = True
-        screen_wait = True
-        details_wait = False
-        save_wait = False
-
-        # End of Test Sreen | Menu Booleans
-        if not board_status and not redo:
-            view.setResultsScreen(pass_array)
-
-        # End of Test Screens
-        while results_menu and not redo:
+        #########################################
+        # END OF TESTING LOOP 
+        #########################################
             
-            # Loops back to Results Screen
-            while screen_wait and not redo:
-                state_buttons = model.bigfoot.get_button_state()
-                if state_buttons & 1 == 1:
-                    save_wait = True
-                    screen_wait = False
-                    model.bigfoot.b1_enable()
-                    save_out = model.usb_save(detailed_array)
-                    print(save_out)
-                    view.setSaveScreen(save_out)
-                elif state_buttons & 2 == 2:
-                    model.bigfoot.b1_disable()
-                    model.bigfoot.b2_disable()
-                    model.bigfoot.b3_disable()
-                    view.setDetailTestScreen(detailed_array)
-                    print("continue")
-                    details_wait = True
-                    screen_wait = False
-                    #sleep(1)
-                elif state_buttons & 4 == 4:
-                    model.bigfoot.b3_enable()
-                    screen_wait = False
-                    results_menu = False
-
-            # Detailed Results State
-            if details_wait:
-                details_wait = False
-                results_menu = True
-                screen_wait = True
-                
-                model.bigfoot.b1_enable()
-                model.bigfoot.b2_enable()
-                model.bigfoot.b3_enable()
-                view.setResultsScreen(pass_array)
-
-            # Save Condition States
-            if save_wait:
-                model.bigfoot.b3_enable()
-            while save_wait and not redo:
-                state_buttons = model.bigfoot.get_button_state()
-                # Add condition to save test results to usb
-                if state_buttons & 4 == 4:
-                    
-                    model.bigfoot.b3_enable()
-                    save_wait = False
-                    screen_wait = True
-                    view.setResultsScreen(pass_array)
-
-        # Remove Board State | [After Screen Wait Loop]
-        if not redo:
-            view.setRemovalScreen()
-        # Loop Removal Board Screen
-        time_i = 0
-        while model.check_5V() > 4.0 and time_i < 10:
-            sleep(1)
-            time_i = time_i + 1
-            state_buttons = model.bigfoot.get_button_state()
-            print(state_buttons)
-        
-        # NEXT LOOP ITERATION
+        results_menu(redo, pass_array, detailed_array)
         Debug_file.close()
+        # RETURNS TO STANDBY
+        
