@@ -15,7 +15,7 @@
 - Raspberry Pi Configuration > [disable] Screen Blanking
 
 
-##Arduino CLI Installation & Application
+## Arduino CLI Installation & Application
 Start up raspberry pi using an hdmi monitor, keyboard, and mouse.
 
     Download in Add/Remove Software:
@@ -35,7 +35,7 @@ Start up raspberry pi using an hdmi monitor, keyboard, and mouse.
 - Terminal Command Upload .ino example: arduino-cli upload -b arduino:avr:uno -p /dev/ttyACM0 Blink.ino
 
 
-##FLASH TO ARDUINO NOTES:
+### FLASH TO ARDUINO NOTES:
 The Arduino CLI does not automatically create a permanent bit file for uploading. In order to do this, one must add the command ‘-e’ while compiling. This looks like the following: arduino-cli compile -b arduino:avr:uno Blink.ino -e.This will create a new folder within the arduino project folder that contains a bit file, “[Project name].ino.with_bootloader.bin”. This should be in a folder with a file path ./build/arduino.avr.uno/. In Terminal, the command arduino-cli upload -b arduino:avr:uno -p /dev/ttyACM0 -i [binary file path] will upload the file.
     
 STM32 CLI Installation & Application
@@ -52,5 +52,5 @@ Start up raspberry pi using an hdmi monitor, keyboard, and mouse.
 - Click Apply and Wait for Download 
 
 
-##FLASH TO STM32 NOTES:
+### FLASH TO STM32 NOTES:
 The STMCubeIDE does not automatically create a permanent bit file for uploading. Since it uses a .elf file (located in the debug folder) this must first be converted to a .bin file before flashing can occur. The .elf file can be converted using the following command from terminal arm-none-eabi-objcopy -O binary F401RE_T.elf main.bin. In the previous example, F401RE_T.elf becomes a binary file called main.bin. Flashing can then occur using the command st-flash write main.bin 0x08000000.
