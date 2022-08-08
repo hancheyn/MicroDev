@@ -113,7 +113,7 @@ class BoardTests(unittest.TestCase):
 # ###### (2) Debugging Test Code for Serial ######### #
 class SerialTests(unittest.TestCase):
     # 2.1 Tests that serial communication is established and subject board can reply
-    def test_basic(self):
+    def test_serial_basic(self):
 
         s = bytearray(3)
         s[0] = 0x01
@@ -198,7 +198,7 @@ class CLITests(unittest.TestCase):
         self.assertEqual(board_out, "STM32F411 Detected", "STM32F411 Failed to be Detected.")
 
     # ###################################################################
-    # Additional Board Models can be added like below (?? Procedure in Document)
+    # Additional Board Models can be added like below
     # 1) Add Board List ID Process
     # 2) Add Flash .bin file of board to subject_flash process
     # ###################################################################
@@ -233,7 +233,7 @@ class CLITests(unittest.TestCase):
         model.subject_flash(board_out)
 
     # 3.7 USB Subject Board Test
-    def test_usb_flash(self):
+    def test_usb(self):
         usb_out = model.usb_list()
         print("Filepath to USB: " + usb_out)
 

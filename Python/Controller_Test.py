@@ -320,24 +320,12 @@ def Validation_3021(pin, e, a):
     Reset_Pins()
 
 
-# ###### Validation Test 3.02.1    Load     ################# #
-#def Validation_3031(pin, e, a):
-#    input("Press the <ENTER> to begin Test 3.03.1")
-#    OutputLoad_Test2(pin, e, a, 0x0A)
-#    input("Press the <ENTER> to Exit")
-#    Reset_Pins()
-
 # ###### Validation Test 3.03.1    Pull-Up     ################# #
 def Validation_3031(pin, e, a):
     input("Press the <ENTER> to begin Test 3.04.1")
     PullUp_Test3(pin, e, a, 0x00)
     input("Press the <ENTER> to Exit")
     Reset_Pins()
-
-# ###### Validation Test 3.03.2    Pull-Up  ################# #
-#def Validation_3041(pin, e, a):
-    
-
 
 # ###### Validation Test 3.06.1    Pull-Down ################# #
 def Validation_3032(pin, e, a):
