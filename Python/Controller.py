@@ -300,7 +300,7 @@ def subject_test(t, p, a, e, board, _ser):
 
         # calculation with adc to pull down resistance value
         print("Test adc val: " + str(adc2))
-        Debug_file.write("Test Pull Up Resistance Value: " + str(round(((Rpu-(Rpu%1000))/1000), 0)) + "k ohms\n")
+        Debug_file.write("Test Pull Up Resistance Value: " + str(int(((Rpu-(Rpu%1000))/1000))) + "k ohms\n")
 
         if float(compare[1]) < Rpu < float(compare[2]) and adc1 > float(compare[3]):
             return True
@@ -329,7 +329,7 @@ def subject_test(t, p, a, e, board, _ser):
 
         # calculation with adc to pull down resistance value
         print("Test adc val: " + str(adc4))
-        Debug_file.write("Test Pull Down Resistance Value: " + str(round((Rpd - (Rpd%1000))/1000, 0)) + "k ohms\n")
+        Debug_file.write("Test Pull Down Resistance Value: " + str(int((Rpd - (Rpd%1000))/1000)) + "k ohms\n")
         
         if float(compare[1]) < Rpd < float(compare[2]) and adc1 < float(compare[3]):
             return True
