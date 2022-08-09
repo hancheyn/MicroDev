@@ -18,6 +18,7 @@ import Bigfoot as bigfoot
 root = Tk()
 root.wm_title("MicroDev Tester")
 root.attributes('-fullscreen', True)
+root.config(cursor="none")
 root.configure(background="black")
 frame = Frame(root)
 frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
