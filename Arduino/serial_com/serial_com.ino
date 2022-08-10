@@ -367,7 +367,7 @@ void wakeUp(){
 void reset_pins() {
   int i;
   for(i = 1; i < 63; i++) {
-    configure_output(i, LOW);
+    configure_input(i);
   }
 }
 
