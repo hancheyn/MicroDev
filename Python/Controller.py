@@ -623,6 +623,9 @@ if __name__ == '__main__':
         # Loops Through [subject]Test.config File
         # Test Conditions In Loop
         #########################################
+        test_pass = [True, True, True, True, True, True, True, True]
+        test_occurred = [False, False, False, False, False, False, False, False]
+
         try:
             if not redo:
                 board_status = model.subject_flash(board_type)
@@ -723,6 +726,7 @@ if __name__ == '__main__':
                     model.close_serial(ser)
 
                     # Write Basic Test Results
+
                     for i in range(0,8,1):
                         if test_occurred[i]:
                             if test_pass[i]:
