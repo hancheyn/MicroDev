@@ -85,7 +85,7 @@ void loop() {
                         RMSG[1] = (unsigned char)0;
                     }
                     else {
-                        reset_pins();
+                        //reset_pins();
                         configure_output(pin_val, RMSG[1]); 
                     }
                     command_write(RMSG[0], RMSG[1], RMSG[2]);
@@ -96,7 +96,7 @@ void loop() {
                         RMSG[1] = 2;
                     }
                     else {
-                        reset_pins();
+                        //reset_pins();
                         configure_output(pin_val, RMSG[1]);
                     }
                     command_write(RMSG[0], RMSG[1], RMSG[2]);
@@ -107,7 +107,7 @@ void loop() {
                         RMSG[1] = 3;
                     }
                     else {
-                      reset_pins();
+                      //reset_pins();
                       configure_input_pullup(pin_val);
                     }
                     command_write(RMSG[0], RMSG[1], RMSG[2]);
