@@ -161,18 +161,18 @@ void run_tests(unsigned char data[]) {
 			digitalWrite(pin, 0);
 		}
 		*/
-		reset_pins();
+		//reset_pins();
 		configure_output(pin, instruction);
 		command_write(data[0], data[1], data[2]);
 
 	}
 	else if(data[2] == 2) {
-		reset_pins();
+		//reset_pins();
 		configure_output(pin, instruction);
 		command_write(data[0], data[1], data[2]);
 	}
 	else if(data[2] == 3) {
-		reset_pins();
+		//reset_pins();
 		configure_input_pullup(pin);
 		command_write(data[0], data[1], data[2]);
 	}
@@ -467,7 +467,7 @@ void digitalWrite(int pin, int logic) {
 void reset_pins() {
 	int i;
 	for(i = 1; i < 63; i++) {
-		configure_output(i, LOW);
+		configure_input(i);
 	}
 }
 
