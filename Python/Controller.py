@@ -754,6 +754,7 @@ if __name__ == '__main__':
 
         except Exception:
             print("Unknown Error")
+            view.setMessageScreen("Restarting: Unknown Error")
             pass
         # RETURNS TO STANDBY
         
