@@ -27,6 +27,7 @@ void wakeUp();
 struct pin pin_set(uint32_t pin, uint8_t pin_id);
 void init_pins(struct pin pins[]);
 void reset_pins();
+void reset_pins_pullup();
 
 /* Pin Struct */
 struct pin {
@@ -85,7 +86,7 @@ void loop() {
                         RMSG[1] = (unsigned char)0;
                     }
                     else {
-                        //reset_pins();
+                        reset_pins();
                         configure_output(pin_val, RMSG[1]); 
                     }
                     command_write(RMSG[0], RMSG[1], RMSG[2]);
@@ -96,7 +97,7 @@ void loop() {
                         RMSG[1] = 2;
                     }
                     else {
-                        //reset_pins();
+                        reset_pins();
                         configure_output(pin_val, RMSG[1]);
                     }
                     command_write(RMSG[0], RMSG[1], RMSG[2]);
@@ -107,7 +108,7 @@ void loop() {
                         RMSG[1] = 3;
                     }
                     else {
-                      //reset_pins();
+                      reset_pins();
                       configure_input_pullup(pin_val);
                     }
                     command_write(RMSG[0], RMSG[1], RMSG[2]);
@@ -123,6 +124,7 @@ void loop() {
                         command_write(RMSG[0], RMSG[1], RMSG[2]);
                     }
                     else {
+                      reset_pins_pullup();
                       test_result = configure_input(pin_val);
                       command_write(RMSG[0], test_result, RMSG[2]);
                     }
@@ -135,6 +137,7 @@ void loop() {
                         command_write(RMSG[0], RMSG[1], RMSG[2]);
                     }
                     else {
+                      reset_pins_pullup();
                       test_result = configure_analog_input(pin_val);
                       command_write(RMSG[0], test_result, RMSG[2]);
 
@@ -148,6 +151,7 @@ void loop() {
                         RMSG[1] = 7;
                     }
                     else {
+                      reset_pins();
                       configure_sleep_mode(RMSG[1], RMSG[0]); //send sleepmode & pin#
                       //command_write(RMSG[0], RMSG[1], RMSG[2]);
                     }
@@ -371,6 +375,18 @@ void reset_pins() {
   }
 }
 
+/*
+ * Description: Resets all pins on the pin mapping to output low
+ * Accepts: void
+ * Returns: void
+ */
+void reset_pins_pullup() {
+  int i;
+  for(i = 1; i < 63; i++) {
+    configure_input_pullup(i);
+  }
+}
+
 
 /*
  * Description: Builds Struct for Pins
@@ -399,88 +415,88 @@ void init_pins(struct pin pins[]) {
   pins[0] = pin_set(13,  23);
 
   //Pin 1 | NA
-  pins[1] = pin_set(0x00,  1);
+  pins[1] = pin_set(0x02,  1);
 
   //Pin 2 | NA
-  pins[2] = pin_set(0x0C,  2);
+  pins[2] = pin_set(0x02,  2);
 
   //Pin 3 | NA
-  pins[3] = pin_set(0x00,  3);
+  pins[3] = pin_set(0x02,  3);
 
   //Pin 4 | NA
-  pins[4] = pin_set(0x00,  4);
+  pins[4] = pin_set(0x02,  4);
 
   //Pin 5 | SCL I2C
   pins[5] = pin_set(15,  5);
 
   //Pin 6 | NA
-  pins[6] = pin_set(0x06,  6);
+  pins[6] = pin_set(0x02,  6);
 
   //Pin 7 | NA
-  pins[7] = pin_set(0x09,  7);
+  pins[7] = pin_set(0x02,  7);
 
   //Pin 8 | NA
-  pins[8] = pin_set(0x08,  8);
+  pins[8] = pin_set(0x02,  8);
 
   //Pin 9 | REF
-  pins[9] = pin_set(0x00,  9);
+  pins[9] = pin_set(0x02,  9);
 
   //Pin 10 | NA
-  pins[10] = pin_set(0x00, 10);
+  pins[10] = pin_set(0x02, 10);
 
   //Pin 11 | E5V
-  pins[11] = pin_set(0x00, 11);
+  pins[11] = pin_set(0x02, 11);
 
   //Pin 12 | VDD
-  pins[12] = pin_set(0x00, 12);
+  pins[12] = pin_set(0x02, 12);
 
   //Pin 13 | AVDD
-  pins[13] = pin_set(0x00, 13);
+  pins[13] = pin_set(0x02, 13);
 
   //Pin 14 | NA
-  pins[14] = pin_set(0x00, 14);
+  pins[14] = pin_set(0x02, 14);
 
   //Pin 15 | SDA I2C
   pins[15] = pin_set(14, 15);
 
   //Pin 16 | NA
-  pins[16] = pin_set(0x05, 16);
+  pins[16] = pin_set(0x02, 16);
 
   //Pin 17 | NA
-  pins[17] = pin_set(0x0E, 17);
+  pins[17] = pin_set(0x02, 17);
 
   //Pin 18 | 3V3
-  pins[18] = pin_set(0x00, 18);
+  pins[18] = pin_set(0x02, 18);
 
   //Pin 19 | NA
-  pins[19] = pin_set(0x0D, 19);
+  pins[19] = pin_set(0x02, 19);
 
   //Pin 20 | RESET
-  pins[20] = pin_set(0x00, 20);
+  pins[20] = pin_set(0x02, 20);
 
   //Pin 21 | D12
   pins[21] = pin_set(12, 21);
 
   //Pin 22 | NA
-  pins[22] = pin_set(0x0B, 22);
+  pins[22] = pin_set(0x02, 22);
 
   //Pin 23 | D13
   pins[23] = pin_set(13, 23);
 
   //Pin 24 | NA
-  pins[24] = pin_set(0x0C, 24);
+  pins[24] = pin_set(0x02, 24);
 
   //Pin 25 | NA
-  pins[25] = pin_set(0x0D, 25);
+  pins[25] = pin_set(0x02, 25);
 
   //Pin 26 | NA
-  pins[26] = pin_set(0x07, 26);
+  pins[26] = pin_set(0x02, 26);
 
   //Pin 27 | NA
-  pins[27] = pin_set(0x0F, 27);
+  pins[27] = pin_set(0x02, 27);
 
   //Pin 28 | 5V
-  pins[28] = pin_set(0x00, 28);
+  pins[28] = pin_set(0x02, 28);
 
   //Pin 29 | NA
   pins[29] = pin_set(0x02, 29);
@@ -489,28 +505,28 @@ void init_pins(struct pin pins[]) {
   pins[30] = pin_set(10, 30);
 
   //Pin 31 | NA
-  pins[31] = pin_set(0x0C, 31);
+  pins[31] = pin_set(0x02, 31);
 
   //Pin 32 | D11
   pins[32] = pin_set(11, 32);
 
   //Pin 33 | NA
-  pins[33] = pin_set(0x0F, 33);
+  pins[33] = pin_set(0x02, 33);
 
   //Pin 34 | A0 & D14
   pins[34] = pin_set(A0, 34);
 
   //Pin 35 | NA
-  pins[35] = pin_set(0x0E, 35);
+  pins[35] = pin_set(0x02, 35);
 
   //Pin 36 | VIN
-  pins[36] = pin_set(0x00, 36);
+  pins[36] = pin_set(0x02, 36);
 
   //Pin 37 | D7
   pins[37] = pin_set(7, 37);
 
   //Pin 38 | NA
-  pins[38] = pin_set(0x01, 38);
+  pins[38] = pin_set(0x02, 38);
 
   //Pin 39 | D8
   pins[39] = pin_set(8, 39);
@@ -520,13 +536,13 @@ void init_pins(struct pin pins[]) {
   pins[40] = pin_set(9, 40);
 
   //Pin 41 | NA
-  pins[41] = pin_set(0x00, 41);
+  pins[41] = pin_set(0x02, 41);
 
   //Pin 42 | A2
   pins[42] = pin_set(A2, 42);
 
   //Pin 43 | NA
-  pins[43] = pin_set(0x00, 43);
+  pins[43] = pin_set(0x02, 43);
 
   //Pin 44 | A1 & D15
   pins[44] = pin_set(A1, 44);
@@ -535,13 +551,13 @@ void init_pins(struct pin pins[]) {
   pins[45] = pin_set(5, 45);
 
   //Pin 46 | NA
-  pins[46] = pin_set(0x0E, 46);
+  pins[46] = pin_set(0x02, 46);
 
   //Pin 47 | D6
   pins[47] = pin_set(6, 47);
 
   //Pin 48 | NA
-  pins[48] = pin_set(0x0F, 48);
+  pins[48] = pin_set(0x02, 48);
 
   //Pin 49 | NA
   pins[49] = pin_set(0x02, 49);
@@ -550,7 +566,7 @@ void init_pins(struct pin pins[]) {
   pins[50] = pin_set(A4, 50);
 
   //Pin 51 | VBAT
-  pins[51] = pin_set(0x00, 51);
+  pins[51] = pin_set(0x02, 51);
 
   //Pin 52 | A3
   pins[52] = pin_set(A3, 52);
@@ -559,30 +575,30 @@ void init_pins(struct pin pins[]) {
   pins[53] = pin_set(3, 53);
 
   //Pin 54 | AGND
-  pins[54] = pin_set(0x00, 54);
+  pins[54] = pin_set(0x02, 54);
 
   //Pin 55 | D4
   pins[55] = pin_set(4, 55);
 
   //Pin 56 | NA
-  pins[56] = pin_set(0x0D, 56);
+  pins[56] = pin_set(0x02, 56);
 
   //Pin 57 | NA
-  pins[57] = pin_set(0x03, 57);
+  pins[57] = pin_set(0x02, 57);
 
   //Pin 58 | A5
   pins[58] = pin_set(A5, 58);
 
-  //Pin 59 | D0
-  pins[59] = pin_set(0, 59);
+  //Pin 59 | D0 / RX (disabled)
+  pins[59] = pin_set(0x02, 59);
 
-  //Pin 60 | D1
-  pins[60] = pin_set(1, 60);
+  //Pin 60 | D1 / TX (disabled)
+  pins[60] = pin_set(0x02, 60);
 
   //Pin 61 | D2
   pins[61] = pin_set(2, 61);
 
   //Pin 62 | NA
-  pins[62] = pin_set(0x04, 62);
+  pins[62] = pin_set(0x02, 62);
 
 }
