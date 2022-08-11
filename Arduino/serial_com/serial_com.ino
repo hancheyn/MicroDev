@@ -151,7 +151,6 @@ void loop() {
                         RMSG[1] = 7;
                     }
                     else {
-                      reset_pins();
                       configure_sleep_mode(RMSG[1], RMSG[0]); //send sleepmode & pin#
                       //command_write(RMSG[0], RMSG[1], RMSG[2]);
                     }
