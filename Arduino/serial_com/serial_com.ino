@@ -124,7 +124,6 @@ void loop() {
                         command_write(RMSG[0], RMSG[1], RMSG[2]);
                     }
                     else {
-                      //reset_pins_pullup();
                       test_result = configure_input(pin_val);
                       command_write(RMSG[0], test_result, RMSG[2]);
                     }
