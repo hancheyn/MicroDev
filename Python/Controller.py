@@ -387,7 +387,7 @@ def subject_test(t, p, a, e, board, _ser):
             Debug_file.write("ADC Return Value: " + str(test_num) + ": " + str(subject_adc_high) + "\n")
             print("ADC Return Value: " + str(test_num) + ": " + str(subject_adc_high) + "\n")
             # compare subject voltage to dac voltage
-            if subject_adc_high > instruct - 0.2 and condition_success:
+            if instruct + 0.2 > subject_adc_high > instruct - 0.2 and condition_success:
                 condition_success = True
             else:
                 condition_success = False
