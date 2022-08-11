@@ -570,186 +570,190 @@ if __name__ == '__main__':
 
     # Start of Main Loop & New Test
     while True:
-
-        # Button Interrupts Configured
-        model.bigfoot.b1_disable()
-        model.bigfoot.b2_disable()
-        model.bigfoot.b3_disable()
-        # print(model.bigfoot.get_button_state())
-                
-        model.bigfoot.b1_enable()
-        model.bigfoot.b2_enable()
-        model.bigfoot.b3_enable()
-        # print(model.bigfoot.get_button_state())
-        
-        # Clear Results for New Test
-        detailed_array.clear()
-        pass_array.clear()
-        test_num = 0
-        detailed_array.append("Detailed Test Results")
-
-        # Assign -> View Standby Screen
-        view.setStandbyScreen()
-
-        # Wait for Subject Board Connection / Shutdown Screen
-        # Check Board Type | Save Variable | Blocking Loop
         try:
-            board_type = model.board_wait()
-        except Exception:
-            board_type = "None"
-            sleep(2)
-            view.setShutdownScreen()
-            model.shutdown()
-            pass
-
-        # Assign -> View Start Test Screen
-        view.setStartScreen(board_type)
-
-        # Start Menu Screen Function
-        # States Controlled by Bigfoot -> button input
-        print("Press Button 1 to Start New Test")
-        board_status = False
-        
-        # Wait for Start pressbutton   
-        redo = start_check(board_type)
-
-        # When Subject is Not Connecting
-        if board_type == "No Boards Detected":
-            redo = True
-            sleep(2)
-
-        #########################################
-        # START OF CONFIGURED TESTS LOOP
-        # Loops Through [subject]Test.config File
-        # Test Conditions In Loop
-        #########################################
-        test_pass = [True, True, True, True, True, True, True, True]
-        test_occurred = [False, False, False, False, False, False, False, False]
-
-        try:
-            if not redo:
-                board_status = model.subject_flash(board_type)
-                print(board_status)
-                
-                if board_status:
-                    # Assign -> Unsuccessful screen
-                    view.setMessageScreen("Flash Unsuccessful")
-                    sleep(2)
-                    redo = True
-                else:
-                    # Assign -> View Testing Screen
-                    view.setRunningScreen(0)
-               
-                # While Loop Confirms Serial Connection
-                if serial_check() and not redo:
-                    # Read Config | Loop Through Tests
-                    Lines = test_config_file(board_type)
-                    test_count = len(Lines)
-                    loop_count = 1
-                    
-                    # Pinmap Array
-                    pinmap = pinmap_array(board_type)
-
-                    res = [False for i in range(test_count - 1)]
-
-                    # Loop until end of file line array | Open Serial
-                    ser = model.open_serial()
-                    sleep(2)
-
-                    # Open New Debug File
-                    Debug_file = open("Debug_MicroDevTest.txt", "w")
-                    Debug_file.close()
-
-                    while loop_count < test_count and not redo:
-                        
-                        # Test Loop
-                        test_loop = True
-                        loop_limit = 0
-                        while test_loop and loop_limit < 5:
-                            Debug_file = open("Debug_MicroDevTest.txt", "a")
-
-                            # Run Test Starts Here
-                            try:
-                                test = Lines[loop_count].split(",")
-                                res[loop_count - 1] = subject_test(int(test[0]), int(test[1]), int(test[2]), int(test[3]),
-                                                                   board_type, ser)
-
-                                print("Test#,PinID,Address,Enable: " + str(Lines[loop_count]))
-                                Debug_file.write("Above results for Pin ID " + str(
-                                            pinmap.get(int(test[1]))) + "\n\n")
-
-                                test_num = int(test[0])
-                                if res[loop_count - 1]:
-                                    if test_num == 9:
-                                        current_test = "Board Reset"
-                                    elif test_num >= 7:
-                                        current_test = "" + str(test_map.get(int(Lines[loop_count][0]))) + " Sleep Mode #" + str(
-                                            test[1]) + " Result: Passed"
-                                    else:
-                                        current_test = "" + str(test_map.get(int(Lines[loop_count][0])))  + " Pin #" + str(
-                                            pinmap.get(int(test[1]))) + " Result: Passed"
-                                else:
-                                    if test_num >= 7:
-                                        current_test = "" + str(test_map.get(int(Lines[loop_count][0]))) + " Sleep Mode #" + str(
-                                            test[1]) + " Result: Failed"
-                                    else:
-                                        current_test = "" + str(test_map.get(int(Lines[loop_count][0]))) + " Pin #" + str(
-                                            pinmap.get(int(test[1]))) + " Result: Failed"
-                                detailed_array.append(current_test)
-                                test_loop = False
-                            except Exception:
-                                print("!!Test has Failed!!")
-                                n = model.board_wait()
-                                model.subject_flash(n)
-                                loop_limit = loop_limit + 1
-                                if loop_limit == 5:
-                                    detailed_array.append("Not Able to Complete Testing")
-                                pass
-                                                                   
-                        Debug_file.close()
-                        # Show Progress of Tests
-                        ratio_progress = int((float(loop_count)/float(test_count)) * 100)
-                        print("Progress: " + str(ratio_progress) + "%")
-                        view.setRunningScreen(ratio_progress)
-                        
-                        if 0 < test_num < 9: 
-                            test_occurred[test_num-1] = True
-                            if test_pass[test_num-1] and res[loop_count - 1]:
-                                test_pass[test_num-1] = res[loop_count - 1]
-                            else:
-                                test_pass[test_num-1] = False
-
-                        loop_count = loop_count + 1
-                        sleep(0.01)
-
-                    # Close Serial Port
-                    model.close_serial(ser)
-
-                    # Write Basic Test Results
-
-                    for i in range(0,8,1):
-                        if test_occurred[i]:
-                            if test_pass[i]:
-                                mess_test = "" + str(test_map.get(i+1)) + " Result: Passed"
-                            else:
-                                mess_test = "" + str(test_map.get(i+1)) + " Result: Failed"
-                            pass_array.append(mess_test)
-
-        except Exception:
-            pass_array.append("Testing has Failed to Finish")
-            pass
-        finally:
-            print("Complete Test Cycle")
+            # Button Interrupts Configured
+            model.bigfoot.b1_disable()
+            model.bigfoot.b2_disable()
+            model.bigfoot.b3_disable()
+            # print(model.bigfoot.get_button_state())
 
             model.bigfoot.b1_enable()
             model.bigfoot.b2_enable()
             model.bigfoot.b3_enable()
-            
-        #########################################
-        # END OF TESTING LOOP 
-        #########################################
-            
-        results_menu(redo, pass_array, detailed_array)
-        Debug_file.close()
+            # print(model.bigfoot.get_button_state())
+
+            # Clear Results for New Test
+            detailed_array.clear()
+            pass_array.clear()
+            test_num = 0
+            detailed_array.append("Detailed Test Results")
+
+            # Assign -> View Standby Screen
+            view.setStandbyScreen()
+
+            # Wait for Subject Board Connection / Shutdown Screen
+            # Check Board Type | Save Variable | Blocking Loop
+            try:
+                board_type = model.board_wait()
+            except Exception:
+                board_type = "None"
+                sleep(2)
+                view.setShutdownScreen()
+                model.shutdown()
+                pass
+
+            # Assign -> View Start Test Screen
+            view.setStartScreen(board_type)
+
+            # Start Menu Screen Function
+            # States Controlled by Bigfoot -> button input
+            print("Press Button 1 to Start New Test")
+            board_status = False
+
+            # Wait for Start pressbutton
+            redo = start_check(board_type)
+
+            # When Subject is Not Connecting
+            if board_type == "No Boards Detected":
+                redo = True
+                sleep(2)
+
+            #########################################
+            # START OF CONFIGURED TESTS LOOP
+            # Loops Through [subject]Test.config File
+            # Test Conditions In Loop
+            #########################################
+            test_pass = [True, True, True, True, True, True, True, True]
+            test_occurred = [False, False, False, False, False, False, False, False]
+
+            try:
+                if not redo:
+                    board_status = model.subject_flash(board_type)
+                    print(board_status)
+
+                    if board_status:
+                        # Assign -> Unsuccessful screen
+                        view.setMessageScreen("Flash Unsuccessful")
+                        sleep(2)
+                        redo = True
+                    else:
+                        # Assign -> View Testing Screen
+                        view.setRunningScreen(0)
+
+                    # While Loop Confirms Serial Connection
+                    if serial_check() and not redo:
+                        # Read Config | Loop Through Tests
+                        Lines = test_config_file(board_type)
+                        test_count = len(Lines)
+                        loop_count = 1
+
+                        # Pinmap Array
+                        pinmap = pinmap_array(board_type)
+
+                        res = [False for i in range(test_count - 1)]
+
+                        # Loop until end of file line array | Open Serial
+                        ser = model.open_serial()
+                        sleep(2)
+
+                        # Open New Debug File
+                        Debug_file = open("Debug_MicroDevTest.txt", "w")
+                        Debug_file.close()
+
+                        while loop_count < test_count and not redo:
+
+                            # Test Loop
+                            test_loop = True
+                            loop_limit = 0
+                            while test_loop and loop_limit < 5:
+                                Debug_file = open("Debug_MicroDevTest.txt", "a")
+
+                                # Run Test Starts Here
+                                try:
+                                    test = Lines[loop_count].split(",")
+                                    res[loop_count - 1] = subject_test(int(test[0]), int(test[1]), int(test[2]), int(test[3]),
+                                                                       board_type, ser)
+
+                                    print("Test#,PinID,Address,Enable: " + str(Lines[loop_count]))
+                                    Debug_file.write("Above results for Pin ID " + str(
+                                                pinmap.get(int(test[1]))) + "\n\n")
+
+                                    test_num = int(test[0])
+                                    if res[loop_count - 1]:
+                                        if test_num == 9:
+                                            current_test = "Board Reset"
+                                        elif test_num >= 7:
+                                            current_test = "" + str(test_map.get(int(Lines[loop_count][0]))) + " Sleep Mode #" + str(
+                                                test[1]) + " Result: Passed"
+                                        else:
+                                            current_test = "" + str(test_map.get(int(Lines[loop_count][0])))  + " Pin #" + str(
+                                                pinmap.get(int(test[1]))) + " Result: Passed"
+                                    else:
+                                        if test_num >= 7:
+                                            current_test = "" + str(test_map.get(int(Lines[loop_count][0]))) + " Sleep Mode #" + str(
+                                                test[1]) + " Result: Failed"
+                                        else:
+                                            current_test = "" + str(test_map.get(int(Lines[loop_count][0]))) + " Pin #" + str(
+                                                pinmap.get(int(test[1]))) + " Result: Failed"
+                                    detailed_array.append(current_test)
+                                    test_loop = False
+                                except Exception:
+                                    print("!!Test has Failed!!")
+                                    n = model.board_wait()
+                                    model.subject_flash(n)
+                                    loop_limit = loop_limit + 1
+                                    if loop_limit == 5:
+                                        detailed_array.append("Not Able to Complete Testing")
+                                    pass
+
+                            Debug_file.close()
+                            # Show Progress of Tests
+                            ratio_progress = int((float(loop_count)/float(test_count)) * 100)
+                            print("Progress: " + str(ratio_progress) + "%")
+                            view.setRunningScreen(ratio_progress)
+
+                            if 0 < test_num < 9:
+                                test_occurred[test_num-1] = True
+                                if test_pass[test_num-1] and res[loop_count - 1]:
+                                    test_pass[test_num-1] = res[loop_count - 1]
+                                else:
+                                    test_pass[test_num-1] = False
+
+                            loop_count = loop_count + 1
+                            sleep(0.01)
+
+                        # Close Serial Port
+                        model.close_serial(ser)
+
+                        # Write Basic Test Results
+
+                        for i in range(0,8,1):
+                            if test_occurred[i]:
+                                if test_pass[i]:
+                                    mess_test = "" + str(test_map.get(i+1)) + " Result: Passed"
+                                else:
+                                    mess_test = "" + str(test_map.get(i+1)) + " Result: Failed"
+                                pass_array.append(mess_test)
+
+            except Exception:
+                pass_array.append("Testing has Failed to Finish")
+                pass
+            finally:
+                print("Complete Test Cycle")
+
+                model.bigfoot.b1_enable()
+                model.bigfoot.b2_enable()
+                model.bigfoot.b3_enable()
+
+            #########################################
+            # END OF TESTING LOOP
+            #########################################
+
+            results_menu(redo, pass_array, detailed_array)
+            Debug_file.close()
+
+        except Exception:
+            print("Unknown Error")
+            pass
         # RETURNS TO STANDBY
         
