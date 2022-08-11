@@ -599,7 +599,8 @@ if __name__ == '__main__':
                 board_type = "None"
                 sleep(2)
                 view.setShutdownScreen()
-                model.shutdown()
+                # Go to Desktop mode or shutdown
+                # model.shutdown()
                 pass
 
             # Assign -> View Start Test Screen
