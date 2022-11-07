@@ -20,9 +20,9 @@ import board
 import busio
 import adafruit_ina219
 
-import smbus
+from smbus import SMBus
 
-bus = smbus.SMBus(1)
+bus = SMBus(1)
 GPIO.setwarnings(False)
 
 

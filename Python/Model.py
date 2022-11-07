@@ -607,8 +607,10 @@ def subject_flash(board):
     # ARDUINO UNO FLASH
     if board == "Arduino Uno Detected":
         res = subprocess.getstatusoutput(
-            f'arduino-cli upload -b arduino:avr:uno -p /dev/ttyACM0 -i Flash/serial_com.ino.with_bootloader.bin')
+            f'arduino-cli compile --fqbn arduino:avr:uno Flash/serial_com/')
         # Confirm Success with CLI output
+        subprocess.getstatusoutput(
+            f'arduino-cli upload --fqbn arduino:avr:uno  Flash/serial_com/ -p /dev/ttyACM0')
 
     # STM32F411 FLASH
     elif board == "STM32F411 Detected":

@@ -51,7 +51,6 @@ void setup() {
     }
 
     //+Sleep Modes
-
     init_pins(PINS_);
 }
 
@@ -61,7 +60,7 @@ void loop() {
 
     if (Serial.available() > 0) { //Serial.available() returns the number of bytes read
         delay(50); //NEEDED
-        
+
         //Write Test
         command_read(RMSG);
 
@@ -78,16 +77,16 @@ void loop() {
             else {
               facade_test = 0;
             }
-              
+
             switch (RMSG[2]) { // Test Identification #
-                case 1: 
+                case 1:
                     if(facade_test) {
                         RMSG[0] = (unsigned char)pin_val;
                         RMSG[1] = (unsigned char)0;
                     }
                     else {
                         //reset_pins();
-                        configure_output(pin_val, RMSG[1]); 
+                        configure_output(pin_val, RMSG[1]);
                     }
                     command_write(RMSG[0], RMSG[1], RMSG[2]);
                     break;
@@ -127,7 +126,7 @@ void loop() {
                       test_result = configure_input(pin_val);
                       command_write(RMSG[0], test_result, RMSG[2]);
                     }
-                    
+
                     break;
                 case 6:
                     if(facade_test) {
@@ -154,7 +153,7 @@ void loop() {
                       //command_write(RMSG[0], RMSG[1], RMSG[2]);
                     }
                     break;
-                    
+
                 default:
                     command_write(RMSG[0], RMSG[1], RMSG[2]);
                     break;
@@ -256,7 +255,7 @@ int crc_decode(unsigned char data[]) {
  *          unsigned int logic - HIGH or LOW logic
  * Returns: void
  */
-void configure_output(unsigned int pin, unsigned int logic) {  
+void configure_output(unsigned int pin, unsigned int logic) {
   pinMode(pin, OUTPUT);
   if(logic) {
     digitalWrite(pin, HIGH);
@@ -311,8 +310,8 @@ int configure_analog_input(unsigned int analogPin) {
  *          unsigned int interruptPin - the pin # to configure as an interrupt (Digital 2 or 3 for Arduino)
  * Returns: void
  */
-void configure_sleep_mode(unsigned int sleepmode, unsigned int interruptPin) { 
-  
+void configure_sleep_mode(unsigned int sleepmode, unsigned int interruptPin) {
+
     sleep_enable(); //Enables sleep mode
     pinMode(2, INPUT_PULLUP); //Assign pin 2 or 3 as input pullup
     pinMode(3, INPUT_PULLUP);
@@ -346,7 +345,7 @@ void configure_sleep_mode(unsigned int sleepmode, unsigned int interruptPin) {
     //Serial.println("Just woke up!");
     bitSet(TIMSK0, 0); //starts the millis() timer back up
     return;
-    
+
 }
 
 /*

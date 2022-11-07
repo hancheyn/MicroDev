@@ -13,12 +13,13 @@
 - File Manager > Edit > Preferences > Volume Management > 
 [uncheck] Show available options for removable media when they are inserted
 - Raspberry Pi Configuration > [disable] Screen Blanking
+- Raspberry Pi Configuration > Interfaces > [enable] I2C
 
 
 ## Arduino CLI Installation & Application
 Start up raspberry pi using an hdmi monitor, keyboard, and mouse.
 
-    Download in Add/Remove Software:
+Download in Add/Remove Software:
 - Raspberry OS Start Menu > Preferences > Add/Remove Software
 - Search “arduino”
 - Check AVR development board IDE
@@ -26,13 +27,24 @@ Start up raspberry pi using an hdmi monitor, keyboard, and mouse.
 - Click Apply and Wait for Download. 
 
 
-    Download in Terminal:
-- Terminal: curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
-- Put arduino-cli into a runnable folder so the command will run on its own ($PATH).
-- Terminal Command: arduino-cli core install arduino:avr
-- Terminal Command View Connected Boards: arduino-cli board list
-- Terminal Command Compile .ino example: arduino-cli compile -b arduino:avr:uno Blink.ino -e
-- Terminal Command Upload .ino example: arduino-cli upload -b arduino:avr:uno -p /dev/ttyACM0 Blink.ino
+Download in Terminal:
+  - Put arduino-cli into a runnable folder so the command will run on its own ($PATH). 
+
+
+    curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
+
+    
+- Terminal Command to View Connected Boards:
+
+
+    arduino-cli core install arduino:avr
+    arduino-cli board list
+
+- Terminal Commands to Compile and Upload from Raspberry Pi (example Sketch Blink.ino)
+
+
+    arduino-cli compile -b arduino:avr:uno Blink.ino -e
+    arduino-cli upload -b arduino:avr:uno -p /dev/ttyACM0 Blink.ino
 
 
 ### FLASH TO ARDUINO NOTES:
@@ -41,7 +53,7 @@ The Arduino CLI does not automatically create a permanent bit file for uploading
 STM32 CLI Installation & Application
 Start up raspberry pi using an hdmi monitor, keyboard, and mouse.
 
-    Download in Add/Remove Software:
+Download in Add/Remove Software:
 - Raspberry OS Start Menu  > Preferences > Add/Remove Software
 - Search “stlink”
 - Check OpenSource ST-Link tools replacement… (x3)
